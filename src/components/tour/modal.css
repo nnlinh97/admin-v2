@@ -1,0 +1,25 @@
+.example-modal .modal {
+    position: fixed;
+    top: 35px;
+    /* bottom: auto;
+    right: auto;
+    left: auto; */
+    display: block;
+    /* margin: 0 auto; */
+    z-index: 9999;
+  }
+
+  .example-modal .modal {
+    background: transparent !important;
+  }
+  .opacity-05{
+    opacity: 0.3;
+  }
+  .checkbox-modal{
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+  }
+  .input-modal{
+    margin: 8px 0 0 !important;
+    position: relative !important;
+  }

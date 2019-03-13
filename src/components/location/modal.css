@@ -1,0 +1,14 @@
+.example-modal .modal {
+    position: fixed;
+    top: 35px;
+    /* bottom: auto;
+    right: auto;
+    left: auto; */
+    display: block;
+    /* margin: 0 auto; */
+    z-index: 9999;
+  }
+
+  .example-modal .modal {
+    background: transparent !important;
+  }

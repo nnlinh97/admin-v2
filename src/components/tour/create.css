@@ -1,0 +1,44 @@
+.icons-form{
+    cursor: pointer;
+    font-size: 20px !important;
+}
+
+.input-double{
+    width: 45%;
+    float: left;
+}
+
+.ml-5{
+    margin-left: 10%;
+}
+.w-30{
+    width: 33%;
+    float: left;
+}
+
+.mr-pr-100{
+    margin-right: 100px;
+    padding-right: 100px;
+}
+
+.color{
+    color: yellowgreen;
+}
+
+/* .css-10nd86i {
+    z-index: 5;
+} */
+
+.bd-red{
+    border: 1.5px solid red;
+    border-top-color: red !important;
+}
+
+.css-vj8t7z{
+    border-radius: 0px !important;
+}
+
+.modal-dialog{
+    width: 900px;
+}
+
