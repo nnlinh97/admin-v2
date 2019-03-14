@@ -17,11 +17,11 @@ class info extends Component {
     }
     async componentDidMount() {
         let allType = await axios.get(`${URL}/type/getAll`);
-        allType.data.result.forEach(item => {
+        allType.data.data.forEach(item => {
             item.value = item.id;
             item.label = item.name;
         });
-        this.props.getAllType(allType.data.result);
+        this.props.getAllType(allType.data.data);
     }
 
 

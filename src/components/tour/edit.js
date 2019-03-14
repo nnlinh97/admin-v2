@@ -4,7 +4,6 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 // import Modal from 'react-bootstrap-modal';
 import * as actions from './../../actions/index';
@@ -27,116 +26,72 @@ import SuccessNotify from '../notification/success';
 import 'react-notifications/lib/notifications.css';
 import { useAlert } from "react-alert";
 import { configEditor } from './config';
-import Route from './route-edit';
+import Route from './route';
 import SweetAlert from 'react-bootstrap-sweetalert';
 
 import { helper } from '../../helper';
-import { apiGet } from './../../services/api';
-import './modal.css';
+import ReactTable from 'react-table';
+import { apiGet, apiPost } from '../../services/api';
+import { sortRoute } from './../../helper';
+import stateManager from 'react-select/lib/stateManager';
 
-class EditTourComponent extends Component {
+
+
+class ListTypesComponent extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            routes: null,
+            routes: [],
             price: '',
             name: '',
             desc: '',
             policy: '',
             detail: '',
-            tourImages: [],
-            featuredImage: '',
-
-            isPlus: false,
-            errorTour: false,
-            errorsRoute: [],
             success: false,
             error: false,
-
-            openModal: false
+            openModal: false,
+            listRoutes: null,
+            tempRoutes: [],
+            image: [],
+            previewImage: null,
+            tourDetail: null
         }
     }
 
-    async componentDidMount() {
-        const id = this.props.match.params.id;
-        if (!this.props.tourDetail) {
+    componentDidMount = async () => {
+        let listRoute = this.props.listRoute;
+        if (!listRoute) {
+            listRoute = await apiGet('/route/getAll');
+            listRoute = listRoute.data.data
+            await this.props.getListRoute(listRoute);
+        }
+        let tourDetail = this.props.tourDetail;
+        if (!tourDetail) {
+            const id = this.props.match.params.id;
             try {
-                const tourDetail = await apiGet(`/tour/getById/${id}`);
-                this.props.getTourById(tourDetail.data.data);
-                this.updateState(tourDetail.data.data);
+                tourDetail = await apiGet(`/tour/getById/${id}`);
+                tourDetail = tourDetail.data.data;
+                await this.props.getTourById(tourDetail);
             } catch (error) {
-                console.log(error)
+                console.log(error);
             }
-        } else {
-            this.updateState(this.props.tourDetail)
         }
+        this.updateState(listRoute, tourDetail);
     }
-
-    updateState = (tourDetail) => {
+    updateState = (listRoute, tourDetail) => {
+        console.log(tourDetail);
         this.setState({
-            name: tourDetail.name,
-            price: tourDetail.price,
-            policy: tourDetail.policy,
-            detail: tourDetail.detail,
-            desc: tourDetail.description,
+            listRoute: listRoute,
             routes: tourDetail.routes,
-            tourImages: tourDetail.tour_images,
-            featuredImage: tourDetail.featured_img
-        })
-    }
-
-
-    checkTour = () => {
-        const tour = this.state;
-        if (tour.routes[0] !== '' && tour.name !== '' && tour.desc !== '' && Number.isInteger(parseInt(tour.price)) && parseInt(tour.price) > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    checkRoutes = () => {
-        const routes = this.state.routes;
-        let errors = [];
-        for (let i = 0; i < routes.length; i++) {
-            if (routes[i] === '') {
-                errors = [...errors, i];
-            }
-            if (routes[i + 1]) {
-                if (routes[i].day === routes[i + 1].day) {
-                    if (routes[i].leaveTime > routes[i + 1].arriveTime) {
-                        errors = [...errors, i, i + 1];
-                    }
-                }
-                if (routes[i].day > routes[i + 1].day) {
-                    errors = [...errors, i, i + 1];
-                }
-            }
-        }
-        console.log(routes)
-        console.log(errors)
-        this.setState({
-            errorsRoute: errors
-        })
-
-        return errors;
-    }
-
-    addRoute = (event) => {
-        event.preventDefault();
-        this.setState({
-            routes: [
-                ...this.state.routes,
-                ''
-            ],
-            isPlus: false
-        })
-    }
-
-    handleChange = (event, index) => {
-        this.state.routes[index][event.target.name] = event.target.value;
-        this.setState({
-            routes: this.state.routes
+            tempRoutes: tourDetail.routes,
+            tourDetail: tourDetail,
+            name: tourDetail.name,
+            image: tourDetail.featured_img,
+            previewImage: tourDetail.featured_img ? tourDetail.featured_img : '',
+            policy: tourDetail.policy,
+            desc: tourDetail.description,
+            detail: tourDetail.detail
         })
     }
 
@@ -149,43 +104,7 @@ class EditTourComponent extends Component {
         });
     }
 
-    deleteLocation = (event, index) => {
-        event.preventDefault();
-        let count = 0;
-        this.state.routes.forEach((location, index) => {
-            if (location) {
-                count++;
-            }
-        })
-        if (count > 1) {
-            this.state.routes[index] = null;
-            this.setState({
-                routes: this.state.routes
-            })
-        }
-    }
-
-    handleChangeStartDate = (date) => {
-        this.setState({
-            startDate: date
-        })
-    }
-
-    handleChangeEndDate = (date) => {
-        // console.log(moment(date).format('YYYY-MM-DD'));
-        this.setState({
-            endDate: date
-        })
-    }
-
-    onEditorStateChange = (editorState) => {
-        this.setState({
-            editorState,
-        });
-    };
-
     handleChangeDesc = (model) => {
-        console.log(model)
         this.setState({
             desc: model
         });
@@ -203,59 +122,39 @@ class EditTourComponent extends Component {
         });
     }
 
-    handleChangeRoute = (data) => {
-        this.state.routes[data.index] = data.data;
-        this.setState({
-            routes: this.state.routes,
-            isPlus: true
-        })
-    }
-
-    handleDeleteRoute = (index) => {
-        if (this.state.routes.length > 1) {
-            this.state.routes.splice(index, 1);
-            this.setState({
-                routes: this.state.routes
-            })
+    checkTour = () => {
+        const { name, desc, routes } = this.state;
+        if (name !== '' && desc !== '' && routes.length) {
+            return true;
         }
+        return false;
     }
 
     handleSave = async () => {
-        const errors = this.checkRoutes();
-        console.log(this.state);
-        if (this.checkTour() && errors.length === 0) {
-            console.log('save tour success')
+        if (this.checkTour()) {
+            console.log(this.state);
+            const { name, image, detail, policy, desc, routes } = this.state;
+            let form = new FormData();
+            form.append('name', name);
+            form.append('detail', detail);
+            form.append('policy', policy);
+            form.append('routes', routes);
+            form.append('description', desc);
+            if (image.length) {
+                form.append('image', image[0], 'name.jpg');
+            }
             try {
-                let createTour = await axios.post(`${URL}/tour/create`, {
-                    name: this.state.name,
-                    price: this.state.price,
-                    policy: this.state.policy,
-                    description: this.state.desc,
-                    detail: this.state.detail,
-                    routes: this.state.routes
-                });
-                console.log(createTour);
+                const newTour = await apiPost('/tour/create', form);
             } catch (error) {
                 this.setState({
                     error: true
-                })
+                });
             }
-            this.setState({
-                errorTour: false,
-                success: true
-            })
         } else {
             this.setState({
-                errorTour: this.checkTour() ? false : true,
                 error: true
             })
         }
-    }
-
-    disablePlusBtn = () => {
-        this.setState({
-            isPlus: false
-        })
     }
 
     hideSuccessAlert = () => {
@@ -263,36 +162,90 @@ class EditTourComponent extends Component {
     }
 
     hideFailAlert = () => {
-        console.log('error')
         this.setState({
             error: false
-        })
+        });
     }
     openModal = () => {
         this.setState({
             openModal: true
-        })
+        });
     }
     closeModal = () => {
         this.setState({
+            openModal: false,
+            tempRoutes: [...this.state.routes]
+        });
+    }
+    handleChangeSelect = (props) => {
+        const index = _.findIndex(this.state.tempRoutes, (item) => {
+            return item.id === props.original.id;
+        });
+        if (index !== -1) {
+            this.state.tempRoutes.splice(index, 1);
+        } else {
+            this.state.tempRoutes.push(props.original);
+        }
+        this.setState({
+            tempRoutes: [...this.state.tempRoutes]
+        });
+    }
+    handleSaveChanges = () => {
+        this.setState({
+            routes: [...this.state.tempRoutes],
             openModal: false
         })
     }
+    handleDelete = (props) => {
+        const id = props.original.id;
+        const indexRoute = _.findIndex(this.state.routes, (item) => item.id === id);
+        if (indexRoute !== -1) {
+            this.state.routes.splice(indexRoute, 1);
+        }
+        this.setState({
+            tempRoutes: [...this.state.routes],
+            routes: [...this.state.routes]
+        });
+    }
+    handleChangeImage = (event) => {
+        let file = event.target.files[0];
+        console.log(file);
+        if (file.size > 1024 * 1024) {
+            return;
+        }
+        let reader = new FileReader();
+        reader.onloadend = () => {
+            event.target = null;
+            this.setState({
+                image: [file],
+                previewImage: reader.result
+            });
+        }
+        reader.readAsDataURL(file)
+    }
     render() {
-        console.log(this.state.routes)
         const columns = [
-            // {
-            //     Header: "STT",
-            //     accessor: "stt",
-            //     sortable: false,
-            //     filterable: false,
-            //     style: {
-            //         textAlign: 'center'
-            //     },
-            //     width: 100,
-            //     maxWidth: 100,
-            //     minWidth: 100
-            // },
+            {
+                Header: "ID",
+                accessor: "id",
+                sortable: false,
+                filterable: false,
+                style: {
+                    textAlign: 'center'
+                },
+                width: 100,
+                maxWidth: 100,
+                minWidth: 100
+            },
+            {
+                Header: "TITLE",
+                accessor: "title",
+                sortable: false,
+                filterable: false,
+                style: {
+                    textAlign: 'center'
+                }
+            },
             {
                 Header: "LOCATION",
                 accessor: "location.name",
@@ -339,31 +292,11 @@ class EditTourComponent extends Component {
                 minWidth: 100
             },
             {
-                Header: props => <i className="fa fa-pencil" />,
-                Cell: props => {
-                    return (
-                        <button className="btn btn-success"
-                            onClick={() => this.handleEditTour(props.original.id)}
-                        >
-                            <i className="fa fa-pencil" />
-                        </button>
-                    )
-                },
-                sortable: false,
-                filterable: false,
-                style: {
-                    textAlign: 'center'
-                },
-                width: 100,
-                maxWidth: 100,
-                minWidth: 100
-            },
-            {
                 Header: props => <i className="fa fa-trash" />,
                 Cell: props => {
                     return (
                         <button className="btn btn-danger"
-                            onClick={() => this.handleEditTour(props.original.id)}
+                            onClick={() => this.handleDelete(props)}
                         >
                             <i className="fa fa-trash" />
                         </button>
@@ -379,14 +312,22 @@ class EditTourComponent extends Component {
                 minWidth: 100
             }
         ];
-
         const columnModal = [
             {
                 Header: props => <i className="fa fa-check-square" />,
                 Cell: props => {
+                    let index = _.findIndex(this.state.tempRoutes, (item) => {
+                        return item.id === props.original.id;
+                    });
                     return (
                         <div className="checkbox checkbox-modal">
-                            <input className="input-modal" type="checkbox" value="" />
+                            <input
+                                className="input-modal"
+                                type="checkbox"
+                                name="choose"
+                                onChange={() => this.handleChangeSelect(props)}
+                                checked={index === -1 ? false : true}
+                            />
                         </div>
                     )
                 },
@@ -402,6 +343,18 @@ class EditTourComponent extends Component {
             {
                 Header: "ID",
                 accessor: "id",
+                sortable: false,
+                filterable: true,
+                style: {
+                    textAlign: 'center'
+                },
+                width: 100,
+                maxWidth: 100,
+                minWidth: 80
+            },
+            {
+                Header: "TITLE",
+                accessor: "title",
                 sortable: false,
                 filterable: true,
                 style: {
@@ -457,6 +410,7 @@ class EditTourComponent extends Component {
                 minWidth: 100
             }
         ];
+        console.log(this.state);
         return (
             <div className="content-wrapper">
                 {this.state.success &&
@@ -477,7 +431,7 @@ class EditTourComponent extends Component {
                 }
                 <section className="content-header">
                     <h1>
-                        Create Tour
+                        Edit Tour
                     </h1>
                 </section>
                 <section className={`content ${this.state.openModal ? 'opacity-05' : ''}`}>
@@ -499,15 +453,19 @@ class EditTourComponent extends Component {
                                 <form role="form">
                                     <div className="box-body">
                                         <div className="form-group">
-                                            <label htmlFor="exampleInputEmail1">Tên (*)</label>
+                                            <label htmlFor="exampleInputEmail1">Name (*)</label>
                                             <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
                                         </div>
+                                        <div style={{ height: '300px' }} className="form-group">
+                                            <label>Image (*)</label>
+                                            <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" /><br />
+                                            {this.state.previewImage !== '' ?
+                                                <img style={{ width: '100%', height: '250px' }} src={this.state.previewImage} /> :
+                                                <img style={{ width: '100%', height: '250px' }} src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
+                                            }
+                                        </div><br />
                                         <div className="form-group">
-                                            <label>Giá (*)</label>
-                                            <input onChange={this.onHandleChange} value={this.state.price} name='price' type="number" className="form-control" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Quy định hủy tour</label>
+                                            <label>Policy</label>
                                             <FroalaEditor
                                                 config={{
                                                     placeholderText: '',
@@ -519,19 +477,6 @@ class EditTourComponent extends Component {
                                                 onModelChange={this.handleChangePolicy}
                                             />
                                         </div>
-                                        <div className="form-group">
-                                            <label>Chú thích</label>
-                                            <FroalaEditor
-                                                config={{
-                                                    placeholderText: '',
-                                                    heightMax: 150,
-                                                    heightMin: 150,
-                                                    toolbarButtons: configEditor.policy,
-                                                }}
-                                                model={this.state.detail}
-                                                onModelChange={this.handleChangeDetail}
-                                            />
-                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -541,11 +486,24 @@ class EditTourComponent extends Component {
                                 <form role="form">
                                     <div className="box-body">
                                         <div className="form-group">
-                                            <label>Mô tả tour (*)</label>
+                                            <label>Detail</label>
                                             <FroalaEditor
                                                 config={{
-                                                    heightMax: 488,
-                                                    heightMin: 488,
+                                                    placeholderText: '',
+                                                    heightMax: 120,
+                                                    heightMin: 120,
+                                                    toolbarButtons: configEditor.policy,
+                                                }}
+                                                model={this.state.detail}
+                                                onModelChange={this.handleChangeDetail}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Description (*)</label>
+                                            <FroalaEditor
+                                                config={{
+                                                    heightMax: 317,
+                                                    heightMin: 317,
                                                     placeholderText: '',
                                                     toolbarButtons: configEditor.description,
                                                     imageUploadParam: 'file',
@@ -589,7 +547,7 @@ class EditTourComponent extends Component {
                         <div className="form-group">
                             <ReactTable
                                 columns={columns}
-                                data={this.state.routes ? this.state.routes : []}
+                                data={this.state.routes.length ? this.state.routes : []}
                                 defaultPageSize={5}
                                 noDataText={'No data...'}
                             >
@@ -611,7 +569,7 @@ class EditTourComponent extends Component {
                                     <div className="modal-body">
                                         <ReactTable
                                             columns={columnModal}
-                                            data={this.state.routes ? this.state.routes : []}
+                                            data={this.state.listRoute ? this.state.listRoute : []}
                                             defaultPageSize={5}
                                             noDataText={'No data...'}
                                         >
@@ -619,7 +577,7 @@ class EditTourComponent extends Component {
                                     </div>
                                     <div className="modal-footer">
                                         <button onClick={this.closeModal} type="button" className="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                                        <button onClick={this.handleEdit} type="button" className="btn btn-primary">Save changes</button>
+                                        <button onClick={this.handleSaveChanges} type="button" className="btn btn-primary">Save changes</button>
                                     </div>
                                 </div>
                             </div>
@@ -638,7 +596,7 @@ const mapStateToProps = (state) => {
         allType: state.allType,
         allLocation: state.allLocation,
         listTour: state.listTour,
-        tourDetail: state.tourDetail
+        listRoute: state.listRoute
     }
 }
 
@@ -650,7 +608,8 @@ const mapDispatchToProps = (dispatch, action) => {
         createType: (type) => dispatch(actions.createType(type)),
         editType: (type) => dispatch(actions.editType(type)),
         getListTour: (tour) => dispatch(actions.getListTour(tour)),
+        getListRoute: (route) => dispatch(actions.getListRoute(route)),
         getTourById: (tour) => dispatch(actions.getTourById(tour))
     }
 }
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditTourComponent));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListTypesComponent));

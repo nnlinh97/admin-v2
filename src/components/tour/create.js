@@ -32,8 +32,9 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import { helper } from '../../helper';
 import ReactTable from 'react-table';
 import { apiGet, apiPost } from '../../services/api';
-import {sortRoute} from './../../helper';
+import { sortRoute } from './../../helper';
 import stateManager from 'react-select/lib/stateManager';
+import './modal.css'
 
 
 
@@ -48,14 +49,13 @@ class ListTypesComponent extends Component {
             desc: '',
             policy: '',
             detail: '',
-            isPlus: false,
-            errorTour: false,
-            errorsRoute: [],
             success: false,
             error: false,
             openModal: false,
             listRoutes: null,
-            tempRoutes: []
+            tempRoutes: [],
+            image: [],
+            previewImage: ''
         }
     }
 
@@ -63,70 +63,14 @@ class ListTypesComponent extends Component {
         let listRoute = this.props.listRoute;
         if (!listRoute) {
             listRoute = await apiGet('/route/getAll');
-            console.log(listRoute.data.data);
             listRoute = listRoute.data.data
             await this.props.getListRoute(listRoute);
         }
         this.updateState(listRoute);
     }
-
     updateState = (listRoute) => {
         this.setState({
             listRoute: listRoute
-        })
-    }
-
-
-    checkTour = () => {
-        const tour = this.state;
-        if (tour.routes[0] !== '' && tour.name !== '' && tour.desc !== '' && Number.isInteger(parseInt(tour.price)) && parseInt(tour.price) > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    checkRoutes = () => {
-        const routes = this.state.routes;
-        let errors = [];
-        for (let i = 0; i < routes.length; i++) {
-            if (routes[i] === '') {
-                errors = [...errors, i];
-            }
-            if (routes[i + 1]) {
-                if (routes[i].day === routes[i + 1].day) {
-                    if (routes[i].leaveTime > routes[i + 1].arriveTime) {
-                        errors = [...errors, i, i + 1];
-                    }
-                }
-                if (routes[i].day > routes[i + 1].day) {
-                    errors = [...errors, i, i + 1];
-                }
-            }
-        }
-        console.log(routes)
-        console.log(errors)
-        this.setState({
-            errorsRoute: errors
-        })
-
-        return errors;
-    }
-
-    addRoute = (event) => {
-        event.preventDefault();
-        this.setState({
-            routes: [
-                ...this.state.routes,
-                ''
-            ],
-            isPlus: false
-        })
-    }
-
-    handleChange = (event, index) => {
-        this.state.routes[index][event.target.name] = event.target.value;
-        this.setState({
-            routes: this.state.routes
         })
     }
 
@@ -139,43 +83,7 @@ class ListTypesComponent extends Component {
         });
     }
 
-    deleteLocation = (event, index) => {
-        event.preventDefault();
-        let count = 0;
-        this.state.routes.forEach((location, index) => {
-            if (location) {
-                count++;
-            }
-        })
-        if (count > 1) {
-            this.state.routes[index] = null;
-            this.setState({
-                routes: this.state.routes
-            })
-        }
-    }
-
-    handleChangeStartDate = (date) => {
-        this.setState({
-            startDate: date
-        })
-    }
-
-    handleChangeEndDate = (date) => {
-        // console.log(moment(date).format('YYYY-MM-DD'));
-        this.setState({
-            endDate: date
-        })
-    }
-
-    onEditorStateChange = (editorState) => {
-        this.setState({
-            editorState,
-        });
-    };
-
     handleChangeDesc = (model) => {
-        console.log(model)
         this.setState({
             desc: model
         });
@@ -193,59 +101,41 @@ class ListTypesComponent extends Component {
         });
     }
 
-    handleChangeRoute = (data) => {
-        this.state.routes[data.index] = data.data;
-        this.setState({
-            routes: this.state.routes,
-            isPlus: true
-        })
-    }
-
-    handleDeleteRoute = (index) => {
-        if (this.state.routes.length > 1) {
-            this.state.routes.splice(index, 1);
-            this.setState({
-                routes: this.state.routes
-            })
+    checkTour = () => {
+        const { name, desc, routes } = this.state;
+        if (name !== '' && desc !== '' && routes.length) {
+            return true;
         }
+        return false;
     }
 
     handleSave = async () => {
-        const errors = this.checkRoutes();
-        console.log(this.state);
-        if (this.checkTour() && errors.length === 0) {
-            console.log('save tour success')
+        if (this.checkTour()) {
+            // console.log(this.state);
+            const { name, image, detail, policy, desc, routes } = this.state;
+            let form = new FormData();
+            form.append('name', name);
+            form.append('detail', detail);
+            form.append('policy', policy);
+            form.append('routes', JSON.stringify(routes));
+            form.append('description', desc);
+            if (image.length) {
+                form.append('image', image[0], 'name.jpg');
+            }
             try {
-                let createTour = await axios.post(`${URL}/tour/create`, {
-                    name: this.state.name,
-                    price: this.state.price,
-                    policy: this.state.policy,
-                    description: this.state.desc,
-                    detail: this.state.detail,
-                    routes: this.state.routes
-                });
-                console.log(createTour);
+                const newTour = await apiPost('/tour/createWithRoutes', form);
+                console.log(newTour);
             } catch (error) {
+                console.log(error);
                 this.setState({
                     error: true
-                })
+                });
             }
-            this.setState({
-                errorTour: false,
-                success: true
-            })
         } else {
             this.setState({
-                errorTour: this.checkTour() ? false : true,
                 error: true
             })
         }
-    }
-
-    disablePlusBtn = () => {
-        this.setState({
-            isPlus: false
-        })
     }
 
     hideSuccessAlert = () => {
@@ -253,7 +143,6 @@ class ListTypesComponent extends Component {
     }
 
     hideFailAlert = () => {
-        console.log('error')
         this.setState({
             error: false
         });
@@ -265,7 +154,8 @@ class ListTypesComponent extends Component {
     }
     closeModal = () => {
         this.setState({
-            openModal: false
+            openModal: false,
+            tempRoutes: [...this.state.routes]
         });
     }
     handleChangeSelect = (props) => {
@@ -289,18 +179,29 @@ class ListTypesComponent extends Component {
     }
     handleDelete = (props) => {
         const id = props.original.id;
-        const indexTempRoute = _.findIndex(this.state.tempRoutes, (item) => item.id === id);
-        if(indexTempRoute !== -1){
-            this.state.tempRoutes.splice(indexTempRoute, 1);
-        }
         const indexRoute = _.findIndex(this.state.routes, (item) => item.id === id);
-        if(indexRoute !== -1){
+        if (indexRoute !== -1) {
             this.state.routes.splice(indexRoute, 1);
         }
         this.setState({
-            tempRoutes: [...this.state.tempRoutes],
+            tempRoutes: [...this.state.routes],
             routes: [...this.state.routes]
         });
+    }
+    handleChangeImage = (event) => {
+        let file = event.target.files[0];
+        if (file.size > 1024 * 1024) {
+            return;
+        }
+        let reader = new FileReader();
+        reader.onloadend = () => {
+            event.target = null;
+            this.setState({
+                image: [file],
+                previewImage: reader.result
+            });
+        }
+        reader.readAsDataURL(file)
     }
     render() {
         const columns = [
@@ -489,7 +390,6 @@ class ListTypesComponent extends Component {
                 minWidth: 100
             }
         ];
-        console.log(this.state.routes);
         return (
             <div className="content-wrapper">
                 {this.state.success &&
@@ -532,15 +432,19 @@ class ListTypesComponent extends Component {
                                 <form role="form">
                                     <div className="box-body">
                                         <div className="form-group">
-                                            <label htmlFor="exampleInputEmail1">Tên (*)</label>
+                                            <label htmlFor="exampleInputEmail1">Name (*)</label>
                                             <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
                                         </div>
+                                        <div style={{ height: '300px' }} className="form-group">
+                                            <label>Image (*)</label>
+                                            <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" /><br />
+                                            {this.state.previewImage !== '' ?
+                                                <img style={{ width: '100%', height: '250px' }} src={this.state.previewImage} /> :
+                                                <img style={{ width: '100%', height: '250px' }} src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
+                                            }
+                                        </div><br />
                                         <div className="form-group">
-                                            <label>Giá (*)</label>
-                                            <input onChange={this.onHandleChange} value={this.state.price} name='price' type="number" className="form-control" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Quy định hủy tour</label>
+                                            <label>Policy</label>
                                             <FroalaEditor
                                                 config={{
                                                     placeholderText: '',
@@ -552,19 +456,6 @@ class ListTypesComponent extends Component {
                                                 onModelChange={this.handleChangePolicy}
                                             />
                                         </div>
-                                        <div className="form-group">
-                                            <label>Chú thích</label>
-                                            <FroalaEditor
-                                                config={{
-                                                    placeholderText: '',
-                                                    heightMax: 150,
-                                                    heightMin: 150,
-                                                    toolbarButtons: configEditor.policy,
-                                                }}
-                                                model={this.state.detail}
-                                                onModelChange={this.handleChangeDetail}
-                                            />
-                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -574,11 +465,24 @@ class ListTypesComponent extends Component {
                                 <form role="form">
                                     <div className="box-body">
                                         <div className="form-group">
-                                            <label>Mô tả tour (*)</label>
+                                            <label>Detail</label>
                                             <FroalaEditor
                                                 config={{
-                                                    heightMax: 488,
-                                                    heightMin: 488,
+                                                    placeholderText: '',
+                                                    heightMax: 120,
+                                                    heightMin: 120,
+                                                    toolbarButtons: configEditor.policy,
+                                                }}
+                                                model={this.state.detail}
+                                                onModelChange={this.handleChangeDetail}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Description (*)</label>
+                                            <FroalaEditor
+                                                config={{
+                                                    heightMax: 317,
+                                                    heightMin: 317,
                                                     placeholderText: '',
                                                     toolbarButtons: configEditor.description,
                                                     imageUploadParam: 'file',

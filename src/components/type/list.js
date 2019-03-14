@@ -8,6 +8,7 @@ import './modal.css';
 import * as actions from './../../actions/index';
 import { URL } from '../../constants/url';
 import axios from 'axios';
+import {apiGet, apiPost} from './../../services/api';
 
 class ListTypesComponent extends Component {
 
@@ -25,10 +26,10 @@ class ListTypesComponent extends Component {
 
     async componentDidMount() {
         try {
-            let listType = await axios.get(`${URL}/type/getAll`);
-            this.props.getAllType(listType.data.result);
+            let listType = await apiGet('/type/getAll');
+            this.props.getAllType(listType.data.data);
         } catch (error) {
-
+            console.log(error);
         }
     }
 
@@ -45,11 +46,11 @@ class ListTypesComponent extends Component {
             return;
         }
         try {
-            let typeEdit = await axios.post(`${URL}/type/update`, {
+            let typeEdit = await apiPost('/type/update', {
                 id: this.state.id,
                 name: this.state.name,
                 marker: this.state.marker
-            })
+            });
             this.props.editType(typeEdit.data.data);
         } catch (error) {
             console.log(error);
@@ -66,7 +67,6 @@ class ListTypesComponent extends Component {
     }
 
     redirectToCreateTypePage = () => {
-        // this.props.history.push('/type/create');
         this.setState({
             createModal: true
         })

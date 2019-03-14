@@ -124,7 +124,7 @@ class ListLocationComponent extends Component {
         ];
         const { createModal, editModal, name, marker } = this.state;
         return (
-            <div className="content-wrapper">
+            <div style={{height: '100vh'}} className="content-wrapper">
                 <section className="content-header">
                     <h1>
                         List Location

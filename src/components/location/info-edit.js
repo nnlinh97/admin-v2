@@ -34,7 +34,7 @@ class InfoEdit extends Component {
                     address: data.address
                 });
                 let allType = await axios.get(`${URL}/type/getAll`);
-                allType.data.result.forEach(item => {
+                allType.data.data.forEach(item => {
                     item.value = item.id;
                     item.label = item.name;
                 });
@@ -45,7 +45,7 @@ class InfoEdit extends Component {
                     selected: {
                         ...data.type
                     },
-                    listType: allType.data.result
+                    listType: allType.data.data
                 })
             } catch (error) {
                 console.log(error);
