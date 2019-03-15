@@ -39,9 +39,21 @@ class ListTourComponent extends Component {
     render() {
         const columns = [
             {
+                Header: "ID",
+                accessor: "id",
+                sortable: false,
+                filterable: true,
+                style: {
+                    textAlign: 'center'
+                },
+                width: 90,
+                maxWidth: 100,
+                minWidth: 80
+            },
+            {
                 Header: "NAME",
                 accessor: "name",
-                sortable: true,
+                sortable: false,
                 filterable: true,
                 style: {
                     textAlign: 'center'
@@ -69,7 +81,7 @@ class ListTourComponent extends Component {
             }
         ];
         return (
-            <div className="content-wrapper">
+            <div style={{height: '100vh'}} className="content-wrapper">
                 <section className="content-header">
                     <h1>
                         List Tour

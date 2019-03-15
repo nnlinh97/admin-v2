@@ -8,7 +8,8 @@ import './modal.css';
 import * as actions from './../../actions/index';
 import { URL } from '../../constants/url';
 import axios from 'axios';
-import {apiGet, apiPost} from './../../services/api';
+import { apiGet, apiPost } from './../../services/api';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 class ListTypesComponent extends Component {
 
@@ -20,7 +21,9 @@ class ListTypesComponent extends Component {
             editModal: false,
             type: null,
             name: '',
-            marker: ''
+            marker: '',
+            error: false,
+            success: false
         }
     }
 
@@ -43,20 +46,29 @@ class ListTypesComponent extends Component {
     }
     handleEdit = async () => {
         if (!this.state.id || this.state.name === '') {
-            return;
+            this.setState({
+                error: true
+            })
+        } else {
+            try {
+                let typeEdit = await apiPost('/type/update', {
+                    id: this.state.id,
+                    name: this.state.name,
+                    marker: this.state.marker
+                });
+                await this.props.editType(typeEdit.data.data);
+                this.setState({
+                    success: true
+                })
+            } catch (error) {
+                console.log(error);
+                this.setState({
+                    error: true
+                })
+            }
         }
-        try {
-            let typeEdit = await apiPost('/type/update', {
-                id: this.state.id,
-                name: this.state.name,
-                marker: this.state.marker
-            });
-            this.props.editType(typeEdit.data.data);
-        } catch (error) {
-            console.log(error);
-        }
-        this.closeEditModal();
     }
+
     closeEditModal = () => {
         this.setState({
             editModal: false,
@@ -86,19 +98,26 @@ class ListTypesComponent extends Component {
     }
     handleCreate = async () => {
         if (this.state.name === '') {
-            return;
-        }
-
-        try {
-            let newType = await axios.post(`${URL}/type/create`, {
-                name: this.state.name,
-                marker: this.state.marker
+            this.setState({
+                error: true
             })
-            this.props.createType(newType.data);
-        } catch (error) {
-            console.log(error);
+        } else {
+            try {
+                let newType = await apiPost('/type/create', {
+                    name: this.state.name,
+                    marker: this.state.marker
+                });
+                await this.props.createType(newType.data);
+                this.setState({
+                    success: true
+                })
+            } catch (error) {
+                console.log(error);
+                this.setState({
+                    error: true
+                })
+            }
         }
-        this.closeCreateModal();
     }
 
     handleChange = (event) => {
@@ -110,14 +129,28 @@ class ListTypesComponent extends Component {
         });
     }
 
+    hideSuccessAlert = () => {
+        this.setState({
+            success: false,
+            createModal: false,
+            editModal: false
+        })
+    }
+
+    hideFailAlert = () => {
+        this.setState({
+            error: false
+        })
+    }
+
 
     render() {
         const columns = [
             {
-                Header: "STT",
+                Header: "ID",
                 accessor: "id",
                 sortable: true,
-                filterable: false,
+                filterable: true,
                 style: {
                     textAlign: 'center'
                 },
@@ -169,7 +202,23 @@ class ListTypesComponent extends Component {
         ];
         const { createModal, editModal, name, marker } = this.state;
         return (
-            <div className="content-wrapper">
+            <div style={{ height: '100vh' }} className="content-wrapper">
+                {this.state.success &&
+                    <SweetAlert success title="Successfully" onConfirm={this.hideSuccessAlert}>
+                        Continute...
+                </SweetAlert>
+                }
+                {this.state.error &&
+                    <SweetAlert
+                        warning
+                        confirmBtnText="Cancel"
+                        confirmBtnBsStyle="default"
+                        title="Something went wrong!"
+                        onConfirm={this.hideFailAlert}
+                    >
+                        Please check carefully!
+                </SweetAlert>
+                }
                 <div style={{ display: createModal ? "block" : "none" }} className="example-modal">
                     <div className="modal">
                         <div className="modal-dialog">
@@ -199,7 +248,7 @@ class ListTypesComponent extends Component {
                                 </div>
                                 <div className="modal-footer">
                                     <button onClick={this.closeCreateModal} type="button" className="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                                    <button onClick={this.handleEdit} type="button" className="btn btn-primary">Save changes</button>
+                                    <button onClick={this.handleCreate} type="button" className="btn btn-primary">Save changes</button>
                                 </div>
                             </div>
                         </div>

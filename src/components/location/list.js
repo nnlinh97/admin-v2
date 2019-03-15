@@ -8,6 +8,7 @@ import * as actions from './../../actions/index';
 import { URL } from '../../constants/url';
 import axios from 'axios';
 import './modal.css';
+import {apiGet, apiPost} from './../../services/api';
 
 class ListLocationComponent extends Component {
 
@@ -26,7 +27,7 @@ class ListLocationComponent extends Component {
     async componentDidMount() {
         if(!this.props.allLocation){
             try {
-                let listLocation = await axios.get(`${URL}/location/getAllWithoutPagination`);
+                let listLocation = await apiGet('/location/getAllWithoutPagination');
                 this.props.getAllLocation(listLocation.data.data);
             } catch (error) {
                 console.log(error);
@@ -45,6 +46,18 @@ class ListLocationComponent extends Component {
 
     render() {
         const columns = [
+            {
+                Header: "ID",
+                accessor: "id",
+                sortable: true,
+                filterable: true,
+                style: {
+                    textAlign: 'center'
+                },
+                width: 90,
+                maxWidth: 100,
+                minWidth: 80
+            },
             {
                 Header: "NAME",
                 accessor: "name",

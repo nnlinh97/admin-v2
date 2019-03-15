@@ -76,6 +76,18 @@ class ListTypesComponent extends Component {
                             noDataText={'Please wait...'}
                             columns={[
                                 {
+                                    Header: "ID",
+                                    accessor: "id",
+                                    sortable: false,
+                                    filterable: true,
+                                    style: {
+                                        textAlign: 'center'
+                                    },
+                                    width: 90,
+                                    maxWidth: 100,
+                                    minWidth: 80
+                                },
+                                {
                                     Header: "NAME",
                                     accessor: "tour.name",
                                     sortable: true,

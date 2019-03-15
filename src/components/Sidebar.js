@@ -51,7 +51,7 @@ class Sidebar extends Component {
                         <li className="header">Version 1.0.0</li>
                         <li>
                             <a onClick={this.toDashboard} href="">
-                                <i className="fa fa-dashboard" />
+                                <i className="fa fa-dashboard" />&nbsp;
                                 <span>DASHBOARD</span>
                             </a>
                         </li>
@@ -84,41 +84,41 @@ class Sidebar extends Component {
                         </li> */}
                         <li>
                             <a onClick={this.redirectToListTypesPage} href="">
-                                <i className="fa fa-user" />
+                                <i className="fa fa-pie-chart" />&nbsp;
                                 <span>TYPE LOCATION</span>
                             </a>
                         </li>
                         <li>
                             <a onClick={this.redirectToListLocationPage} href="">
-                                <i className="fa fa-pie-chart" />
+                                <i className="fa fa-location-arrow" />&nbsp;
                                 <span>LOCATION</span>
                             </a>
                         </li>
                         <li>
                             <a onClick={this.toRoutePage} href="">
-                                <i className="fa fa-pie-chart" />
+                                <i className="fa fa-map-pin" />&nbsp;
                                 <span>ROUTE</span>
                             </a>
                         </li>
                         <li>
                             <a onClick={this.toTourPage} href="">
-                                <i className="fa fa-user" />
+                                <i className="fa fa-hourglass" />&nbsp;
                                 <span>TOUR</span>
                             </a>
                         </li>
                         <li>
                             <a onClick={this.toTourTurnPage} href="">
-                                <i className="fa fa-user" />
+                                <i className="fa fa-plane" />&nbsp;
                                 <span>TOUR TURN</span>
                             </a>
                         </li>
                         <li>
                             <a onClick={this.toTransportPage} href="">
-                                <i className="fa fa-user" />
+                                <i className="fa fa-rocket" />&nbsp;
                                 <span>TRANSPORT</span>
                             </a>
                         </li>
-                        <li>
+                        {/* <li>
                             <a onClick={this.toDashboard} href="">
                                 <i className="fa fa-user" />
                                 <span>Admin</span>
@@ -229,7 +229,7 @@ class Sidebar extends Component {
                                         <i className="fa fa-circle-o" /> Data tables</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> */}
                     </ul>
                 </section>
             </aside>

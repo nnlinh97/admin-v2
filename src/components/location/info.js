@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import * as actions from './../../actions/index';
 import { URL } from '../../constants/url';
 import axios from 'axios';
+import { apiGet, apiPost } from './../../services/api';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 class info extends Component {
     constructor(props) {
@@ -12,11 +15,14 @@ class info extends Component {
             selected: null,
             name: '',
             desc: '',
-            status: 'active'
+            status: 'active',
+            success: false,
+            error: false
         }
     }
     async componentDidMount() {
-        let allType = await axios.get(`${URL}/type/getAll`);
+        let allType = await apiGet('/type/getAll');
+        // let allType = await axios.get(`${URL}/type/getAll`);
         allType.data.data.forEach(item => {
             item.value = item.id;
             item.label = item.name;
@@ -37,30 +43,49 @@ class info extends Component {
 
     handleSubmit = async (event) => {
         event.preventDefault();
-        if (!this.props || !this.props.info || !this.props.info.marker || this.props.info.marker.lat === '' || this.props.info.marker.lng === '' || this.props.info.address === '') {
-            console.log('props fail');
-            return;
+        if (!this.props || !this.props.info || !this.props.info.marker ||
+            this.props.info.marker.lat === '' || this.props.info.marker.lng === '' ||
+            this.props.info.address === '' || this.state.name === '' || !this.state.selected) {
+            this.setState({
+                error: true
+            })
         }
-        if (this.state.name === '' || !this.state.selected) {
-            console.log('state fail');
-            return;
+        // if (this.state.name === '' || !this.state.selected) {
+        //     console.log('state fail');
+        //     return;
+        // }
+        else {
+            try {
+                const locationCreate = await apiPost('/location/create', {
+                    latitude: this.props.info.marker.lat,
+                    longitude: this.props.info.marker.lng,
+                    name: this.state.name,
+                    description: this.state.desc,
+                    address: this.props.info.address,
+                    featured_img: null,
+                    status: this.state.status,
+                    fk_type: this.state.selected.id
+                });
+                if (!this.props.listLocation) {
+                    try {
+                        let listLocation = await apiGet('/location/getAllWithoutPagination');
+                        this.props.getAllLocation(listLocation.data.data);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                } else {
+                    await this.props.createLocation(locationCreate.data);
+                }
+                this.setState({
+                    success: true
+                });
+            } catch (error) {
+                console.log(error);
+                this.setState({
+                    error: true
+                });
+            }
         }
-        try {
-            const locationCreate = await axios.post(`${URL}/location/create`, {
-                latitude: this.props.info.marker.lat,
-                longitude: this.props.info.marker.lng,
-                name: this.state.name,
-                description: this.state.desc,
-                address: this.props.info.address,
-                featured_img: null,
-                status: this.state.status,
-                fk_type: this.state.selected.id
-            });
-            this.props.createLocation(locationCreate);
-        } catch (error) {
-            console.log(error);
-        }
-
     }
 
     handleChange = (event) => {
@@ -69,6 +94,19 @@ class info extends Component {
         let value = target.value;
         this.setState({
             [name]: value
+        });
+    }
+
+    hideSuccessAlert = () => {
+        // this.setState({
+        //     success: false
+        // });
+        this.props.history.push('/location/list');
+    }
+
+    hideFailAlert = () => {
+        this.setState({
+            error: false
         });
     }
 
@@ -83,6 +121,22 @@ class info extends Component {
         let allType = this.props.allType ? this.props.allType : [];
         return (
             <div className="box box-warning">
+                {this.state.success &&
+                    <SweetAlert success title="Successfully" onConfirm={this.hideSuccessAlert}>
+                        Continute...
+                </SweetAlert>
+                }
+                {this.state.error &&
+                    <SweetAlert
+                        warning
+                        confirmBtnText="Cancel"
+                        confirmBtnBsStyle="default"
+                        title="Something went wrong!"
+                        onConfirm={this.hideFailAlert}
+                    >
+                        Please check carefully!
+                </SweetAlert>
+                }
                 <div className="box-header with-border">
                     <h3 className="box-title">Location Info</h3>
                 </div>
@@ -136,7 +190,7 @@ const mapStateToProps = (state) => {
     return {
         info: state.infoLocation,
         allType: state.allType,
-        allLocation: state.allLocation
+        listLocation: state.allLocation
     }
 }
 
@@ -144,7 +198,8 @@ const mapDispatchToProps = (dispatch, action) => {
     return {
         changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
         getAllType: (type) => dispatch(actions.getAllType(type)),
-        createLocation: (location) => dispatch(actions.createLocation(location))
+        createLocation: (location) => dispatch(actions.createLocation(location)),
+        getAllLocation: (locations) => dispatch(actions.getAllLocation(locations))
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(info);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(info));
