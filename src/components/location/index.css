@@ -1,0 +1,17 @@
+.double-left{
+    width: 48%;
+    float: left;
+}
+
+.double-right{
+    width: 48%;
+    float: right;
+}
+
+.form-group{
+    margin-bottom: 5px !important;
+}
+
+.box-body{
+    padding: 4px !important;
+}

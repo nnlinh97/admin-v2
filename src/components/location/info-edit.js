@@ -7,6 +7,7 @@ import { URL } from '../../constants/url';
 import axios from 'axios';
 import { apiGet, apiPost } from './../../services/api';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import './index.css'
 
 class InfoEdit extends Component {
     constructor(props) {
@@ -21,7 +22,10 @@ class InfoEdit extends Component {
             status: null,
             listType: null,
             success: false,
-            error: false
+            error: false,
+            image: null,
+            newImage: null,
+            newPreviewImage: null
         }
     }
     async componentDidMount() {
@@ -32,8 +36,7 @@ class InfoEdit extends Component {
                 let location = await apiGet(`/location/getById/${id}`)
                 // let location = await axios.get(`${URL}/location/getById/${this.props.match.params.id}`);
                 const data = location.data.data;
-                console.log(data);
-                console.log(data.status);
+                console.log('data', data);
                 await this.props.changeLocationInfo({
                     marker: {
                         lat: data.latitude,
@@ -54,6 +57,7 @@ class InfoEdit extends Component {
                     selected: {
                         ...data.type
                     },
+                    image: data.featured_img,
                     listType: allType.data.data
                 })
             } catch (error) {
@@ -74,28 +78,45 @@ class InfoEdit extends Component {
         })
     }
 
-    handleSubmit = async (event) => {
-        event.preventDefault();
-        // console.log(this.state);
-        // console.log(this.props.info);
+    checkLocation = () => {
         if (!this.props || !this.props.info || !this.props.info.marker ||
             this.props.info.marker.lat === '' || this.props.info.marker.lng === '' ||
-            this.props.info.address === '' || this.state.name === '' || !this.state.selected.id) {
-            this.setState({
-                error: true
-            })
-        } else {
+            this.props.info.address === '' || this.state.name === '' || !this.state.selected.id || (!this.state.image && !this.state.newImage)) {
+            return false;
+        }
+        return true;
+    }
+
+    handleSubmit = async (event) => {
+        event.preventDefault();
+        console.log(this.checkLocation());
+        // console.log(this.state);
+        // console.log(this.props.info);
+        if (this.checkLocation()) {
             try {
-                let itemEdit = await apiPost('/location/updateWithoutFeaturedImg', {
-                    id: this.props.match.params.id,
-                    latitude: this.props.info.marker.lat,
-                    longitude: this.props.info.marker.lng,
-                    name: this.state.name,
-                    address: this.props.info.address,
-                    description: this.state.desc,
-                    status: this.state.status,
-                    fk_type: this.state.selected.id
-                });
+                let form = new FormData();
+                form.append('id', this.props.match.params.id);
+                form.append('latitude', this.props.info.marker.lat);
+                form.append('longitude', this.props.info.marker.lng);
+                form.append('name', this.state.name);
+                form.append('address', this.props.info.address);
+                form.append('description', this.state.desc);
+                form.append('status', this.state.status);
+                form.append('fk_type', this.state.selected.id);
+                if(this.state.newImage) {
+                    form.append('image', this.state.newImage);
+                }
+                let itemEdit = await apiPost('/location/update', form);
+                // let itemEdit = await apiPost('/location/updateWithoutFeaturedImg', {
+                //     id: this.props.match.params.id,
+                //     latitude: this.props.info.marker.lat,
+                //     longitude: this.props.info.marker.lng,
+                //     name: this.state.name,
+                //     address: this.props.info.address,
+                //     description: this.state.desc,
+                //     status: this.state.status,
+                //     fk_type: this.state.selected.id
+                // });
                 if (!this.props.listLocation) {
                     try {
                         let listLocation = await apiGet('/location/getAllWithoutPagination');
@@ -117,8 +138,11 @@ class InfoEdit extends Component {
                     error: true
                 })
             }
+        } else {
+            this.setState({
+                error: true
+            })
         }
-        // console.log('success');
     }
 
     handleChange = (event) => {
@@ -161,6 +185,30 @@ class InfoEdit extends Component {
         });
     }
 
+    handleChangeImage = (event) => {
+        let file = event.target.files[0];
+        // if (file.size > 1024 * 1024) {
+        //     return;
+        // }
+        let reader = new FileReader();
+        event.target.value = null;
+        reader.onloadend = () => {
+            event.target = null;
+            this.setState({
+                newImage: file,
+                newPreviewImage: reader.result
+            });
+        }
+        reader.readAsDataURL(file)
+    }
+
+    deletePreviewImage = () => {
+        this.setState({
+            newImage: null,
+            newPreviewImage: null
+        });
+    }
+
     render() {
         let marker = null;
         let address = null;
@@ -196,11 +244,11 @@ class InfoEdit extends Component {
                 </div>
                 <div className="box-body">
                     <form role="form" onSubmit={this.handleSubmit}>
-                        <div className="form-group">
+                        <div className="form-group double-left">
                             <label>Latitude</label>
                             <input value={marker ? marker.lat : ''} required type="text" className="form-control" placeholder="Enter ..." disabled />
                         </div>
-                        <div className="form-group">
+                        <div className="form-group double-right">
                             <label>Longitude</label>
                             <input value={marker ? marker.lng : ''} required type="text" className="form-control" placeholder="Enter ..." disabled />
                         </div>
@@ -211,6 +259,24 @@ class InfoEdit extends Component {
                         <div className="form-group">
                             <label>Name</label>
                             <input type="text" onChange={this.handleChange} name="name" value={name ? name : ''} required className="form-control" placeholder="Enter ..." />
+                        </div>
+                        <div className="form-group">
+                            <label>Image</label>
+                            <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" />
+                            <div style={{ width: '100%', margin: '1px' }} className="gallery">
+                                <div className="container-image">
+                                    {this.state.newPreviewImage ?
+                                        <img src={this.state.newPreviewImage} alt="no image" width="300" height="300" /> :
+                                        (this.state.image ?
+                                            <img src={this.state.image} alt="no image" width="300" height="300" /> :
+                                            <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" alt="Cinque Terre" width="300" height="300" />
+                                        )
+                                    }
+                                    <div className="topright-image">
+                                        {this.state.newPreviewImage ? <i onClick={this.deletePreviewImage} className="fa fa-times-circle-o delete-icon" /> : null}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div className="form-group">
                             <label>Type</label>

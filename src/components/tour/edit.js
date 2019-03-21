@@ -53,18 +53,30 @@ class ListTypesComponent extends Component {
             openModal: false,
             listRoutes: null,
             tempRoutes: [],
-            image: [],
-            previewImage: null,
-            tourDetail: null
+
+            currentFeatureImage: null,
+
+            newFeatureImage: null,
+            newPreviewFeatureImage: null,
+
+            tourDetail: null,
+            modalListImages: false,
+
+            currentListImages: [],
+            tempCurrentListImages: [],
+            deletedImagesList: [],
+            tempDeletedImagesList: [],
+
+            newListImages: [],
+            newPreviewImages: []
         }
     }
 
     componentDidMount = async () => {
-        let listRoute = this.props.listRoute;
+        let listRoute = null;
         if (!listRoute) {
-            listRoute = await apiGet('/route/getAll');
+            listRoute = await apiGet('/route/getAllNotHaveTour');
             listRoute = listRoute.data.data
-            await this.props.getListRoute(listRoute);
         }
         let tourDetail = this.props.tourDetail;
         if (!tourDetail) {
@@ -72,6 +84,7 @@ class ListTypesComponent extends Component {
             try {
                 tourDetail = await apiGet(`/tour/getById/${id}`);
                 tourDetail = tourDetail.data.data;
+                console.log(tourDetail);
                 await this.props.getTourById(tourDetail);
             } catch (error) {
                 console.log(error);
@@ -80,18 +93,23 @@ class ListTypesComponent extends Component {
         this.updateState(listRoute, tourDetail);
     }
     updateState = (listRoute, tourDetail) => {
-        console.log(tourDetail);
+        console.log(tourDetail.featured_img);
         this.setState({
-            listRoute: listRoute,
-            routes: tourDetail.routes,
-            tempRoutes: tourDetail.routes,
+            listRoute: [...tourDetail.routes, ...listRoute],
+            routes: [...tourDetail.routes],
+            tempRoutes: [...tourDetail.routes],
             tourDetail: tourDetail,
             name: tourDetail.name,
-            image: tourDetail.featured_img,
-            previewImage: tourDetail.featured_img ? tourDetail.featured_img : '',
+            currentFeatureImage: tourDetail.featured_img ? tourDetail.featured_img : '',
             policy: tourDetail.policy,
             desc: tourDetail.description,
-            detail: tourDetail.detail
+            detail: tourDetail.detail,
+            currentListImages: [...tourDetail.tour_images],
+            tempCurrentListImages: [...tourDetail.tour_images],
+            newListImages: [],
+            newPreviewImages: [],
+            tempNewListImages: [],
+            tempNewPreviewImages: []
         })
     }
 
@@ -123,8 +141,8 @@ class ListTypesComponent extends Component {
     }
 
     checkTour = () => {
-        const { name, desc, routes } = this.state;
-        if (name !== '' && desc !== '' && routes.length) {
+        const { name, desc, routes, currentFeatureImage, newFeatureImage } = this.state;
+        if (name !== '' && desc !== '' && routes.length && (currentFeatureImage || newFeatureImage)) {
             return true;
         }
         return false;
@@ -132,28 +150,30 @@ class ListTypesComponent extends Component {
 
     handleSave = async () => {
         if (this.checkTour()) {
-            console.log(this.state);
-            const { name, image, detail, policy, desc, routes } = this.state;
-            let form = new FormData();
-            form.append('name', name);
-            form.append('detail', detail);
-            form.append('policy', policy);
-            form.append('routes', routes);
-            form.append('description', desc);
-            if (image.length) {
-                form.append('image', image[0], 'name.jpg');
-            }
             try {
-                const newTour = await apiPost('/tour/create', form);
+                const { name, desc, routes, currentFeatureImage, newFeatureImage, tourDetail, deletedImagesList, newListImages, detail, policy } = this.state;
+                let form = new FormData();
+                form.append('name', name);
+                if (newFeatureImage) {
+                    form.append('feature_image', newFeatureImage, 'name.jpg');
+                }
+                if (deletedImagesList.length) {
+                    form.append('deleted_images', JSON.stringify(deletedImagesList));
+                }
+                if (newListImages.length) {
+                    newListImages.forEach(item => {
+                        form.append('new_images', item);
+                    });
+                }
+                form.append('policy', policy);
+                form.append('detail', detail);
+                form.append('description', desc);
+                form.append('routes', JSON.stringify(routes));
             } catch (error) {
                 this.setState({
                     error: true
                 });
             }
-        } else {
-            this.setState({
-                error: true
-            })
         }
     }
 
@@ -167,11 +187,13 @@ class ListTypesComponent extends Component {
         });
     }
     openModal = () => {
+        this.addOpacityBody();
         this.setState({
             openModal: true
         });
     }
     closeModal = () => {
+        this.removeOpacityBody();
         this.setState({
             openModal: false,
             tempRoutes: [...this.state.routes]
@@ -207,21 +229,109 @@ class ListTypesComponent extends Component {
             routes: [...this.state.routes]
         });
     }
+
     handleChangeImage = (event) => {
         let file = event.target.files[0];
-        console.log(file);
-        if (file.size > 1024 * 1024) {
-            return;
-        }
+        event.target.value = null;
+        // if (file.size > 1024 * 1024) {
+        //     return;
+        // }
         let reader = new FileReader();
         reader.onloadend = () => {
-            event.target = null;
             this.setState({
-                image: [file],
-                previewImage: reader.result
+                newFeatureImage: file,
+                newPreviewFeatureImage: reader.result
             });
         }
         reader.readAsDataURL(file)
+    }
+    openModalListImages = (event) => {
+        this.addOpacityBody();
+        event.preventDefault();
+        this.setState({
+            modalListImages: true
+        })
+    }
+
+    closeModalListImages = () => {
+        this.removeOpacityBody();
+        this.setState({
+            modalListImages: false,
+            tempCurrentListImages: [...this.state.currentListImages],
+            tempDeletedImagesList: [...this.state.deletedImagesList],
+            tempNewListImages: [...this.state.newListImages],
+            tempNewPreviewImages: [...this.state.newPreviewImages]
+        })
+    }
+
+    handleChangeListImages = (event) => {
+        let files = Array.from(event.target.files);
+        if (files.length) {
+            // files.forEach((item, index) => {
+            //     if (item.size > 1024 * 1024) {
+            //         return;
+            //     }
+            // });
+            event.target.value = null;
+            files.forEach(item => {
+                let reader = new FileReader();
+                reader.onloadend = () => {
+                    this.setState({
+                        newListImages: [...this.state.newListImages, item],
+                        newPreviewImages: [...this.state.newPreviewImages, reader.result],
+                        tempNewListImages: [...this.state.tempNewListImages, item],
+                        tempNewPreviewImages: [...this.state.tempNewPreviewImages, reader.result]
+                    })
+                };
+                reader.readAsDataURL(item);
+            });
+
+        }
+    }
+
+    deleteCurrentImage = (event, index) => {
+        event.preventDefault();
+        this.state.tempDeletedImagesList.push(this.state.tempCurrentListImages[index]);
+        this.state.tempCurrentListImages.splice(index, 1);
+        this.setState({
+            tempDeletedImagesList: [...this.state.tempDeletedImagesList],
+            tempCurrentListImages: [...this.state.tempCurrentListImages]
+        })
+    }
+
+    handleComfirmChangeImages = () => {
+        this.setState({
+            currentListImages: [...this.state.tempCurrentListImages],
+            deletedImagesList: [...this.state.tempDeletedImagesList],
+            modalListImages: false,
+            newListImages: [...this.state.tempNewListImages],
+            newPreviewImages: [...this.state.tempNewPreviewImages]
+        })
+    }
+
+    deleteNewImage = (event, index) => {
+        event.preventDefault();
+        this.state.tempNewListImages.splice(index, 1);
+        this.state.tempNewPreviewImages.splice(index, 1);
+        this.setState({
+            tempNewListImages: [...this.state.tempNewListImages],
+            tempNewPreviewImages: [...this.state.tempNewPreviewImages]
+        });
+    }
+
+    handleRefreshFeatureImage = () => {
+        this.setState({
+            newPreviewFeatureImage: null,
+            newFeatureImage: null
+        })
+    }
+
+    addOpacityBody = () => {
+        document.body.classList.toggle('no-scroll');
+    }
+
+    removeOpacityBody = () => {
+        document.body.classList.remove('no-scroll');
     }
     render() {
         const columns = [
@@ -410,7 +520,6 @@ class ListTypesComponent extends Component {
                 minWidth: 100
             }
         ];
-        console.log(this.state);
         return (
             <div className="content-wrapper">
                 {this.state.success &&
@@ -434,7 +543,7 @@ class ListTypesComponent extends Component {
                         Edit Tour
                     </h1>
                 </section>
-                <section className={`content ${this.state.openModal ? 'opacity-05' : ''}`}>
+                <section className={`content ${(this.state.openModal || this.state.modalListImages) ? 'opacity-05' : ''}`}>
                     <div className="row">
                         <button
                             onClick={this.handleSave}
@@ -449,7 +558,7 @@ class ListTypesComponent extends Component {
                     </div>
                     <div className="row">
                         <div className="col-lg-5 col-xs-5">
-                            <div className={`box box-primary ${this.state.errorTour ? 'bd-red' : ''}`}>
+                            <div className="box box-primary">
                                 <form role="form">
                                     <div className="box-body">
                                         <div className="form-group">
@@ -457,13 +566,36 @@ class ListTypesComponent extends Component {
                                             <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
                                         </div>
                                         <div style={{ height: '300px' }} className="form-group">
-                                            <label>Image (*)</label>
-                                            <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" /><br />
-                                            {this.state.previewImage !== '' ?
-                                                <img style={{ width: '100%', height: '250px' }} src={this.state.previewImage} /> :
-                                                <img style={{ width: '100%', height: '250px' }} src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
-                                            }
+                                            <label>Feature Image (*)</label>
+                                            <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" />
+                                            <div className="gallery w-100">
+                                                <div className="container-image">
+                                                    {this.state.newPreviewFeatureImage ?
+                                                        <img style={{ width: '100%', height: '250px' }} src={this.state.newPreviewFeatureImage} /> :
+                                                        (this.state.currentFeatureImage ?
+                                                            <img style={{ width: '100%', height: '250px' }} src={this.state.currentFeatureImage} /> :
+                                                            <img style={{ width: '100%', height: '250px' }} src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
+                                                        )
+                                                    }
+                                                    {/* {this.state.currentFeatureImage ?
+                                                        <img style={{ width: '100%', height: '250px' }} src={this.state.currentFeatureImage} /> :
+                                                        <img style={{ width: '100%', height: '250px' }} src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
+                                                    } */}
+                                                    <div className="topright-image">
+                                                        {this.state.newPreviewFeatureImage ?
+                                                            <i onClick={this.handleRefreshFeatureImage} title="refresh" className="fa fa-refresh refresh-icon" />
+                                                            : null}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div><br />
+                                        <div className="form-group">
+                                            <label>Images</label>
+                                            <button onClick={this.openModalListImages} className="pull-right btn btn-default">
+                                                <i className="fa fa-pencil" />
+                                            </button>
+                                            <input onChange={this.handleChangeListImages} type="file" multiple />
+                                        </div>
                                         <div className="form-group">
                                             <label>Policy</label>
                                             <FroalaEditor
@@ -502,8 +634,8 @@ class ListTypesComponent extends Component {
                                             <label>Description (*)</label>
                                             <FroalaEditor
                                                 config={{
-                                                    heightMax: 317,
-                                                    heightMin: 317,
+                                                    heightMax: 362,
+                                                    heightMin: 362,
                                                     placeholderText: '',
                                                     toolbarButtons: configEditor.description,
                                                     imageUploadParam: 'file',
@@ -585,6 +717,58 @@ class ListTypesComponent extends Component {
                     </div>
                 }
 
+                {this.state.modalListImages &&
+                    <div className="example-modal">
+                        <div className="modal">
+                            <div className="modal-dialog modal-size">
+                                <div className="modal-content opacity-1">
+                                    <div className="modal-header">
+                                        <button onClick={this.closeModalListImages} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span></button>
+                                        <h4 className="modal-title">List Images</h4>
+                                    </div>
+                                    <div className="modal-body height-images">
+                                        {this.state.tempCurrentListImages.length &&
+                                            this.state.tempCurrentListImages.map((item, index) => {
+                                                return (
+                                                    <div key={index} style={{ width: '300px', height: '270px' }} className="gallery">
+                                                        <div className="container-image">
+                                                            <img src={item.name} alt="Cinque Terre" width="300" height="300" />
+                                                            <div className="topright-image">
+                                                                <i onClick={(event) => this.deleteCurrentImage(event, index)} className="fa fa-times-circle-o delete-icon" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+
+                                        {this.state.tempNewPreviewImages.length &&
+                                            this.state.tempNewPreviewImages.map((item, index) => {
+                                                return (
+                                                    <div key={index} style={{ width: '300px', height: '270px' }} className="gallery">
+                                                        <div className="container-image">
+                                                            <img src={item} alt="Cinque Terre" width="300" height="300" />
+                                                            <div className="topright-image">
+                                                                <i onClick={(event) => this.deleteNewImage(event, index)} className="fa fa-times-circle-o delete-icon" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button onClick={this.closeModalListImages} type="button" className="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                                        <button onClick={this.handleComfirmChangeImages} type="button" className="btn btn-primary">Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
             </div>
         );
     }
@@ -609,7 +793,8 @@ const mapDispatchToProps = (dispatch, action) => {
         editType: (type) => dispatch(actions.editType(type)),
         getListTour: (tour) => dispatch(actions.getListTour(tour)),
         getListRoute: (route) => dispatch(actions.getListRoute(route)),
-        getTourById: (tour) => dispatch(actions.getTourById(tour))
+        getTourById: (tour) => dispatch(actions.getTourById(tour)),
+        editTour: (tour) => dispatch(actions.editTour(tour))
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListTypesComponent));

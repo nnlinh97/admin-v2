@@ -303,7 +303,7 @@ class ListTypesComponent extends Component {
                 </div>
                 <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content-header">
                     <h1>
-                        List Type
+                        List Type Passenger
                     </h1>
                 </section>
                 <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content">

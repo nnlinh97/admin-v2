@@ -94,6 +94,12 @@ class CreateTourTurnComponent extends Component {
         })
     }
 
+    handleChangeSelectTransport = (selected) => {
+        this.setState({
+            transport: selected
+        })
+    }
+
     handleChange = (event) => {
         const value = event.target.value;
         const name = event.target.name;
@@ -105,6 +111,7 @@ class CreateTourTurnComponent extends Component {
     handleSave = async (event) => {
         event.preventDefault();
         const { location, day, arrive_time, leave_time, title, transport } = this.state;
+        console.log(this.state);
         if (this.checkRoute()) {
             try {
                 const item = {
@@ -144,7 +151,7 @@ class CreateTourTurnComponent extends Component {
 
     handleCancel = (event) => {
         event.preventDefault();
-        this.props.history.push('/tour-turn/list');
+        this.props.history.push('/route/list');
     }
 
     checkRoute = () => {
@@ -259,7 +266,7 @@ class CreateTourTurnComponent extends Component {
                                             <div className="col-sm-9">
                                                 {this.state.transports && <Select
                                                     // value={selected}
-                                                    onChange={this.handleChangeSelect}
+                                                    onChange={this.handleChangeSelectTransport}
                                                     options={this.state.transports}
                                                     defaultValue={{ label: this.state.transport ? this.state.transport.name_vn : '', value: this.state.transport ? this.state.transport.id : '' }}
                                                 />}

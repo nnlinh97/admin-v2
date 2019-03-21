@@ -37,7 +37,7 @@ class ListTypesComponent extends Component {
     handleEditTourTurn = async (props) => {
         const id = props.original.id;
         try {
-            const tourTurnDetail = await apiGet(`/tour_turn/getById/${id}`);
+            const tourTurnDetail = await apiGet(`/tour_turn/getById_admin/${id}`);
             await this.props.getTourTurnDetail(tourTurnDetail.data.data);
             this.props.history.push(`/tour-turn/edit/${id}`);
         } catch (error) {
@@ -159,6 +159,29 @@ class ListTypesComponent extends Component {
                                 {
                                     Header: "CURRENT",
                                     accessor: "num_current_people",
+                                    sortable: false,
+                                    filterable: false,
+                                    style: {
+                                        textAlign: 'center'
+                                    },
+                                    width: 100,
+                                    maxWidth: 100,
+                                    minWidth: 100
+                                },
+                                {
+                                    Header: "PUBLICED",
+                                    Cell: props => {
+                                        const status = props.original.status;
+                                        const css = status === 'public' ? 'info' : 'default';
+                                        return (
+                                            <h4>
+                                                <label className={`label label-${css} disabled`}
+                                                >
+                                                    {status}
+                                                </label>
+                                            </h4>
+                                        );
+                                    },
                                     sortable: false,
                                     filterable: false,
                                     style: {

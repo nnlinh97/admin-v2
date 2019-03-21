@@ -46,7 +46,12 @@ class CreateTourTurnComponent extends Component {
             startDate: null,
             endDate: null,
             tours: null,
-            discount: 0
+            discount: 0,
+            status: 'public',
+            typePassenger: [
+                { id: 1, name: 'adult', percent: 100 },
+                { id: 2, name: 'children', percent: '' }
+            ]
         }
     }
 
@@ -104,7 +109,7 @@ class CreateTourTurnComponent extends Component {
     handleSave = async (event) => {
         event.preventDefault();
         if (this.checkTourTurn()) {
-            const { discount, price, limitPeople, tour, startDate, endDate } = this.state;
+            const { discount, price, limitPeople, tour, startDate, endDate, status } = this.state;
             try {
                 const newTourTurn = await apiPost('/tour_turn/create', {
                     idTour: tour.id,
@@ -112,11 +117,12 @@ class CreateTourTurnComponent extends Component {
                     end_date: moment(endDate).format('YYYY-MM-DD'),
                     discount,
                     num_max_people: limitPeople,
-                    price
+                    price,
+                    status
                 });
                 const { data } = newTourTurn;
+                console.log(data);
                 if (!this.props.listTourTurn) {
-                    console.log('noooooo');
                     try {
                         let listTourTurn = await apiGet('/tour_turn/getAllWithoutPagination');
                         this.props.getListTourTurn(listTourTurn.data.data);
@@ -135,7 +141,8 @@ class CreateTourTurnComponent extends Component {
                         tour: {
                             id: tour.id,
                             name: tour.name
-                        }
+                        },
+                        status: data.status
                     });
                 }
                 this.setState({
@@ -184,6 +191,14 @@ class CreateTourTurnComponent extends Component {
         })
     }
 
+    handleChangePercent = (event, index) => {
+        let value = event.target.value;
+        this.state.typePassenger[index].percent = value;
+        this.setState({
+            typePassenger: [...this.state.typePassenger]
+        })
+    }
+
     render() {
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
@@ -197,7 +212,7 @@ class CreateTourTurnComponent extends Component {
                         warning
                         confirmBtnText="Cancel"
                         confirmBtnBsStyle="default"
-                        title="Fail!!!!!"
+                        title="Something went wrong!"
                         onConfirm={this.hideFailAlert}
                     >
                         Please check carefully!
@@ -210,7 +225,7 @@ class CreateTourTurnComponent extends Component {
                 </section>
                 <section className="content">
                     <div className="row">
-                        <div className="col-lg-6 col-lg-offset-3 col-xs-6 col-xs-offset-3">
+                        <div className="col-lg-8 col-lg-offset-2 col-xs-8 col-xs-offset-2">
                             <div className="box box-info">
                                 <div className="box-header with-border">
                                     <h3 className="box-title">Create Form</h3>
@@ -218,8 +233,8 @@ class CreateTourTurnComponent extends Component {
                                 <form onSubmit={this.handleSave} className="form-horizontal">
                                     <div className="box-body">
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Tour (*)</label>
-                                            <div className="col-sm-9">
+                                            <label className="col-sm-4 control-label">Tour (*)</label>
+                                            <div className="col-sm-8">
                                                 {this.state.tours && <Select
                                                     // value={selected}
                                                     onChange={this.handleChangeSelect}
@@ -229,20 +244,32 @@ class CreateTourTurnComponent extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Price (*)</label>
-                                            <div className="col-sm-9">
+                                            <label className="col-sm-4 control-label">Price (*)</label>
+                                            <div className="col-sm-8">
                                                 <input type="number" onChange={this.handleChange} value={this.state.price} name="price" className="form-control" />
                                             </div>
                                         </div>
+                                        {this.state.typePassenger.length ?
+                                            this.state.typePassenger.map((item, index) => {
+                                                return (
+                                                    <div className="form-group">
+                                                        <label className="col-sm-4 control-label">Price Percent For {item.name.charAt(0).toUpperCase() + item.name.slice(1)} (*)</label>
+                                                        <div className="col-sm-8">
+                                                            <input type="number" onChange={(event) => this.handleChangePercent(event, index)} value={item.percent} name="price" className="form-control" />
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                            : null}
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Discount</label>
-                                            <div className="col-sm-9">
+                                            <label className="col-sm-4 control-label">Discount</label>
+                                            <div className="col-sm-8">
                                                 <input type="number" onChange={this.handleChange} value={this.state.discount} name="discount" className="form-control" />
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Start Date (*)</label>
-                                            <div className="col-sm-9">
+                                            <label className="col-sm-4 control-label">Start Date (*)</label>
+                                            <div className="col-sm-8">
                                                 <DatePicker
                                                     className="form-control"
                                                     selected={this.state.startDate}
@@ -251,8 +278,8 @@ class CreateTourTurnComponent extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">End Date (*)</label>
-                                            <div className="col-sm-9">
+                                            <label className="col-sm-4 control-label">End Date (*)</label>
+                                            <div className="col-sm-8">
                                                 <DatePicker
                                                     className="form-control"
                                                     selected={this.state.endDate}
@@ -261,9 +288,18 @@ class CreateTourTurnComponent extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">People Limit (*)</label>
-                                            <div className="col-sm-9">
+                                            <label className="col-sm-4 control-label">People Limit (*)</label>
+                                            <div className="col-sm-8">
                                                 <input type="number" onChange={this.handleChange} value={this.state.limitPeople} name="limitPeople" className="form-control" />
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-4 control-label">Public (*)</label>
+                                            <div className="col-sm-8">
+                                                <select value={this.state.status} onChange={this.handleChange} name="status" className="form-control">
+                                                    <option value="public">Yes</option>
+                                                    <option value="private">No</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>

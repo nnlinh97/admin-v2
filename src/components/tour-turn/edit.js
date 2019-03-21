@@ -46,7 +46,8 @@ class CreateTourTurnComponent extends Component {
             startDate: null,
             endDate: null,
             tours: null,
-            tourTurnDetail: null
+            tourTurnDetail: null,
+            status: null
         }
     }
 
@@ -56,7 +57,7 @@ class CreateTourTurnComponent extends Component {
         let listTour = this.props.listTour;
         if (!tourTurnDetail) {
             try {
-                tourTurnDetail = await apiGet(`/tour_turn/getById/${id}`);
+                tourTurnDetail = await apiGet(`/tour_turn/getById_admin/${id}`);
                 tourTurnDetail = tourTurnDetail.data.data;
                 await this.props.getTourTurnDetail(tourTurnDetail);
             } catch (error) {
@@ -77,6 +78,7 @@ class CreateTourTurnComponent extends Component {
     }
 
     updateState = (tourTurnDetail, listTour) => {
+        console.log(tourTurnDetail);
         if (tourTurnDetail && listTour) {
             listTour.forEach(item => {
                 item.label = item.name;
@@ -90,7 +92,8 @@ class CreateTourTurnComponent extends Component {
                 price: tourTurnDetail.price,
                 limitPeople: tourTurnDetail.num_max_people,
                 tour: tourTurnDetail.tour,
-                tourTurnDetail: tourTurnDetail
+                tourTurnDetail: tourTurnDetail,
+                status: tourTurnDetail.status
             })
         }
 
@@ -286,6 +289,15 @@ class CreateTourTurnComponent extends Component {
                                             <label className="col-sm-3 control-label">People Limit (*)</label>
                                             <div className="col-sm-9">
                                                 <input type="number" onChange={this.handleChange} value={this.state.limitPeople} name="limitPeople" className="form-control" />
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-3 control-label">Public (*)</label>
+                                            <div className="col-sm-9">
+                                                <select value={this.state.status ? this.state.status : 'public'} onChange={this.handleChange} name="status" className="form-control">
+                                                    <option value="public">Yes</option>
+                                                    <option value="private">No</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div className="form-group">

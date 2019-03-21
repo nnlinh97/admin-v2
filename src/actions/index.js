@@ -192,3 +192,10 @@ export const editTransport = (transport) => {
     }
 }
 
+//user
+export const getListUser = (users) => {
+    return {
+        type: Types.GET_LIST_USER,
+        users
+    }
+}

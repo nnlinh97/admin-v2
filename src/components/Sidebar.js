@@ -42,6 +42,16 @@ class Sidebar extends Component {
         event.preventDefault();
         this.props.history.push("/transport/list");
     }
+
+    toTypePassenger = (event) => {
+        event.preventDefault();
+        this.props.history.push("/type-passenger/list");
+    }
+
+    toListUser = (event) => {
+        event.preventDefault();
+        this.props.history.push("/user/list");
+    }
     
     render() {
         return (
@@ -84,13 +94,13 @@ class Sidebar extends Component {
                         </li> */}
                         <li>
                             <a onClick={this.redirectToListTypesPage} href="">
-                                <i className="fa fa-pie-chart" />&nbsp;
+                                <i className="fa fa-tags" />&nbsp;
                                 <span>TYPE LOCATION</span>
                             </a>
                         </li>
                         <li>
                             <a onClick={this.redirectToListLocationPage} href="">
-                                <i className="fa fa-location-arrow" />&nbsp;
+                                <i className="fa fa-flag" />&nbsp;
                                 <span>LOCATION</span>
                             </a>
                         </li>
@@ -102,7 +112,7 @@ class Sidebar extends Component {
                         </li>
                         <li>
                             <a onClick={this.toTourPage} href="">
-                                <i className="fa fa-hourglass" />&nbsp;
+                                <i className="fa fa-diamond" />&nbsp;
                                 <span>TOUR</span>
                             </a>
                         </li>
@@ -114,8 +124,21 @@ class Sidebar extends Component {
                         </li>
                         <li>
                             <a onClick={this.toTransportPage} href="">
-                                <i className="fa fa-rocket" />&nbsp;
+                                <i className="fa fa-bus" />&nbsp;
                                 <span>TRANSPORT</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a onClick={this.toTypePassenger} href="">
+                                <i className="fa fa-certificate" />&nbsp;
+                                <span>TYPE PASSENGER</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a onClick={this.toListUser} href="">
+                                <i className="fa fa-user" />&nbsp;
+                                <span>USER</span>
                             </a>
                         </li>
                         {/* <li>

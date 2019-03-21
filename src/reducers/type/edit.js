@@ -1,4 +1,4 @@
-import * as Types from './../constants/index';
+import * as Types from './../../constants/index';
 import _ from 'lodash';
 
 const initialState = null;

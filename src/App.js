@@ -20,6 +20,9 @@ import CreateRoutePage from './pages/route/create';
 import EditRoutePage from './pages/route/edit';
 
 import ListTransportPage from './pages/transport/list';
+
+import ListTypePassengerPage from './pages/type-passenger/list';
+import ListUserPage from './pages/user/list';
 import './App.css';
 
 class App extends Component {
@@ -49,6 +52,10 @@ class App extends Component {
           <Route exact path='/route/edit/:id' component={EditRoutePage} />
 
           <Route exact path='/transport/list' component={ListTransportPage} />
+
+          <Route exact path='/type-passenger/list' component={ListTypePassengerPage} />
+
+          <Route exact path='/user/list' component={ListUserPage} />
 
           <Route exact path='' component={NotFound} />
         </Switch>

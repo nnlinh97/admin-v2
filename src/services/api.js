@@ -12,6 +12,6 @@ export const apiGet = (api) => {
 export const apiPost = (api, body) => {
     return axios.post(`${baseURL}${api}`, body)
         .catch(error => {
-            console.log(error);
+            console.log(error.response);
         });
 }

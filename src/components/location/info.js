@@ -7,6 +7,7 @@ import { URL } from '../../constants/url';
 import axios from 'axios';
 import { apiGet, apiPost } from './../../services/api';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import './index.css'
 
 class info extends Component {
     constructor(props) {
@@ -17,7 +18,9 @@ class info extends Component {
             desc: '',
             status: 'active',
             success: false,
-            error: false
+            error: false,
+            image: null,
+            previewImage: null
         }
     }
     async componentDidMount() {
@@ -41,31 +44,30 @@ class info extends Component {
         })
     }
 
-    handleSubmit = async (event) => {
-        event.preventDefault();
+    checkLocation = () => {
         if (!this.props || !this.props.info || !this.props.info.marker ||
             this.props.info.marker.lat === '' || this.props.info.marker.lng === '' ||
-            this.props.info.address === '' || this.state.name === '' || !this.state.selected) {
-            this.setState({
-                error: true
-            })
+            this.props.info.address === '' || this.state.name === '' || !this.state.selected || !this.state.image) {
+            return false;
         }
-        // if (this.state.name === '' || !this.state.selected) {
-        //     console.log('state fail');
-        //     return;
-        // }
-        else {
+        return true;
+    }
+
+    handleSubmit = async (event) => {
+        event.preventDefault();
+        if (this.checkLocation()) {
             try {
-                const locationCreate = await apiPost('/location/create', {
-                    latitude: this.props.info.marker.lat,
-                    longitude: this.props.info.marker.lng,
-                    name: this.state.name,
-                    description: this.state.desc,
-                    address: this.props.info.address,
-                    featured_img: null,
-                    status: this.state.status,
-                    fk_type: this.state.selected.id
-                });
+                const form = new FormData();
+                form.append('latitude', this.props.info.marker.lat);
+                form.append('longitude', this.props.info.marker.lng);
+                form.append('name', this.state.name);
+                form.append('description', this.state.desc);
+                form.append('address', this.props.info.address);
+                form.append('image', this.state.image, 'name.jpg');
+                form.append('status', this.state.status);
+                form.append('fk_type', this.state.selected.id);
+
+                const locationCreate = await apiPost('/location/create', form);
                 if (!this.props.listLocation) {
                     try {
                         let listLocation = await apiGet('/location/getAllWithoutPagination');
@@ -85,6 +87,10 @@ class info extends Component {
                     error: true
                 });
             }
+        } else {
+            this.setState({
+                error: true
+            })
         }
     }
 
@@ -108,6 +114,30 @@ class info extends Component {
         this.setState({
             error: false
         });
+    }
+
+    handleChangeImage = (event) => {
+        let file = event.target.files[0];
+        // if (file.size > 1024 * 1024) {
+        //     return;
+        // }
+        let reader = new FileReader();
+        event.target.value = null;
+        reader.onloadend = () => {
+            event.target = null;
+            this.setState({
+                image: file,
+                previewImage: reader.result
+            });
+        }
+        reader.readAsDataURL(file)
+    }
+
+    deletePreviewImage = () => {
+        this.setState({
+            image: null,
+            previewImage: null
+        })
     }
 
     render() {
@@ -142,11 +172,11 @@ class info extends Component {
                 </div>
                 <div className="box-body">
                     <form role="form" onSubmit={this.handleSubmit}>
-                        <div className="form-group">
+                        <div className="form-group double-left">
                             <label>Latitude</label>
                             <input value={marker ? marker.lat : ""} required type="text" className="form-control" placeholder="Enter ..." disabled />
                         </div>
-                        <div className="form-group">
+                        <div className="form-group double-right">
                             <label>Longitude</label>
                             <input value={marker ? marker.lng : ""} required type="text" className="form-control" placeholder="Enter ..." disabled />
                         </div>
@@ -160,6 +190,25 @@ class info extends Component {
                             <input type="text" onChange={this.handleChange} name="name" value={name} required className="form-control" placeholder="Enter ..." />
                         </div>
                         <div className="form-group">
+                            <label>Image</label>
+                            <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" />
+                            <div style={{ width: '100%', margin: '1px' }} className="gallery">
+                                <div className="container-image">
+                                    {this.state.previewImage ?
+                                        <img src={this.state.previewImage} alt="Cinque Terre" width="300" height="300" /> :
+                                        <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" alt="Cinque Terre" width="300" height="300" />
+                                    }
+                                    <div className="topright-image">
+                                        {this.state.previewImage ?
+                                            <i onClick={this.deletePreviewImage} className="fa fa-times-circle-o delete-icon" />
+                                            :
+                                            null
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="form-group">
                             <label>Type</label>
                             {allType.length > 0 && <Select
                                 value={this.state.selected}
@@ -169,7 +218,7 @@ class info extends Component {
                         </div>
                         <div className="form-group">
                             <label>Description</label>
-                            <textarea onChange={this.handleChange} name="desc" value={desc} className="form-control" rows={3} placeholder="Enter ..." defaultValue={""} />
+                            <textarea onChange={this.handleChange} name="desc" value={desc} className="form-control" rows={2} placeholder="Enter ..." defaultValue={""} />
                         </div>
                         <div className="form-group">
                             <label>Active</label>

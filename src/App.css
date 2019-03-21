@@ -23,6 +23,14 @@
   color: #61dafb;
 }
 
+.opacity-5{
+  opacity: 0.5 !important;
+}
+
+.no-scroll{
+  overflow: hidden !important;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

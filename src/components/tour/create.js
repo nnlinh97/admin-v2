@@ -55,18 +55,21 @@ class ListTypesComponent extends Component {
             listRoutes: null,
             tempRoutes: [],
             image: [],
-            previewImage: ''
+            previewImage: '',
+            modalListImages: false,
+            listImages: [],
+            listImagesPreviview: []
         }
     }
 
     componentDidMount = async () => {
-        let listRoute = this.props.listRoute;
-        if (!listRoute) {
-            listRoute = await apiGet('/route/getAll');
-            listRoute = listRoute.data.data
-            await this.props.getListRoute(listRoute);
+        try {
+            let listRoute = await apiGet('/route/getAllNotHaveTour');
+            this.updateState(listRoute.data.data);
+        } catch (error) {
+            console.log(error);
         }
-        this.updateState(listRoute);
+        
     }
     updateState = (listRoute) => {
         this.setState({
@@ -111,8 +114,7 @@ class ListTypesComponent extends Component {
 
     handleSave = async () => {
         if (this.checkTour()) {
-            // console.log(this.state);
-            const { name, image, detail, policy, desc, routes } = this.state;
+            const { name, image, detail, policy, desc, routes, listImages } = this.state;
             let form = new FormData();
             form.append('name', name);
             form.append('detail', detail);
@@ -120,13 +122,33 @@ class ListTypesComponent extends Component {
             form.append('routes', JSON.stringify(routes));
             form.append('description', desc);
             if (image.length) {
-                form.append('image', image[0], 'name.jpg');
+                form.append('feature_image', image[0], 'name.jpg');
+            }
+            if (listImages.length) {
+                listImages.forEach((item) => {
+                    form.append('list_image', item);
+                });
             }
             try {
-                const newTour = await apiPost('/tour/createWithRoutes', form);
-                console.log(newTour);
+                let newTour = await apiPost('/tour/createWithRoutesAndListImage', form);
+                newTour = newTour.data;
+                if (!this.props.listTour) {
+                    try {
+                        let listTour = await apiGet('/tour/getAllWithoutPagination');
+                        await this.props.getListTour(listTour.data.data);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                } else {
+                    await this.props.createTour({
+                        id: newTour.id,
+                        name: newTour.name,
+                    });
+                }
+                this.setState({
+                    success: true
+                })
             } catch (error) {
-                console.log(error);
                 this.setState({
                     error: true
                 });
@@ -148,11 +170,13 @@ class ListTypesComponent extends Component {
         });
     }
     openModal = () => {
+        this.addOpacityBody();
         this.setState({
             openModal: true
         });
     }
     closeModal = () => {
+        this.removeOpacityBody();
         this.setState({
             openModal: false,
             tempRoutes: [...this.state.routes]
@@ -190,9 +214,9 @@ class ListTypesComponent extends Component {
     }
     handleChangeImage = (event) => {
         let file = event.target.files[0];
-        if (file.size > 1024 * 1024) {
-            return;
-        }
+        // if (file.size > 1024 * 1024) {
+        //     return;
+        // }
         let reader = new FileReader();
         reader.onloadend = () => {
             event.target = null;
@@ -202,6 +226,61 @@ class ListTypesComponent extends Component {
             });
         }
         reader.readAsDataURL(file)
+    }
+
+    openModalListImages = (event) => {
+        this.addOpacityBody();
+        event.preventDefault();
+        this.setState({
+            modalListImages: true
+        })
+    }
+
+    closeModalListImages = () => {
+        this.removeOpacityBody();
+        this.setState({
+            modalListImages: false
+        })
+    }
+
+    handleChangeListImages = (event) => {
+        let files = Array.from(event.target.files);
+        if (files.length) {
+            // files.forEach((item, index) => {
+            //     if (item.size > 1024 * 1024) {
+            //         return;
+            //     }
+            // });
+            event.target.value = null;
+            files.forEach(item => {
+                let reader = new FileReader();
+                reader.onloadend = () => {
+                    this.setState({
+                        listImages: [...this.state.listImages, item],
+                        listImagesPreviview: [...this.state.listImagesPreviview, reader.result]
+                    })
+                };
+                reader.readAsDataURL(item);
+            });
+
+        }
+    }
+    addOpacityBody = () => {
+        document.body.classList.toggle('no-scroll');
+    }
+
+    removeOpacityBody = () => {
+        document.body.classList.remove('no-scroll');
+    }
+
+    deletePreviewImage = (event, index) => {
+        event.preventDefault();
+        this.state.listImages.splice(index, 1);
+        this.state.listImagesPreviview.splice(index, 1);
+        this.setState({
+            listImages: [...this.state.listImages],
+            listImagesPreviview: [...this.state.listImagesPreviview]
+        });
     }
     render() {
         const columns = [
@@ -413,7 +492,7 @@ class ListTypesComponent extends Component {
                         Create Tour
                     </h1>
                 </section>
-                <section className={`content ${this.state.openModal ? 'opacity-05' : ''}`}>
+                <section className={`content ${(this.state.openModal || this.state.modalListImages) ? 'opacity-05' : ''}`}>
                     <div className="row">
                         <button
                             onClick={this.handleSave}
@@ -429,20 +508,27 @@ class ListTypesComponent extends Component {
                     <div className="row">
                         <div className="col-lg-5 col-xs-5">
                             <div className={`box box-primary ${this.state.errorTour ? 'bd-red' : ''}`}>
-                                <form role="form">
+                                <form role="form" encType="multipart/form-data">
                                     <div className="box-body">
                                         <div className="form-group">
                                             <label htmlFor="exampleInputEmail1">Name (*)</label>
                                             <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
                                         </div>
                                         <div style={{ height: '300px' }} className="form-group">
-                                            <label>Image (*)</label>
+                                            <label>Feature Image (*)</label>
                                             <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" /><br />
                                             {this.state.previewImage !== '' ?
                                                 <img style={{ width: '100%', height: '250px' }} src={this.state.previewImage} /> :
                                                 <img style={{ width: '100%', height: '250px' }} src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
                                             }
                                         </div><br />
+                                        <div className="form-group">
+                                            <label>Images</label>
+                                            <button onClick={this.openModalListImages} className="pull-right btn btn-default">
+                                                <i className="fa fa-pencil" />
+                                            </button>
+                                            <input onChange={this.handleChangeListImages} type="file" multiple />
+                                        </div>
                                         <div className="form-group">
                                             <label>Policy</label>
                                             <FroalaEditor
@@ -481,8 +567,8 @@ class ListTypesComponent extends Component {
                                             <label>Description (*)</label>
                                             <FroalaEditor
                                                 config={{
-                                                    heightMax: 317,
-                                                    heightMin: 317,
+                                                    heightMax: 362,
+                                                    heightMin: 362,
                                                     placeholderText: '',
                                                     toolbarButtons: configEditor.description,
                                                     imageUploadParam: 'file',
@@ -494,7 +580,6 @@ class ListTypesComponent extends Component {
                                                     events: {
                                                         'froalaEditor.image.uploaded': (e, editor, response) => {
                                                             response = JSON.parse(response);
-                                                            console.log(response.link.replace('/public', ''))
                                                             editor.image.insert(`http://localhost:5000${response.link.replace('/public', '')}`, true, null, editor.image.get(), null)
                                                             return false
                                                         }
@@ -543,7 +628,7 @@ class ListTypesComponent extends Component {
                                     <div className="modal-header">
                                         <button onClick={this.closeModal} type="button" className="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">×</span></button>
-                                        <h4 className="modal-title">Create Type</h4>
+                                        <h4 className="modal-title">List Routes</h4>
                                     </div>
                                     <div className="modal-body">
                                         <ReactTable
@@ -558,6 +643,43 @@ class ListTypesComponent extends Component {
                                         <button onClick={this.closeModal} type="button" className="btn btn-default pull-left" data-dismiss="modal">Close</button>
                                         <button onClick={this.handleSaveChanges} type="button" className="btn btn-primary">Save changes</button>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                {this.state.modalListImages &&
+                    <div className="example-modal">
+                        <div className="modal">
+                            <div className="modal-dialog modal-size">
+                                <div className="modal-content opacity-1">
+                                    <div className="modal-header">
+                                        <button onClick={this.closeModalListImages} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span></button>
+                                        <h4 className="modal-title">List Images</h4>
+                                    </div>
+                                    <div className="modal-body height-images">
+                                        {this.state.listImagesPreviview.length &&
+                                            this.state.listImagesPreviview.map((item, index) => {
+                                                return (
+                                                    <div key={index} style={{ width: '300px', height: '270px' }} className="gallery">
+                                                        <div className="container-image">
+                                                            <img src={item} alt="Cinque Terre" width="300" height="300" />
+                                                            <div className="topright-image">
+                                                                <i onClick={(event) => this.deletePreviewImage(event, index)} className="fa fa-times-circle-o delete-icon" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+
+                                    </div>
+                                    {/* <div className="modal-footer">
+                                        <button onClick={this.closeModalListImages} type="button" className="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                                        <button onClick={this.saveChangeListImages} type="button" className="btn btn-primary">Save changes</button>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>
@@ -587,7 +709,8 @@ const mapDispatchToProps = (dispatch, action) => {
         createType: (type) => dispatch(actions.createType(type)),
         editType: (type) => dispatch(actions.editType(type)),
         getListTour: (tour) => dispatch(actions.getListTour(tour)),
-        getListRoute: (route) => dispatch(actions.getListRoute(route))
+        getListRoute: (route) => dispatch(actions.getListRoute(route)),
+        createTour: (tour) => dispatch(actions.createTour(tour))
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListTypesComponent));
