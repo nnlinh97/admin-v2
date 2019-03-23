@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Sidebar from '../../components/Sidebar';
-import ListTypesPassengerComponent from '../../components/type-passenger/list';
+import ListTypesComponent from '../../components/type-location/list';
 
 
 class Location extends Component {
@@ -12,7 +12,7 @@ class Location extends Component {
                 <div className="wrapper">
                     <Header/>
                     <Sidebar/>
-                    <ListTypesPassengerComponent/>
+                    <ListTypesComponent/>
                     <Footer/>
                 </div>
             </div>

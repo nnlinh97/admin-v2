@@ -6,7 +6,7 @@
     left: auto; */
     display: block;
     /* margin: 0 auto; */
-    z-index: 9999;
+    z-index: 5000;
   }
 
   .example-modal .modal {

@@ -199,3 +199,26 @@ export const getListUser = (users) => {
         users
     }
 }
+
+//type passenger
+export const getListTypePassenger = (typePassenger) => {
+    return {
+        type: Types.GET_LIST_TYPE_PASSENGER,
+        typePassenger
+    }
+}
+
+export const createTypePassenger = (typePassenger) => {
+    return {
+        type: Types.CREATE_TYPE_PASSENGER,
+        typePassenger
+    }
+}
+
+export const editTypePassenger = (typePassenger) => {
+    return {
+        type: Types.EDIT_TYPE_PASSENGER,
+        typePassenger
+    }
+}
+

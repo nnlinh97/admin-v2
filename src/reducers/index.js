@@ -14,6 +14,7 @@ import routeDetail from './route/detail';
 import listTransport from './transport/list';
 import transportDetail from './transport/detail';
 import listUser from './user/list';
+import listTypePassenger from './type-passenger/list';
 
 const appReducers = combineReducers({
    searchLocation,
@@ -29,7 +30,8 @@ const appReducers = combineReducers({
    listRoute,
    listTransport,
    transportDetail,
-   listUser
+   listUser,
+   listTypePassenger
 });
 
 export default appReducers;

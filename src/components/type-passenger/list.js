@@ -21,7 +21,6 @@ class ListTypesComponent extends Component {
             editModal: false,
             type: null,
             name: '',
-            marker: '',
             error: false,
             success: false
         }
@@ -29,8 +28,9 @@ class ListTypesComponent extends Component {
 
     async componentDidMount() {
         try {
-            let listType = await apiGet('/type/getAll');
-            this.props.getAllType(listType.data.data);
+            let listTypePassenger = await apiGet('/type_passenger/getAll');
+            console.log(listTypePassenger.data.data);
+            this.props.getListTypePassenger(listTypePassenger.data.data);
         } catch (error) {
             console.log(error);
         }
@@ -52,12 +52,11 @@ class ListTypesComponent extends Component {
             })
         } else {
             try {
-                let typeEdit = await apiPost('/type/update', {
+                let typePassenger = await apiPost('/type_passenger/update', {
                     id: this.state.id,
-                    name: this.state.name,
-                    marker: this.state.marker
+                    name: this.state.name
                 });
-                await this.props.editType(typeEdit.data.data);
+                await this.props.editTypePassenger(typePassenger.data.data);
                 this.setState({
                     success: true
                 })
@@ -101,26 +100,25 @@ class ListTypesComponent extends Component {
         })
     }
     handleCreate = async () => {
-        if (this.state.name === '') {
-            this.setState({
-                error: true
-            })
-        } else {
+        if (this.state.name !== '') {
+            
             try {
-                let newType = await apiPost('/type/create', {
-                    name: this.state.name,
-                    marker: this.state.marker
+                let newTypePassenger = await apiPost('/type_passenger/create', {
+                    name: this.state.name
                 });
-                await this.props.createType(newType.data);
+                await this.props.createTypePassenger(newTypePassenger.data);
                 this.setState({
                     success: true
                 })
             } catch (error) {
-                console.log(error);
                 this.setState({
                     error: true
                 })
             }
+        } else {
+            this.setState({
+                error: true
+            })
         }
     }
 
@@ -179,18 +177,6 @@ class ListTypesComponent extends Component {
                 }
             },
             {
-                Header: "MARKER",
-                accessor: "marker",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                },
-                width: 300,
-                maxWidth: 300,
-                minWidth: 300
-            },
-            {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
                     return (
@@ -237,7 +223,7 @@ class ListTypesComponent extends Component {
                                 <div className="modal-header">
                                     <button onClick={this.closeCreateModal} type="button" className="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span></button>
-                                    <h4 className="modal-title">Create Type</h4>
+                                    <h4 className="modal-title">Create Type Passenger</h4>
                                 </div>
                                 <div className="modal-body">
                                     <form className="form-horizontal">
@@ -246,12 +232,6 @@ class ListTypesComponent extends Component {
                                                 <label htmlFor="inputEmail3" className="col-sm-2 control-label">Name</label>
                                                 <div className="col-sm-10">
                                                     <input required onChange={this.handleChange} name="name" value={name} type="text" className="form-control" id="inputEmail3" placeholder="Name" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="inputPassword3" className="col-sm-2 control-label">Marker</label>
-                                                <div className="col-sm-10">
-                                                    <input onChange={this.handleChange} name="marker" value={marker} type="text" className="form-control" id="inputPassword3" placeholder="Marker" />
                                                 </div>
                                             </div>
                                         </div>
@@ -273,7 +253,7 @@ class ListTypesComponent extends Component {
                                 <div className="modal-header">
                                     <button onClick={this.closeEditModal} type="button" className="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span></button>
-                                    <h4 className="modal-title">Edit Type</h4>
+                                    <h4 className="modal-title">Edit Type Passenger</h4>
                                 </div>
                                 <div className="modal-body">
                                     <form className="form-horizontal">
@@ -282,12 +262,6 @@ class ListTypesComponent extends Component {
                                                 <label htmlFor="inputEmail" className="col-sm-2 control-label">Name</label>
                                                 <div className="col-sm-10">
                                                     <input onChange={this.handleChange} name="name" type="text" className="form-control" id="inputEmail" placeholder="Name" value={name} />
-                                                </div>
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="inputPassword" className="col-sm-2 control-label">Marker</label>
-                                                <div className="col-sm-10">
-                                                    <input onChange={this.handleChange} name="marker" type="text" className="form-control" id="inputPassword" placeholder="Marker" value={marker} />
                                                 </div>
                                             </div>
                                         </div>
@@ -322,7 +296,7 @@ class ListTypesComponent extends Component {
 
                     <ReactTable
                         columns={columns}
-                        data={this.props.allType ? this.props.allType : []}
+                        data={this.props.listTypePassenger ? this.props.listTypePassenger : []}
                         defaultPageSize={10}
                         noDataText={'Please wait...'}
                     >
@@ -341,7 +315,8 @@ const mapStateToProps = (state) => {
     return {
         info: state.infoLocation,
         allType: state.allType,
-        allLocation: state.allLocation
+        allLocation: state.allLocation,
+        listTypePassenger: state.listTypePassenger
     }
 }
 
@@ -351,7 +326,10 @@ const mapDispatchToProps = (dispatch, action) => {
         getAllType: (type) => dispatch(actions.getAllType(type)),
         getAllLocation: (locations) => dispatch(actions.getAllLocation(locations)),
         createType: (type) => dispatch(actions.createType(type)),
-        editType: (type) => dispatch(actions.editType(type))
+        editType: (type) => dispatch(actions.editType(type)),
+        getListTypePassenger: (listTypePassenger) => dispatch(actions.getListTypePassenger(listTypePassenger)),
+        createTypePassenger: (data) => dispatch(actions.createTypePassenger(data)),
+        editTypePassenger: (data) => dispatch(actions.editTypePassenger(data))
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListTypesComponent));

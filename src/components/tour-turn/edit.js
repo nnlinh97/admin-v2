@@ -6,16 +6,12 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-// import Modal from 'react-bootstrap-modal';
 import * as actions from './../../actions/index';
-
-// import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import _ from 'lodash';
 import moment from 'moment';
 import DatePicker from "react-datepicker";
 import TimePicker from 'react-time-picker';
 import './create.css';
-
 import "react-datepicker/dist/react-datepicker.css";
 // Require Font Awesome.
 import 'font-awesome/css/font-awesome.css';
@@ -43,18 +39,22 @@ class CreateTourTurnComponent extends Component {
             tour: null,
             price: '',
             limitPeople: '',
+            currentPeople: '',
             startDate: null,
             endDate: null,
             tours: null,
             tourTurnDetail: null,
-            status: null
+            status: '',
+            typePassenger: [],
         }
+        this.inputFocus = React.createRef();
     }
 
     async componentDidMount() {
         const { id } = this.props.match.params;
         let tourTurnDetail = this.props.tourTurnDetail;
         let listTour = this.props.listTour;
+        let listTypePassenger = this.props.listTypePassenger;
         if (!tourTurnDetail) {
             try {
                 tourTurnDetail = await apiGet(`/tour_turn/getById_admin/${id}`);
@@ -74,15 +74,40 @@ class CreateTourTurnComponent extends Component {
                 console.log(error);
             }
         }
-        this.updateState(tourTurnDetail, listTour);
+
+        if (!listTypePassenger) {
+            try {
+                listTypePassenger = await apiGet('/type_passenger/getAll');
+                listTypePassenger = listTypePassenger.data.data;
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        this.updateState(tourTurnDetail, listTour, listTypePassenger);
     }
 
-    updateState = (tourTurnDetail, listTour) => {
-        console.log(tourTurnDetail);
+    mergeTypePassenger = (listTypePassenger, pricePassenger) => {
+        for (const type of listTypePassenger) {
+            for (const price of pricePassenger) {
+                if (type.id === price.type_passenger.id) {
+                    type.percent = price.percent;
+                    type.checked = true;
+                }
+            }
+        }
+        return listTypePassenger;
+    }
+
+    updateState = (tourTurnDetail, listTour, listTypePassenger) => {
         if (tourTurnDetail && listTour) {
             listTour.forEach(item => {
                 item.label = item.name;
             });
+            listTypePassenger.forEach(item => {
+                item.checked = false;
+                item.percent = '';
+            });
+            listTypePassenger = this.mergeTypePassenger(listTypePassenger, tourTurnDetail.price_passengers);
             this.setState({
                 id: tourTurnDetail.id,
                 tours: listTour,
@@ -93,7 +118,9 @@ class CreateTourTurnComponent extends Component {
                 limitPeople: tourTurnDetail.num_max_people,
                 tour: tourTurnDetail.tour,
                 tourTurnDetail: tourTurnDetail,
-                status: tourTurnDetail.status
+                status: tourTurnDetail.status,
+                typePassenger: [...listTypePassenger],
+                currentPeople: tourTurnDetail.num_current_people
             })
         }
 
@@ -126,21 +153,41 @@ class CreateTourTurnComponent extends Component {
         })
     }
 
+    getListTypePassenger = () => {
+        return this.state.typePassenger.filter(item => item.checked);
+    }
+
+    checkListTypePassenger = (typePassenger) => {
+        let flag = 1;
+        typePassenger.forEach(item => {
+            const percent = parseInt(item.percent);
+            if (item.percent === '' || !Number.isInteger(percent) || percent < 0 || percent > 100) {
+                flag = -1;
+            }
+        });
+        if(!typePassenger.length){
+            flag = -1;
+        }
+        return flag === 1;
+    }
+
     handleSave = async (event) => {
         event.preventDefault();
         console.log(this.state);
-        console.log(this.checkTourTurn());
-        if (this.checkTourTurn()) {
+        const typePassenger = this.getListTypePassenger();
+        if (this.checkTourTurn() && this.checkListTypePassenger(typePassenger)) {
             try {
-                const { id, startDate, endDate, limitPeople, price, discount, tour } = this.state;
-                const updateTourTurn = await apiPost('/tour_turn/update', {
+                const { id, startDate, endDate, limitPeople, price, discount, tour, status } = this.state;
+                const updateTourTurn = await apiPost('/tour_turn/updateWithPricePassenger', {
                     id,
                     num_max_people: limitPeople,
                     discount: discount,
                     start_date: startDate,
                     end_date: endDate,
                     idTour: tour.id,
-                    price
+                    price,
+                    price_passenger: typePassenger,
+                    status
                 });
                 if (!this.props.listTourTurn) {
                     try {
@@ -157,7 +204,9 @@ class CreateTourTurnComponent extends Component {
                         discount,
                         start_date: moment(startDate).format('YYYY-MM-DD'),
                         end_date: moment(endDate).format('YYYY-MM-DD'),
-                        tour
+                        tour,
+                        status: this.state.status,
+                        num_current_people: this.state.tourTurnDetail.num_current_people
                     });
                 }
                 this.setState({
@@ -206,7 +255,122 @@ class CreateTourTurnComponent extends Component {
         })
     }
 
+    handleChangeSelectCheckBox = (props) => {
+        const index = _.findIndex(this.state.typePassenger, (item) => {
+            return item.id === props.id;
+        });
+        this.state.typePassenger[index].checked = !props.checked;
+        this.setState({
+            typePassenger: [...this.state.typePassenger]
+        })
+    }
+
+    onChangePricePercent = (event, props) => {
+        const index = _.findIndex(this.state.typePassenger, (item) => {
+            return item.id === props.id;
+        });
+        this.state.typePassenger[index].percent = event.target.value;
+        this.setState({
+            typePassenger: [...this.state.typePassenger],
+            idFocus: props.id
+        }, () => {
+            this.inputFocus.current.focus();
+        });
+    }
+
     render() {
+        const columns = [
+            {
+                Header: props => <i className="fa fa-check-square" />,
+                Cell: props => {
+                    let index = _.findIndex(this.state.tempRoutes, (item) => {
+                        return item.id === props.original.id;
+                    });
+                    return (
+                        <div className="checkbox checkbox-modal">
+                            <input
+                                className="input-modal"
+                                type="checkbox"
+                                name="choose"
+                                onChange={() => this.handleChangeSelectCheckBox(props.original)}
+                                checked={props.original.checked ? true : false}
+                            />
+                        </div>
+                    )
+                },
+                sortable: false,
+                filterable: false,
+                style: {
+                    textAlign: 'center'
+                },
+                width: 100,
+                maxWidth: 100,
+                minWidth: 100
+            },
+            {
+                Header: "ID",
+                accessor: "id",
+                sortable: true,
+                filterable: true,
+                style: {
+                    textAlign: 'center'
+                },
+                width: 100,
+                maxWidth: 100,
+                minWidth: 100
+            },
+            {
+                Header: "NAME",
+                accessor: "name",
+                sortable: true,
+                filterable: true,
+                style: {
+                    textAlign: 'center'
+                }
+            },
+            {
+                Header: "PRICE PERCENT",
+                accessor: "percent",
+                Cell: props => {
+                    if (props.original.checked) {
+                        if (this.state.idFocus === props.original.id) {
+                            return (
+                                <input type="number"
+                                    onChange={(event) => this.onChangePricePercent(event, props.original)}
+                                    value={props.original.percent}
+                                    name="percent"
+                                    className="form-control"
+                                    ref={this.inputFocus}
+                                />
+                            );
+                        }
+                        return (
+                            <input type="number"
+                                onChange={(event) => this.onChangePricePercent(event, props.original)}
+                                value={props.original.percent}
+                                name="percent"
+                                className="form-control"
+                            />
+                        );
+                    }
+                    return (
+                        <input type="number"
+                            name="percent"
+                            className="form-control"
+                            disabled
+                        />
+                    );
+                },
+                sortable: false,
+                filterable: false,
+                style: {
+                    textAlign: 'center'
+                },
+                width: 150,
+                maxWidth: 150,
+                minWidth: 150
+            }
+        ];
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
                 {this.state.success &&
@@ -219,7 +383,7 @@ class CreateTourTurnComponent extends Component {
                         warning
                         confirmBtnText="Cancel"
                         confirmBtnBsStyle="default"
-                        title="Fail!!!!!"
+                        title="Something went wrong!"
                         onConfirm={this.hideFailAlert}
                     >
                         Please check carefully!
@@ -227,93 +391,124 @@ class CreateTourTurnComponent extends Component {
                 }
                 <section className="content-header">
                     <h1>
-                        Edit Tour Turn
+                        Update Tour Turn
                     </h1>
                 </section>
                 <section className="content">
                     <div className="row">
-                        <div className="col-lg-6 col-lg-offset-3 col-xs-6 col-xs-offset-3">
-                            <div className="box box-info">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">Edit Form</h3>
-                                </div>
-                                <form onSubmit={this.handleSave} className="form-horizontal">
-                                    <div className="box-body">
-                                        <div className="form-group">
-                                            <label className="col-sm-3 control-label">Tour (*)</label>
-                                            <div className="col-sm-9">
-                                                {this.state.tours && <Select
-                                                    // value={selected}
-                                                    onChange={this.handleChangeSelect}
-                                                    options={this.state.tours}
-                                                    defaultValue={{
-                                                        label: this.state.tour ? this.state.tour.name : 'linh',
-                                                        value: this.state.tour ? this.state.tour.id : ''
-                                                    }}
-                                                />}
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="col-sm-3 control-label">Price (*)</label>
-                                            <div className="col-sm-9">
-                                                <input type="number" onChange={this.handleChange} value={this.state.price} name="price" className="form-control" />
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="col-sm-3 control-label">Discount</label>
-                                            <div className="col-sm-9">
-                                                <input type="number" onChange={this.handleChange} value={this.state.discount} name="discount" className="form-control" />
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="col-sm-3 control-label">Start Date</label>
-                                            <div className="col-sm-9">
-                                                <DatePicker
-                                                    className="form-control"
-                                                    selected={this.state.startDate}
-                                                    onChange={this.handleChangeStartDate}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="col-sm-3 control-label">End Date</label>
-                                            <div className="col-sm-9">
-                                                <DatePicker
-                                                    className="form-control"
-                                                    selected={this.state.endDate}
-                                                    onChange={this.handleChangeEndDate}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="col-sm-3 control-label">People Limit (*)</label>
-                                            <div className="col-sm-9">
-                                                <input type="number" onChange={this.handleChange} value={this.state.limitPeople} name="limitPeople" className="form-control" />
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="col-sm-3 control-label">Public (*)</label>
-                                            <div className="col-sm-9">
-                                                <select value={this.state.status ? this.state.status : 'public'} onChange={this.handleChange} name="status" className="form-control">
-                                                    <option value="public">Yes</option>
-                                                    <option value="private">No</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="col-sm-3 control-label">People Current</label>
-                                            <div className="col-sm-9">
-                                                <input type="number" value={this.state.tourTurnDetail ? this.state.tourTurnDetail.num_current_people : ''} disabled className="form-control" />
+                        <div className="col-lg-8 col-lg-offset-2 col-xs-8 col-xs-offset-2">
+                            <div className="nav-tabs-custom">
+                                <ul className="nav nav-tabs">
+                                    <li className="active"><a href="#activity" data-toggle="tab">Infomation</a></li>
+                                    <li><a href="#timeline" data-toggle="tab">Type Passenger</a></li>
+                                    {/* <li><a href="#settings" data-toggle="tab">Settings</a></li> */}
+                                </ul>
+                                <div className="tab-content">
+                                    <div className="active tab-pane" id="activity">
+                                        <div className="post">
+                                            <div className="user-block">
+                                                <form onSubmit={this.handleSave} className="form-horizontal">
+                                                    <div className="box-body">
+                                                        <div className="form-group">
+                                                            <label className="col-sm-4 control-label">Tour (*)</label>
+                                                            <div className="col-sm-8">
+                                                                {this.state.tours && <Select
+                                                                    // value={selected}
+                                                                    onChange={this.handleChangeSelect}
+                                                                    options={this.state.tours}
+                                                                    defaultValue={{ label: this.state.tour ? this.state.tour.name : 'linh', value: this.state.tour ? this.state.tour.id : '0' }}
+                                                                />}
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-group">
+                                                            <label className="col-sm-4 control-label">Price (*)</label>
+                                                            <div className="col-sm-8">
+                                                                <input type="number" onChange={this.handleChange} value={this.state.price} name="price" className="form-control" />
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-group">
+                                                            <label className="col-sm-4 control-label">Discount</label>
+                                                            <div className="col-sm-8">
+                                                                <input type="number" onChange={this.handleChange} value={this.state.discount} name="discount" className="form-control" />
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-group">
+                                                            <label className="col-sm-4 control-label">Start Date (*)</label>
+                                                            <div className="col-sm-8">
+                                                                <DatePicker
+                                                                    className="form-control"
+                                                                    selected={this.state.startDate}
+                                                                    onChange={this.handleChangeStartDate}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-group">
+                                                            <label className="col-sm-4 control-label">End Date (*)</label>
+                                                            <div className="col-sm-8">
+                                                                <DatePicker
+                                                                    className="form-control"
+                                                                    selected={this.state.endDate}
+                                                                    onChange={this.handleChangeEndDate}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-group">
+                                                            <label className="col-sm-4 control-label">People Limit (*)</label>
+                                                            <div className="col-sm-8">
+                                                                <input type="number" onChange={this.handleChange} value={this.state.limitPeople} name="limitPeople" className="form-control" />
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-group">
+                                                            <label className="col-sm-4 control-label">Public (*)</label>
+                                                            <div className="col-sm-8">
+                                                                <select value={this.state.status} onChange={this.handleChange} name="status" className="form-control">
+                                                                    <option value="public">Yes</option>
+                                                                    <option value="private">No</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div className="form-group">
+                                                            <label className="col-sm-4 control-label">Current People</label>
+                                                            <div className="col-sm-8">
+                                                                <input type="number" disabled value={this.state.currentPeople} name="limitPeople" className="form-control" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="box-footer">
+                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
+                                                        <button type="submit" className="btn btn-info pull-right">Save</button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="box-footer">
-                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                        <button type="submit" className="btn btn-info pull-right">Save</button>
-                                    </div>
-                                </form>
-                            </div>
+                                    <div className="tab-pane" id="timeline">
+                                        <div className="post">
+                                            <div className="user-block">
+                                                <form onSubmit={this.handleSave} className="form-horizontal">
+                                                    <div className="box-body">
+                                                        <ReactTable
+                                                            columns={columns}
+                                                            data={this.state.typePassenger ? this.state.typePassenger : []}
+                                                            defaultPageSize={5}
+                                                            noDataText={'Please wait...'}
+                                                        >
+                                                        </ReactTable>
+                                                    </div>
+                                                    <div className="box-footer">
+                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
+                                                        <button type="submit" className="btn btn-info pull-right">Save</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
 
+                                    </div>
+                                    {/* <div className="tab-pane" id="settings">
+                                    </div> */}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -329,7 +524,8 @@ const mapStateToProps = (state) => {
         allLocation: state.allLocation,
         listTour: state.listTour,
         tourTurnDetail: state.tourTurnDetail,
-        listTourTurn: state.listTourTurn
+        listTourTurn: state.listTourTurn,
+        listTypePassenger: state.listTypePassenger
     }
 }
 

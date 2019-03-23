@@ -122,7 +122,7 @@ class ListTypesComponent extends Component {
             form.append('routes', JSON.stringify(routes));
             form.append('description', desc);
             if (image.length) {
-                form.append('feature_image', image[0], 'name.jpg');
+                form.append('featured_image', image[0], 'name.jpg');
             }
             if (listImages.length) {
                 listImages.forEach((item) => {
@@ -196,6 +196,7 @@ class ListTypesComponent extends Component {
         });
     }
     handleSaveChanges = () => {
+        this.removeOpacityBody();
         this.setState({
             routes: [...this.state.tempRoutes],
             openModal: false

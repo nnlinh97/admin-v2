@@ -56,7 +56,7 @@ class ListTypesComponent extends Component {
 
             currentFeatureImage: null,
 
-            newFeatureImage: null,
+            newFeatureImage: [],
             newPreviewFeatureImage: null,
 
             tourDetail: null,
@@ -142,7 +142,7 @@ class ListTypesComponent extends Component {
 
     checkTour = () => {
         const { name, desc, routes, currentFeatureImage, newFeatureImage } = this.state;
-        if (name !== '' && desc !== '' && routes.length && (currentFeatureImage || newFeatureImage)) {
+        if (name !== '' && desc !== '' && routes.length && (currentFeatureImage || newFeatureImage.length)) {
             return true;
         }
         return false;
@@ -153,9 +153,12 @@ class ListTypesComponent extends Component {
             try {
                 const { name, desc, routes, currentFeatureImage, newFeatureImage, tourDetail, deletedImagesList, newListImages, detail, policy } = this.state;
                 let form = new FormData();
+                form.append('id', tourDetail.id)
                 form.append('name', name);
-                if (newFeatureImage) {
-                    form.append('feature_image', newFeatureImage, 'name.jpg');
+                console.log(newFeatureImage);
+                if (newFeatureImage.length) {
+                    console.log(newFeatureImage[0]);
+                    form.append('featured_image', newFeatureImage[0], 'name.jpg');
                 }
                 if (deletedImagesList.length) {
                     form.append('deleted_images', JSON.stringify(deletedImagesList));
@@ -169,6 +172,24 @@ class ListTypesComponent extends Component {
                 form.append('detail', detail);
                 form.append('description', desc);
                 form.append('routes', JSON.stringify(routes));
+                const tour = await apiPost('/tour/updateWithRoutesAndListImage', form);
+                // console.log(tour);
+                if(!this.state.listTour) {
+                    try {
+                        let listTour = await apiGet('/tour/getAllWithoutPagination');
+                        this.props.getListTour(listTour.data.data);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                } else {
+                    this.props.editTour({
+                        id: tour.data.data.id,
+                        name: tour.data.data.name
+                    });
+                }
+                this.setState({
+                    success: true
+                });
             } catch (error) {
                 this.setState({
                     error: true
@@ -213,6 +234,7 @@ class ListTypesComponent extends Component {
         });
     }
     handleSaveChanges = () => {
+        this.removeOpacityBody();
         this.setState({
             routes: [...this.state.tempRoutes],
             openModal: false
@@ -239,7 +261,7 @@ class ListTypesComponent extends Component {
         let reader = new FileReader();
         reader.onloadend = () => {
             this.setState({
-                newFeatureImage: file,
+                newFeatureImage: [file],
                 newPreviewFeatureImage: reader.result
             });
         }
@@ -300,6 +322,7 @@ class ListTypesComponent extends Component {
     }
 
     handleComfirmChangeImages = () => {
+        this.removeOpacityBody();
         this.setState({
             currentListImages: [...this.state.tempCurrentListImages],
             deletedImagesList: [...this.state.tempDeletedImagesList],
@@ -322,7 +345,7 @@ class ListTypesComponent extends Component {
     handleRefreshFeatureImage = () => {
         this.setState({
             newPreviewFeatureImage: null,
-            newFeatureImage: null
+            newFeatureImage: []
         })
     }
 
@@ -794,7 +817,7 @@ const mapDispatchToProps = (dispatch, action) => {
         getListTour: (tour) => dispatch(actions.getListTour(tour)),
         getListRoute: (route) => dispatch(actions.getListRoute(route)),
         getTourById: (tour) => dispatch(actions.getTourById(tour)),
-        editTour: (tour) => dispatch(actions.editTour(tour))
+        editTour: (tour) => dispatch(actions.editTour(tour)),
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListTypesComponent));
