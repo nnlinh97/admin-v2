@@ -69,7 +69,7 @@ class CreateTourTurnComponent extends Component {
     }
 
     updateState = (listLocation, listTransport, routeDetail) => {
-        console.log(routeDetail);
+        console.log(routeDetail.transport); 
         listLocation.forEach(item => {
             item.label = item.name;
         });
@@ -111,7 +111,6 @@ class CreateTourTurnComponent extends Component {
     handleSave = async (event) => {
         event.preventDefault();
         const { location, day, arrive_time, leave_time, title, transport } = this.state;
-        console.log(this.state);
         if (this.checkRoute()) {
             try {
                 const item = {
@@ -155,8 +154,8 @@ class CreateTourTurnComponent extends Component {
     }
 
     checkRoute = () => {
-        const { location, day, arriveTime, leaveTime } = this.state;
-        if (!location || !Number.isInteger(parseInt(day)) || parseInt(day) < 1) {
+        const { location, day, arriveTime, leaveTime, transport } = this.state;
+        if (!location || !Number.isInteger(parseInt(day)) || parseInt(day) < 1 || !transport) {
             return false;
         }
         return true;

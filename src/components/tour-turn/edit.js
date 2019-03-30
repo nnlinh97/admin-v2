@@ -399,7 +399,7 @@ class CreateTourTurnComponent extends Component {
                         <div className="col-lg-8 col-lg-offset-2 col-xs-8 col-xs-offset-2">
                             <div className="nav-tabs-custom">
                                 <ul className="nav nav-tabs">
-                                    <li className="active"><a href="#activity" data-toggle="tab">Infomation</a></li>
+                                    <li className="active"><a href="#activity" data-toggle="tab">Information</a></li>
                                     <li><a href="#timeline" data-toggle="tab">Type Passenger</a></li>
                                     {/* <li><a href="#settings" data-toggle="tab">Settings</a></li> */}
                                 </ul>

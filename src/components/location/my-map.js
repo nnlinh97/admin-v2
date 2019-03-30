@@ -7,7 +7,7 @@ import Geocode from "react-geocode"
 import {mapOption} from '../../constants/map-option';
 import MapComponent from './map-component'
 
-const KEY_GOOGLE_MAP = 'AIzaSyA5aHhKGZxiy_9OZ0vyakabi1FCbOHrEWI'
+const KEY_GOOGLE_MAP = 'AIzaSyDL7sUf9bCXYdpq5RGDBvnxD1VG9C1619Q'
 Geocode.setApiKey(KEY_GOOGLE_MAP);
 
 class MyMap extends React.Component {
@@ -52,4 +52,4 @@ class MyMap extends React.Component {
   }
 }
 
-export default MyMap
+export default MyMap;

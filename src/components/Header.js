@@ -8,6 +8,10 @@ class Header extends Component {
         localStorage.setItem('token', null)
         this.props.history.push("/login")
     }
+    handleChangePassword = (event) => {
+        event.preventDefault();
+        this.props.history.push('/admin/change-password');
+    }
     render() {
         return (
             <header className="main-header">
@@ -237,7 +241,7 @@ class Header extends Component {
                                             </li>
                                             <li className="user-footer">
                                                 <div className="pull-left">
-                                                    <a href="#" className="btn btn-default btn-flat">Profile</a>
+                                                    <a onClick={this.handleChangePassword} href="#" className="btn btn-default btn-flat">Change Password</a>
                                                 </div>
                                                 <div className="pull-right">
                                                     <a onClick={this.signOut} href="#" className="btn btn-default btn-flat">Sign out</a>

@@ -8,7 +8,8 @@ import * as actions from './../../actions/index';
 import { URL } from '../../constants/url';
 import axios from 'axios';
 import './modal.css';
-import {apiGet, apiPost} from './../../services/api';
+import './list.css';
+import { apiGet, apiPost } from './../../services/api';
 
 class ListLocationComponent extends Component {
 
@@ -25,7 +26,7 @@ class ListLocationComponent extends Component {
     }
 
     async componentDidMount() {
-        if(!this.props.allLocation){
+        if (!this.props.allLocation) {
             try {
                 let listLocation = await apiGet('/location/getAllWithoutPagination');
                 this.props.getAllLocation(listLocation.data.data);
@@ -97,12 +98,20 @@ class ListLocationComponent extends Component {
                 Header: "STATUS",
                 Cell: props => {
                     return (
-                        <button className={`btn btn-${props.original.status === 'active' ? 'primary' : 'danger'}`}
-                        onClick={() => this.handleEditLocation(props)}
-                        >
-                            {props.original.status}
-                        </button>
-                    )
+                        <h4>
+                            <label className={`label label-${props.original.status === 'active' ? 'primary' : 'danger'} disabled`}
+                            >
+                                {props.original.status}
+                            </label>
+                        </h4>
+                    );
+                    // return (
+                    //     <button className={`btn btn-${props.original.status === 'active' ? 'primary' : 'danger'}`}
+                    //         onClick={() => this.handleEditLocation(props)}
+                    //     >
+                    //         {props.original.status}
+                    //     </button>
+                    // )
                 },
                 sortable: true,
                 filterable: false,
@@ -118,8 +127,8 @@ class ListLocationComponent extends Component {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
                     return (
-                        <button className="btn btn-success"
-                        onClick={() => this.handleEditLocation(props)}
+                        <button className="btn btn-xs btn-success"
+                            onClick={() => this.handleEditLocation(props)}
                         >
                             <i className="fa fa-pencil" />
                         </button>
@@ -130,14 +139,14 @@ class ListLocationComponent extends Component {
                 style: {
                     textAlign: 'center'
                 },
-                width: 100,
-                maxWidth: 100,
-                minWidth: 100
+                width: 60,
+                maxWidth: 80,
+                minWidth: 60
             }
         ];
         const { createModal, editModal, name, marker } = this.state;
         return (
-            <div style={{height: '100vh'}} className="content-wrapper">
+            <div style={{ height: '100vh' }} className="content-wrapper">
                 <section className="content-header">
                     <h1>
                         List Location

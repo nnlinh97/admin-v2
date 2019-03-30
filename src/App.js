@@ -23,6 +23,9 @@ import ListTransportPage from './pages/transport/list';
 
 import ListTypePassengerPage from './pages/type-passenger/list';
 import ListUserPage from './pages/user/list';
+import ChangePasswordPage from './pages/change-password';
+import ListBookTourPage from './pages/book-tour/list';
+import BookTourTurnDetail from './pages/book-tour/detail';
 import './App.css';
 
 class App extends Component {
@@ -31,7 +34,7 @@ class App extends Component {
       <BrowserRouter>
         <Switch>
           <PrivateRoute exact path='/' component={DashboardPage} />
-          <PrivateRoute exact path='/login' component={LoginPage} />
+          <Route exact path='/login' component={LoginPage} />
 
           <PrivateRoute exact path='/location/list' component={ListLocationPage} />
           <PrivateRoute exact path='/location/create' component={CreateLocationPage} />
@@ -56,6 +59,12 @@ class App extends Component {
           <PrivateRoute exact path='/type-passenger/list' component={ListTypePassengerPage} />
 
           <PrivateRoute exact path='/user/list' component={ListUserPage} />
+
+          <PrivateRoute exact path='/admin/change-password' component={ChangePasswordPage} />
+
+          <PrivateRoute exact path='/book-tour/list' component={ListBookTourPage} />
+
+          <PrivateRoute exact path='/book-tour/detail/:id' component={BookTourTurnDetail} />
 
           <PrivateRoute exact path='' component={NotFound} />
         </Switch>

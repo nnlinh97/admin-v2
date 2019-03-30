@@ -17,3 +17,28 @@ export const sortRoute = async (routes) => {
     }
     routes.sort(compare2Route);
 }
+
+export const mergeBookHistory = (bookHistory) => {
+    if (bookHistory) {
+        let result = [];
+        bookHistory.forEach(bookItem => {
+            bookItem.passengers.forEach(item => {
+                result.push({
+                    ...bookItem,
+                    passenger: {
+                        ...item
+                    }
+                });
+            });
+        });
+        return result;
+    }
+    return null;
+}
+
+export const filterBookHistory = (bookHistory) => {
+    if(bookHistory) {
+        return bookHistory.filter(item => item.status !== 'cancelled');
+    }
+    return null;
+}

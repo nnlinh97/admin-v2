@@ -44,5 +44,9 @@ export const menus = [
         title: 'USER',
         icon: 'fa fa-user'
     },
-
-]
+    {
+        path: '/book-tour/list',
+        title: 'BOOK TOUR',
+        icon: 'fa fa-bookmark-o'
+    },
+];

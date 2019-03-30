@@ -14,6 +14,7 @@ import 'font-awesome/css/font-awesome.css';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { apiGet, apiPost } from '../../services/api';
 import Select from 'react-select';
+import './create.css';
 
 class CreateTourTurnComponent extends Component {
 
@@ -93,6 +94,7 @@ class CreateTourTurnComponent extends Component {
     handleSave = async (event) => {
         event.preventDefault();
         const { location, day, arriveTime, leaveTime, title, transport } = this.state;
+        console.log(this.checkRoute());
         if (this.checkRoute()) {
             try {
                 const newRoute = await apiPost('/route/create', {
@@ -103,20 +105,30 @@ class CreateTourTurnComponent extends Component {
                     title: title,
                     idTransport: transport.id
                 });
-                await this.props.createRoute({
-                    ...newRoute.data,
-                    location: {
-                        id: location.id,
-                        name: location.name
-                    },
-                    transport: {
-                        ...transport
+                if (!this.props.listRoute) {
+                    try {
+                        let listRoute = await apiGet('/route/getAll');
+                        this.props.getListRoute(listRoute.data.data);
+                    } catch (error) {
+                        console.log(error);
                     }
-                });
+                } else {
+                    await this.props.createRoute({
+                        ...newRoute.data,
+                        location: {
+                            id: location.id,
+                            name: location.name
+                        },
+                        transport: {
+                            ...transport
+                        }
+                    });
+                }
                 this.setState({
                     success: true
                 })
             } catch (error) {
+                console.log(error);
                 this.setState({
                     error: true
                 })
@@ -272,7 +284,8 @@ const mapStateToProps = (state) => {
         info: state.infoLocation,
         allType: state.allType,
         allLocation: state.allLocation,
-        listTour: state.listTour
+        listTour: state.listTour,
+        listRoute: state.listRoute
     }
 }
 
@@ -286,6 +299,7 @@ const mapDispatchToProps = (dispatch, action) => {
         getListTour: (tour) => dispatch(actions.getListTour(tour)),
         getListTransport: (transport) => dispatch(actions.getListTransport(transport)),
         createRoute: (route) => dispatch(actions.createRoute(route)),
+        getListRoute: (route) => dispatch(actions.getListRoute(route))
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreateTourTurnComponent));

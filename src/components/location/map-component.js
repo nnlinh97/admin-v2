@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { compose, withProps } from "recompose";
 import { withRouter } from 'react-router-dom';
-import { withScriptjs, withGoogleMap, GoogleMap, InfoWindow, Marker } from "react-google-maps"
+import { withScriptjs, withGoogleMap, GoogleMap, InfoWindow, Marker, DirectionsRenderer } from "react-google-maps"
 import { SearchBox } from "react-google-maps/lib/components/places/SearchBox"
 import { InfoBox } from "react-google-maps/lib/components/addons/InfoBox"
 import _ from 'lodash'
@@ -32,13 +32,31 @@ class MapComponent extends React.Component {
             center: this.props.center,
             marker: null,
             isShowInfo: false,
-            isEdit: false
+            isEdit: false,
+            directions: null
         }
     }
 
     async componentDidMount() {
         // console.log(this.props.match.params.id);
-        if(this.props.match){
+        const DirectionsService = new window.google.maps.DirectionsService();
+        // let result = null;
+        // DirectionsService.route({
+        //     origin: new window.google.maps.LatLng(21.0123103, 105.8289783),
+        //     destination: new window.google.maps.LatLng(20.6189426, 105.7477913),
+        //     travelMode: window.google.maps.TravelMode.WALKING,
+        // }, (result, status) => {
+        //     if (status === window.google.maps.DirectionsStatus.OK) {
+        //         console.log('result', result);
+        //         console.log(status);
+        //         this.setState({
+        //             directions: result,
+        //         });
+        //     } else {
+        //         console.error(`error fetching directions ${result}`);
+        //     }
+        // });
+        if (this.props.match) {
             // console.log(this.props.match.params.id);
             const location = await axios.get(`${URL}/location/getById/${this.props.match.params.id}`);
             // console.log(location.data.data);
@@ -140,6 +158,7 @@ class MapComponent extends React.Component {
                 defaultOptions={mapOption}
                 onClick={this.onClickedMap.bind(this)}
             >
+                {/* {this.state.directions && <DirectionsRenderer directions={this.state.directions} />} */}
                 {true &&
                     <SearchBox
                         ref={this.searchBox}
@@ -169,16 +188,16 @@ class MapComponent extends React.Component {
                     <Marker
                         position={{ lat: this.state.marker.lat, lng: this.state.marker.lng }}
                         onClick={this.onToggleOpenClickedMarker}
-                        >
+                    >
                         {this.state.isShowInfo && <InfoBox
                             // onCloseClick={props.onToggleOpenClickedMarker}
                             options={{ closeBoxURL: ``, enableEventPropagation: true }}
                         >
                             <div style={{ backgroundColor: `yellow`, opacity: 0.75, padding: `12px` }}>
-                            <div style={{ fontSize: `16px`, fontColor: `#08233B` }}>
-                              {this.state.address}
+                                <div style={{ fontSize: `16px`, fontColor: `#08233B` }}>
+                                    {this.state.address}
+                                </div>
                             </div>
-                          </div>
                         </InfoBox>}
                     </Marker>
                 }

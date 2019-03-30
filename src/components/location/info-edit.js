@@ -261,6 +261,15 @@ class InfoEdit extends Component {
                             <input type="text" onChange={this.handleChange} name="name" value={name ? name : ''} required className="form-control" placeholder="Enter ..." />
                         </div>
                         <div className="form-group">
+                            <label>Type</label>
+                            {listType && <Select
+                                // value={selected}
+                                onChange={this.handleChangeSelect}
+                                options={listType}
+                                defaultValue={{ label: selected.name ? selected.name : 'linh', value: selected.id ? selected.id : '' }}
+                            />}
+                        </div>
+                        <div className="form-group">
                             <label>Image</label>
                             <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" />
                             <div style={{ width: '100%', margin: '1px' }} className="gallery">
@@ -277,15 +286,6 @@ class InfoEdit extends Component {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="form-group">
-                            <label>Type</label>
-                            {listType && <Select
-                                // value={selected}
-                                onChange={this.handleChangeSelect}
-                                options={listType}
-                                defaultValue={{ label: selected.name ? selected.name : 'linh', value: selected.id ? selected.id : '' }}
-                            />}
                         </div>
                         <div className="form-group">
                             <label>Description</label>

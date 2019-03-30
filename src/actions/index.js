@@ -222,3 +222,20 @@ export const editTypePassenger = (typePassenger) => {
     }
 }
 
+// book tour turn
+
+export const getListBookTourTurn = (listBook) => {
+    return {
+        type: Types.GET_LIST_BOOK_TOUR_TURN,
+        listBook
+    }
+}
+
+export const getBookTourTurnById = (book) => {
+    return {
+        type: Types.GET_BOOK_TOUR_TURN_BY_ID,
+        book
+    }
+}
+
+

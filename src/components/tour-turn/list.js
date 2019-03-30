@@ -7,6 +7,7 @@ import 'react-table/react-table.css';
 import * as actions from './../../actions/index';
 import { apiGet } from '../../services/api';
 import moment from 'moment';
+import './list.css';
 
 class ListTypesComponent extends Component {
 
@@ -222,9 +223,9 @@ class ListTypesComponent extends Component {
                                     style: {
                                         textAlign: 'center'
                                     },
-                                    width: 100,
+                                    width: 80,
                                     maxWidth: 100,
-                                    minWidth: 100
+                                    minWidth: 80
                                 },
                                 {
                                     Header: props => <i className="fa fa-pencil" />,
@@ -234,13 +235,13 @@ class ListTypesComponent extends Component {
                                         const currentDate = moment(new Date()).format('YYYY-MM-DD');
                                         if (startDate <= currentDate) {
                                             return (
-                                                <button className="btn btn-success disabled">
+                                                <button className="btn btn-xs btn-success disabled">
                                                     <i className="fa fa-pencil" />
                                                 </button>
                                             );
                                         }
                                         return (
-                                            <button className={`btn btn-success ${startDate > currentDate ? '' : 'disabled'}`}
+                                            <button className={`btn btn-xs btn-success ${startDate > currentDate ? '' : 'disabled'}`}
                                                 onClick={() => this.handleEditTourTurn(props)}
                                             >
                                                 <i className="fa fa-pencil" />
@@ -252,9 +253,9 @@ class ListTypesComponent extends Component {
                                     style: {
                                         textAlign: 'center'
                                     },
-                                    width: 100,
-                                    maxWidth: 100,
-                                    minWidth: 100
+                                    width: 40,
+                                    maxWidth: 50,
+                                    minWidth: 40
                                 }
 
                             ]}

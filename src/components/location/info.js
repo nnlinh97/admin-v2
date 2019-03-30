@@ -190,6 +190,14 @@ class info extends Component {
                             <input type="text" onChange={this.handleChange} name="name" value={name} required className="form-control" placeholder="Enter ..." />
                         </div>
                         <div className="form-group">
+                            <label>Type</label>
+                            {allType.length > 0 && <Select
+                                value={this.state.selected}
+                                onChange={this.handleChangeSelect}
+                                options={allType}
+                            />}
+                        </div>
+                        <div className="form-group">
                             <label>Image</label>
                             <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" />
                             <div style={{ width: '100%', margin: '1px' }} className="gallery">
@@ -207,14 +215,6 @@ class info extends Component {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="form-group">
-                            <label>Type</label>
-                            {allType.length > 0 && <Select
-                                value={this.state.selected}
-                                onChange={this.handleChangeSelect}
-                                options={allType}
-                            />}
                         </div>
                         <div className="form-group">
                             <label>Description</label>
