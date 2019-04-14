@@ -17,10 +17,12 @@ class EditLocationComponent extends Component {
                 </section>
                 <section className="content">
                     <div className="row">
-                        <div className="col-lg-9 col-xs-9">
-                            <MyMap/>
+                        <div className="col-lg-12 col-xs-12">
+                            <MyMap />
                         </div>
-                        <div className="col-lg-3 col-xs-3">
+                    </div>
+                    <div className="row">
+                        <div className="col-lg-12 col-xs-12">
                             <InfoEdit />
                         </div>
                     </div>

@@ -6,6 +6,9 @@ import 'react-table/react-table.css';
 import * as actions from './../../actions/index';
 import { apiGet, apiPost } from './../../services/api';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import Modal from 'react-responsive-modal';
+import InfoUser from './info';
+import './list.css';
 
 class ListTypesComponent extends Component {
 
@@ -35,7 +38,6 @@ class ListTypesComponent extends Component {
     }
 
     openEditModal = (props) => {
-        this.addOpacityBody();
         this.setState({
             editModal: true,
             user: props.original
@@ -43,23 +45,13 @@ class ListTypesComponent extends Component {
     }
 
     closeEditModal = () => {
-        this.removeOpacityBody();
         this.setState({
             editModal: false,
             user: null
         })
     }
 
-    addOpacityBody = () => {
-        document.body.classList.toggle('no-scroll');
-    }
-
-    removeOpacityBody = () => {
-        document.body.classList.remove('no-scroll');
-    }
-
     render() {
-        console.log(this.state.user);
         const columns = [
             {
                 Header: "ID",
@@ -145,7 +137,7 @@ class ListTypesComponent extends Component {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
                     return (
-                        <button className="btn btn-success"
+                        <button className="btn btn-xs btn-success"
                             onClick={() => this.openEditModal(props)}
                         >
                             <i className="fa fa-pencil" />
@@ -165,64 +157,15 @@ class ListTypesComponent extends Component {
         const { createModal, editModal, name, marker } = this.state;
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
-                <div style={{ display: editModal ? "block" : "none" }} className="example-modal">
-                    <div className="modal">
-                        <div style={{ width: '470px' }} className="modal-dialog">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <button onClick={this.closeEditModal} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">×</span></button>
-                                    <h4 className="modal-title">User Info</h4>
-                                </div>
-                                {this.state.user &&
-                                    <div className="modal-body">
-                                        <form className="form-horizontal">
-                                            <div className="box-body">
-                                                <div className="form-group">
-                                                    <label htmlFor="inputEmail" className="col-sm-5 control-label">ID</label>
-                                                    <div className="col-sm-7">
-                                                        <label className="control-label">{this.state.user.id}</label>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="inputPassword" className="col-sm-5 control-label">Username</label>
-                                                    <div className="col-sm-7">
-                                                        <label className="control-label">{this.state.user.username}</label>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="inputPassword" className="col-sm-5 control-label">Fullname</label>
-                                                    <div className="col-sm-7">
-                                                        <label className="control-label">{this.state.user.fullname}</label>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="inputPassword" className="col-sm-5 control-label">Phone</label>
-                                                    <div className="col-sm-7">
-                                                        <label className="control-label">{this.state.user.phone}</label>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="inputPassword" className="col-sm-5 control-label">Email</label>
-                                                    <div className="col-sm-7">
-                                                        <label className="control-label">{this.state.user.email}</label>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="inputPassword" className="col-sm-5 control-label">Sex</label>
-                                                    <div className="col-sm-7">
-                                                        <label className="control-label">{this.state.user.sex}</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                }
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <Modal
+                    open={editModal}
+                    onClose={this.closeEditModal}
+                    center
+                    styles={{ 'modal': { width: '400px', height: '250px' } }}
+                    blockScroll={true}
+                >
+                    {this.state.user && <InfoUser user={this.state.user}/>}
+                </Modal>
                 <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content-header">
                     <h1>
                         List User

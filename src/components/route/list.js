@@ -7,6 +7,7 @@ import 'react-table/react-table.css';
 import * as actions from './../../actions/index';
 import { apiGet } from '../../services/api';
 import moment from 'moment';
+import './list.css';
 
 class ListTypesComponent extends Component {
 
@@ -140,7 +141,7 @@ class ListTypesComponent extends Component {
                                     Header: props => <i className="fa fa-pencil" />,
                                     Cell: props => {
                                         return (
-                                            <button className="btn btn-success"
+                                            <button className="btn btn-xs btn-success"
                                                 onClick={() => this.handleEditRoute(props)}
                                             >
                                                 <i className="fa fa-pencil" />

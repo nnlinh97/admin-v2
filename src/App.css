@@ -9,7 +9,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #fff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -29,6 +29,10 @@
 
 .no-scroll{
   overflow: hidden !important;
+}
+
+.content-wrapper {
+  background-color: #fff !important;
 }
 
 @keyframes App-logo-spin {

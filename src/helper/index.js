@@ -37,8 +37,29 @@ export const mergeBookHistory = (bookHistory) => {
 }
 
 export const filterBookHistory = (bookHistory) => {
-    if(bookHistory) {
+    if (bookHistory) {
         return bookHistory.filter(item => item.status !== 'cancelled');
     }
     return null;
+}
+
+export function formatCurrency(amount) {
+    try {
+        let decimalCount = 0;
+        const decimal = ',';
+        const thousands = ',';
+        decimalCount = Math.abs(decimalCount);
+        decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+
+        const negativeSign = amount < 0 ? '-' : '';
+        amount = Math.abs(Number(amount) || 0);
+        const i = (amount.toFixed(decimalCount)).toString();
+        const j = (i.length > 3) ? i.length % 3 : 0;
+
+        const result = negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thousands) + (decimalCount ? decimal + Math.abs(amount - parseInt(i, 10)).toFixed(decimalCount).slice(2) : '');
+        return result;
+    } catch (e) {
+        // console.log(e);
+        return 'NaN';
+    }
 }

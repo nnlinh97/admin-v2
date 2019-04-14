@@ -9,9 +9,29 @@
 }
 
 .form-group{
-    margin-bottom: 5px !important;
+    margin-bottom: 10px !important;
 }
 
 .box-body{
     padding: 4px !important;
 }
+
+.css-10nd86i {
+    height: 34px !important;
+}
+
+.css-vj8t7z {
+    height: 34px !important;
+    min-height: 34px !important;
+}
+
+.Select-menu-outer {
+    max-height: 100px !important;
+}
+    
+.Select-menu {
+    max-height: 100px !important;
+}
+/* .css-15k3avv {
+    max-height: 100px !important;
+} */

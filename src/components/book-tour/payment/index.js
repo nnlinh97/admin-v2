@@ -5,6 +5,7 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import * as actions from './../../../actions/index';
 import { apiGet, apiPost } from '../../../services/api';
+import { formatCurrency } from './../../../helper';
 import moment from 'moment';
 import './../list.css';
 import './index.css'
@@ -13,19 +14,15 @@ class ListTypesComponent extends Component {
 
     handlePayment = async () => {
         try {
-            const payment = await apiPost('/book_tour/payBookTour', {
-                code: this.props.data.code
-            });
+            const payment = await apiPost('/book_tour/payBookTour', { code: this.props.data.code });
             this.props.handlePayment(true);
         } catch (error) {
             console.log(error);
         }
-        
     }
 
     render() {
         const { data, tour, tourTurn } = this.props;
-        console.log(data);
         return (
             <div className="">
                 <section className="content-header">
@@ -35,7 +32,7 @@ class ListTypesComponent extends Component {
                 </section>
                 <section className="content">
                     <div className="row invoice-info">
-                        <div className="col-sm-4 invoice-col">
+                        <div style={{ textAlign: 'right' }} className="col-sm-5 invoice-col">
                             <address>
                                 <strong>Tour</strong><br />
                                 <strong>Start Date</strong><br />
@@ -47,14 +44,14 @@ class ListTypesComponent extends Component {
                                 <strong>Contact Phone</strong><br />
                             </address>
                         </div>
-                        <div className="col-sm-8 invoice-col">
+                        <div className="col-sm-7 invoice-col">
                             <address>
                                 {tour.name}<br />
                                 {tourTurn.start_date}<br />
                                 {tourTurn.end_date}<br />
-                                {tourTurn.price} VND<br />
+                                {formatCurrency(tourTurn.price)} VND<br />
                                 {data.passengers.length}<br />
-                                {data.total_pay} VND<br />
+                                {formatCurrency(data.total_pay)} VND<br />
                                 {data.book_tour_contact_info.fullname}<br />
                                 {data.book_tour_contact_info.phone}<br />
                             </address>

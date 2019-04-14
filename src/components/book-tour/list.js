@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-// import Modal from 'react-bootstrap-modal';
 import * as actions from './../../actions/index';
 import { apiGet, apiPost } from '../../services/api';
 import moment from 'moment';

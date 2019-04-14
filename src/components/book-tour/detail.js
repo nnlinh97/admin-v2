@@ -14,10 +14,11 @@ import 'font-awesome/css/font-awesome.css';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { apiGet, apiPost } from '../../services/api';
 import Select from 'react-select';
-import { mergeBookHistory, filterBookHistory } from './../../helper';
+import { mergeBookHistory, filterBookHistory, formatCurrency } from './../../helper';
 import Modal from 'react-responsive-modal';
 import Payment from './payment';
 import PassengerUpdate from './passenger-update';
+import ContactInfoUpdate from './contact-info';
 
 class CreateTourTurnComponent extends Component {
 
@@ -31,8 +32,12 @@ class CreateTourTurnComponent extends Component {
             tour: null,
             modalPayIsOpen: false,
             modalUpdatePassengerIsOpen: false,
+            modalUpdateContactInfoIsOpen: false,
             bookPay: null,
-            passengerUpdate: null
+            passengerUpdate: null,
+            contactInfoUpdate: null,
+            confirmRefund: false,
+            refundCode: ''
         }
     }
 
@@ -168,42 +173,284 @@ class CreateTourTurnComponent extends Component {
         });
     }
 
-    handlePayment = async (flag) => {
-        if (flag) {
-            try {
-                const { id } = this.props.match.params;
-                let bookTourTurnDetail = await apiGet(`/book_tour/getBookTourHistoryByTourTurn/${id}`);
-                bookTourTurnDetail = bookTourTurnDetail.data.data;
-                console.log(bookTourTurnDetail);
-                await this.props.getBookTourTurnById(bookTourTurnDetail);
-                this.updateState(bookTourTurnDetail);
-                this.setState({
-                    success: true
-                })
-            } catch (error) {
-                console.log(error);
-            }
-        }
+    handleCloseModalUpdateContactInfo = () => {
+        this.setState({ modalUpdateContactInfoIsOpen: false, contactInfoUpdate: null });
     }
 
-    handleUpdatePassenger = ({ passenger }) => {
+    openUpdatePassenger = ({ passenger }) => {
         this.setState({ passengerUpdate: passenger, modalUpdatePassengerIsOpen: true });
+    }
+
+    openUpdateContactInfo = (contactInfo) => {
+        this.setState({ modalUpdateContactInfoIsOpen: true, contactInfoUpdate: contactInfo });
     }
 
     hideSuccessAlert = () => {
         this.handleOncloseModalPay();
+        this.handleCloseModalUpdatePassenger();
+        this.handleCloseModalUpdateContactInfo();
         this.setState({ success: false })
     }
 
     hideFailAlert = () => {
-        this.setState({
-            error: false
-        });
+        this.setState({ error: false });
+    }
+
+    reRender = async () => {
+        try {
+            const { id } = this.props.match.params;
+            const detail = await apiGet(`/book_tour/getBookTourHistoryByTourTurn/${id}`);
+            const bookTourTurnDetail = detail.data.data;
+            await this.props.getBookTourTurnById(bookTourTurnDetail);
+            this.updateState(bookTourTurnDetail);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    handleUpdatePassenger = async (passenger) => {
+        if (passenger) {
+            try {
+                passenger.fk_type_passenger = parseInt(passenger.type_passenger, 10);
+                const passengerUpdate = await apiPost('/book_tour/updatePassenger', { ...passenger });
+                this.reRender();
+                this.setState({ success: true });
+            } catch (error) {
+                this.setState({ error: true });
+            }
+        } else {
+            this.setState({ error: true });
+        }
+    }
+
+    handleUpdateContactInfo = async (contactInfo) => {
+        if (contactInfo) {
+            try {
+                const contactInfoUpdate = await apiPost('/book_tour/updateContactInfo', { ...contactInfo });
+                this.reRender();
+                this.setState({ success: true });
+            } catch (error) {
+                this.setState({ error: true });
+            }
+        } else {
+            this.setState({ error: true });
+        }
+    }
+
+    handlePayment = async (flag) => {
+        if (flag) {
+            this.reRender();
+            this.setState({ success: true });
+        }
+    }
+
+    handleRefund = (info) => {
+        console.log(info);
+        this.setState({ confirmRefund: true, refundCode: info.code });
+    }
+
+    handleConfirmRefund = async () => {
+        try {
+            const refund = await apiPost('/book_tour/unpayBookTour', { code: this.state.refundCode });
+            this.reRender();
+        } catch (error) {
+
+        }
+        this.setState({ confirmRefund: false, refundCode: '' });
     }
 
     render() {
         const { bookTourHistory, tourTurn, tour } = this.state;
+        console.log(tourTurn);
         const bookHistory = mergeBookHistory(bookTourHistory);
+        const columnHistory = [
+            {
+                Header: "ID",
+                accessor: "id",
+                sortable: true,
+                filterable: true,
+                style: {
+                    textAlign: 'center'
+                },
+                width: 60,
+                maxWidth: 60,
+                minWidth: 60
+            },
+            {
+                Header: "CONTACT NAME",
+                accessor: "book_tour_contact_info.fullname",
+                sortable: true,
+                filterable: true,
+                style: {
+                    textAlign: 'center'
+                }
+            },
+            {
+                Header: "EMAIL",
+                accessor: "book_tour_contact_info.email",
+                sortable: true,
+                filterable: true,
+                style: {
+                    textAlign: 'center'
+                }
+            },
+            {
+                Header: "PHONE",
+                accessor: "book_tour_contact_info.phone",
+                sortable: true,
+                filterable: true,
+                style: {
+                    textAlign: 'center'
+                },
+                width: 130,
+                maxWidth: 130,
+                minWidth: 130
+            },
+            {
+                Header: "NUM PASSENGER",
+                accessor: "num_passenger",
+                sortable: false,
+                filterable: false,
+                style: {
+                    textAlign: 'center'
+                },
+                width: 125,
+                maxWidth: 125,
+                minWidth: 125
+            },
+            {
+                Header: "TOTAL PAY",
+                accessor: "total_pay",
+                Cell: props => {
+                    return (<p>{formatCurrency(props.original.total_pay)} VND</p>)
+                },
+                sortable: false,
+                filterable: false,
+                style: {
+                    textAlign: 'center'
+                },
+                width: 130,
+                maxWidth: 130,
+                minWidth: 130
+            },
+            {
+                Header: "BOOK TIME",
+                accessor: "book_time",
+                Cell: props => {
+                    return (<p>{moment(props.original.book_time).format('DD/MM/YYYY HH:mm')}</p>)
+                },
+                sortable: false,
+                filterable: false,
+                style: {
+                    textAlign: 'center'
+                }
+            },
+            {
+                Header: "STATUS",
+                accessor: "status",
+                Cell: props => {
+                    const { status } = props.original;
+                    let css = 'success';
+                    if (status === 'booked') {
+                        css = 'warning';
+                    } else if (status === 'cancelled') {
+                        css = 'default';
+                    }
+                    return (
+                        <h4>
+                            <label className={`label label-${css} disabled`}
+                            >
+                                {status}
+                            </label>
+                        </h4>
+
+                    )
+                },
+                sortable: false,
+                filterable: false,
+                style: {
+                    textAlign: 'center'
+                },
+                width: 100,
+                maxWidth: 150,
+                minWidth: 100
+            },
+            {
+                Header: props => <i className="fa fa-money" />,
+                Cell: props => {
+                    if (props.original.status === 'cancelled' || props.original.status === 'paid') {
+                        return (
+                            <button className="btn btn-xs btn-info" disabled>
+                                <i className="fa fa-money" />
+                            </button>
+                        );
+                    }
+                    return (
+                        <button className="btn btn-xs btn-info"
+                            onClick={() => this.handleOpenModalPay(props)}
+                        >
+                            <i className="fa fa-money" />
+                        </button>
+                    )
+                },
+                style: {
+                    textAlign: 'center'
+                },
+                width: 60,
+                maxWidth: 60,
+                minWidth: 60
+            },
+            {
+                Header: props => <i className="fa fa-credit-card" />,
+                Cell: props => {
+                    if (props.original.status !== 'paid') {
+                        return (
+                            <button className="btn btn-xs btn-info" disabled>
+                                <i className="fa fa-credit-card" />
+                            </button>
+                        );
+                    }
+                    return (
+                        <button title="refund" className="btn btn-xs btn-danger"
+                            onClick={() => this.handleRefund(props.original)}
+                        >
+                            <i className="fa fa-credit-card" />
+                        </button>
+                    )
+                },
+                style: {
+                    textAlign: 'center'
+                },
+                width: 60,
+                maxWidth: 60,
+                minWidth: 60
+            },
+            {
+                Header: props => <i className="fa fa-pencil" />,
+                Cell: props => {
+                    if (props.original.status === 'cancelled') {
+                        return (
+                            <button className="btn btn-xs btn-success" disabled>
+                                <i className="fa fa-pencil" />
+                            </button>
+                        );
+                    }
+                    return (
+                        <button className="btn btn-xs btn-success"
+                            onClick={() => this.openUpdateContactInfo(props.original.book_tour_contact_info)}
+                        >
+                            <i className="fa fa-pencil" />
+                        </button>
+                    )
+                },
+                style: {
+                    textAlign: 'center'
+                },
+                width: 60,
+                maxWidth: 60,
+                minWidth: 60
+            },
+        ];
         const columns = [
             {
                 Header: "ID",
@@ -256,49 +503,6 @@ class CreateTourTurnComponent extends Component {
                     textAlign: 'center'
                 }
             },
-
-            {
-                Header: "BOOK TIME",
-                accessor: "book_time",
-                Cell: props => {
-                    return (<p>{moment(props.original.book_time).format('LLL')}</p>)
-                },
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                }
-            },
-            {
-                Header: "STATUS",
-                accessor: "status",
-                Cell: props => {
-                    const { status } = props.original;
-                    let css = 'success';
-                    if (status === 'booked') {
-                        css = 'warning';
-                    } else if (status === 'cancelled') {
-                        css = 'default';
-                    }
-                    return (
-                        <h4>
-                            <label className={`label label-${css} disabled`}
-                            >
-                                {status}
-                            </label>
-                        </h4>
-
-                    )
-                },
-                sortable: false,
-                filterable: false,
-                style: {
-                    textAlign: 'center'
-                },
-                width: 100,
-                maxWidth: 150,
-                minWidth: 100
-            },
             {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
@@ -311,34 +515,9 @@ class CreateTourTurnComponent extends Component {
                     }
                     return (
                         <button className="btn btn-xs btn-success"
-                            onClick={() => this.handleUpdatePassenger(props.original)}
+                            onClick={() => this.openUpdatePassenger(props.original)}
                         >
                             <i className="fa fa-pencil" />
-                        </button>
-                    )
-                },
-                style: {
-                    textAlign: 'center'
-                },
-                width: 60,
-                maxWidth: 60,
-                minWidth: 60
-            },
-            {
-                Header: props => <i className="fa fa-money" />,
-                Cell: props => {
-                    if (props.original.status === 'cancelled' || props.original.status === 'paid') {
-                        return (
-                            <button className="btn btn-xs btn-info" disabled>
-                                <i className="fa fa-money" />
-                            </button>
-                        );
-                    }
-                    return (
-                        <button className="btn btn-xs btn-info"
-                            onClick={() => this.handleOpenModalPay(props)}
-                        >
-                            <i className="fa fa-money" />
                         </button>
                     )
                 },
@@ -393,6 +572,17 @@ class CreateTourTurnComponent extends Component {
                         Please check carefully!
                     </SweetAlert>
                 }
+
+                {this.state.confirmRefund && <SweetAlert
+                    warning
+                    confirmBtnText="Confirm"
+                    confirmBtnBsStyle="danger"
+                    title="Refund money"
+                    onConfirm={this.handleConfirmRefund}
+                >
+                    Please check carefully!!!
+                    </SweetAlert>
+                }
                 <Modal
                     open={this.state.modalPayIsOpen}
                     onClose={this.handleOncloseModalPay}
@@ -409,11 +599,22 @@ class CreateTourTurnComponent extends Component {
                     styles={{ 'modal': { width: '1280px' } }}
                     blockScroll={true}
                 >
-                    {this.state.passengerUpdate
-                        &&
-                        <PassengerUpdate
-                            handleUpdatePassenger={this.handleUpdatePassenger}
-                            passenger={this.state.passengerUpdate} />}
+                    {this.state.passengerUpdate && <PassengerUpdate
+                        handleUpdatePassenger={this.handleUpdatePassenger}
+                        passenger={this.state.passengerUpdate}
+                    />}
+                </Modal>
+                <Modal
+                    open={this.state.modalUpdateContactInfoIsOpen}
+                    onClose={this.handleCloseModalUpdateContactInfo}
+                    center
+                    styles={{ 'modal': { width: '1280px' } }}
+                    blockScroll={true}
+                >
+                    {this.state.contactInfoUpdate && <ContactInfoUpdate
+                        handleUpdateContactInfo={this.handleUpdateContactInfo}
+                        contactInfo={this.state.contactInfoUpdate}
+                    />}
                 </Modal>
                 <section className="content-header">
                     <h1>
@@ -426,8 +627,8 @@ class CreateTourTurnComponent extends Component {
                             <div className="nav-tabs-custom">
                                 <ul className="nav nav-tabs">
                                     <li className="active"><a href="#activity" data-toggle="tab">Information</a></li>
+                                    <li><a href="#settings" data-toggle="tab">Book Tour History</a></li>
                                     <li><a href="#timeline" data-toggle="tab">List Passengers</a></li>
-                                    {/* <li><a href="#settings" data-toggle="tab">Settings</a></li> */}
                                 </ul>
                                 <div className="tab-content">
                                     <div className="active tab-pane" id="activity">
@@ -444,19 +645,19 @@ class CreateTourTurnComponent extends Component {
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">Start Date</label>
                                                             <div className="col-sm-5">
-                                                                <input type="text" readOnly value={tourTurn ? tourTurn.start_date : ''} name="discount" className="form-control" />
+                                                                <input type="text" readOnly value={tourTurn ? moment(tourTurn.start_date).format('DD/MM/YYYY') : ''} name="discount" className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">End Date</label>
                                                             <div className="col-sm-5">
-                                                                <input type="text" readOnly value={tourTurn ? tourTurn.end_date : ''} name="limitPeople" className="form-control" />
+                                                                <input type="text" readOnly value={tourTurn ? moment(tourTurn.end_date).format('DD/MM/YYYY') : ''} name="limitPeople" className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">Price</label>
                                                             <div className="col-sm-5">
-                                                                <input type="number" readOnly value={tourTurn ? tourTurn.price : ''} name="limitPeople" className="form-control" />
+                                                                <input type="text" readOnly value={tourTurn ? formatCurrency(tourTurn.price.toString()) + ' VND' : ''} name="limitPeople" className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
@@ -474,6 +675,28 @@ class CreateTourTurnComponent extends Component {
                                                     </div>
                                                     <div className="box-footer">
                                                         <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="tab-pane" id="settings">
+                                        <div className="post">
+                                            <div className="user-block">
+                                                <form onSubmit={this.handleSave} className="form-horizontal">
+                                                    <div className="box-body">
+                                                        <ReactTable
+                                                            columns={columnHistory}
+                                                            data={bookTourHistory ? bookTourHistory : []}
+                                                            defaultPageSize={10}
+                                                            noDataText={'Please wait...'}
+                                                        >
+                                                        </ReactTable>
+                                                    </div>
+                                                    <div className="box-footer">
+                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
+                                                        <button type="submit" className="btn btn-info pull-right">Confirm</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -499,8 +722,6 @@ class CreateTourTurnComponent extends Component {
                                                 </form>
                                             </div>
                                         </div>
-                                        {/* <div className="tab-pane" id="settings">
-                                    </div> */}
                                     </div>
                                 </div>
                             </div>

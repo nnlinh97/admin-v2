@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import * as actions from './../../actions/index';
-
+import './list.css';
 import { apiGet } from '../../services/api';
 
 class ListTourComponent extends Component {
@@ -63,7 +63,7 @@ class ListTourComponent extends Component {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
                     return (
-                        <button className="btn btn-success"
+                        <button className="btn btn-xs btn-success"
                             onClick={() => this.handleEditTour(props.original.id)}
                         >
                             <i className="fa fa-pencil" />

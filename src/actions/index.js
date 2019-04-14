@@ -238,4 +238,22 @@ export const getBookTourTurnById = (book) => {
     }
 }
 
+//country
+export const getListCountries = (countries) => {
+    return {
+        type: Types.GET_LIST_COUNTRY,
+        countries
+    }
+}
+
+//province
+export const getListProvinces = (provinces) => {
+    return {
+        type: Types.GET_LIST_PROVINCE,
+        provinces
+    }
+}
+
+
+
 

@@ -5,12 +5,13 @@ import { withScriptjs, withGoogleMap, GoogleMap, InfoWindow, Marker, DirectionsR
 import { SearchBox } from "react-google-maps/lib/components/places/SearchBox"
 import { InfoBox } from "react-google-maps/lib/components/addons/InfoBox"
 import _ from 'lodash'
-import Geocode from "react-geocode"
+import Geocode from "react-geocode";
 import { mapOption } from '../../constants/map-option'
 import { connect } from 'react-redux';
 import * as actions from './../../actions/index';
 import { URL } from '../../constants/url';
 import axios from 'axios';
+import { apiGet, apiPost } from './../../services/api';
 
 class MapComponent extends React.Component {
 
@@ -39,7 +40,7 @@ class MapComponent extends React.Component {
 
     async componentDidMount() {
         // console.log(this.props.match.params.id);
-        const DirectionsService = new window.google.maps.DirectionsService();
+        // const DirectionsService = new window.google.maps.DirectionsService();
         // let result = null;
         // DirectionsService.route({
         //     origin: new window.google.maps.LatLng(21.0123103, 105.8289783),
@@ -56,11 +57,19 @@ class MapComponent extends React.Component {
         //         console.error(`error fetching directions ${result}`);
         //     }
         // });
-        if (this.props.match) {
+        const { locationInfo } = this.props;
+        if (locationInfo) {
+            this.setState({
+                marker: locationInfo.marker,
+                center: locationInfo.marker,
+                address: locationInfo.address
+            });
+        }
+        if (this.props.match.params.id) {
             // console.log(this.props.match.params.id);
-            const location = await axios.get(`${URL}/location/getById/${this.props.match.params.id}`);
+            const location = await apiGet(`/location/getById/${this.props.match.params.id}`);
             // console.log(location.data.data);
-            const data = location.data.data;
+            let data = location.data.data;
             this.props.getLocationDetail(data);
             this.setState({
                 center: {
@@ -75,14 +84,24 @@ class MapComponent extends React.Component {
                 zoom: this.googleMap.current.getZoom(),
                 isShowInfo: false,
                 isEdit: true
-            })
+            });
         }
     }
 
+    componentWillReceiveProps = (nextProps) => {
+        const { locationInfo } = nextProps;
+        if (locationInfo) {
+            this.setState({
+                marker: locationInfo.marker,
+                center: locationInfo.marker,
+                address: locationInfo.address
+            });
+        }
+    }
+
+
     onBoundsChanged() {
-        this.setState({
-            bounds: this.googleMap.current.getBounds()
-        })
+        this.setState({ bounds: this.googleMap.current.getBounds() });
     }
 
     onClickedMap(event) {
@@ -92,13 +111,20 @@ class MapComponent extends React.Component {
 
         Geocode.fromLatLng(newLat, newLng).then((result) => {
             const { lat, lng } = result.results[0].geometry.location;
+            this.props.handleChangeLocation({
+                marker: {
+                    lat,
+                    lng
+                },
+                address: result.results[0].formatted_address,
+            });
             this.props.changeLocationInfo({
                 marker: {
                     lat,
                     lng
                 },
                 address: result.results[0].formatted_address,
-            })
+            });
             this.setState({
                 center: {
                     lat: newCenter.lat(),
@@ -111,21 +137,29 @@ class MapComponent extends React.Component {
                 address: result.results[0].formatted_address,
                 zoom: this.googleMap.current.getZoom(),
                 isShowInfo: false
-            })
-        })
+            });
+        });
     }
 
     onPlacesChanged() {
         const places = this.searchBox.current.getPlaces();
         Geocode.fromAddress(places[0].formatted_address).then((result) => {
             const { lat, lng } = result.results[0].geometry.location;
+            this.props.handleChangeLocation({
+                marker: {
+                    lat,
+                    lng
+                },
+                address: result.results[0].formatted_address,
+            });
             this.props.changeLocationInfo({
                 marker: {
                     lat,
                     lng
                 },
                 address: result.results[0].formatted_address,
-            })
+                map: true
+            });
             this.setState({
                 center: {
                     lat,

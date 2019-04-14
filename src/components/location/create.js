@@ -6,28 +6,41 @@ import Info from './info';
 import MyMap from './my-map';
 
 class CreateLocationComponent extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            location: null
+        }
+    }
+
+    handleChangeLocation = (location) => {
+        this.setState({ location });
+    }
+
+    handleInputLocation = (location) => {
+        this.setState({ location });
+    }
 
 
     render() {
         return (
             <div className="content-wrapper">
-                {/* Content Header (Page header) */}
                 <section className="content-header">
                     <h1>
                         Create Location
                     </h1>
-                    {/* <SearchBox/> */}
                 </section>
                 <section className="content">
                     <div className="row">
-                        <div className="col-lg-9 col-xs-9">
-                            <MyMap/>
-                        </div>
-                        <div className="col-lg-3 col-xs-3">
-                            <Info />
+                        <div className="col-lg-12 col-xs-12">
+                            <MyMap locationInfo={this.state.location} handleChangeLocation={this.handleChangeLocation} />
                         </div>
                     </div>
-
+                    <div className="row">
+                        <div className="col-lg-12 col-xs-12">
+                            <Info locationInfo={this.state.location} handleInputLocation={this.handleInputLocation} />
+                        </div>
+                    </div>
                 </section>
             </div>
         );

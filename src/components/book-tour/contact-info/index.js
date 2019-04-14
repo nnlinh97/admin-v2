@@ -8,33 +8,28 @@ import * as actions from './../../../actions/index';
 import { apiGet, apiPost } from '../../../services/api';
 import moment from 'moment';
 import './../list.css';
-import './index.css'
 
 class ListTypesComponent extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            id: '',
             fullname: '',
             phone: '',
-            birthdate: null,
-            sex: '',
-            passport: '',
-            type_passenger: '',
-            id: ''
+            email: '',
+            address: '',
         }
     }
 
     componentDidMount = async () => {
-        const { passenger } = this.props;
+        const { contactInfo } = this.props;
         this.setState({
-            fullname: passenger.fullname ? passenger.fullname : '',
-            phone: passenger.phone ? passenger.phone : '',
-            birthdate: passenger.birthdate,
-            sex: passenger.sex ? passenger.sex : '',
-            type_passenger: passenger.type_passenger ? passenger.type_passenger.id : '',
-            passport: passenger.passport ? passenger.passport : '',
-            id: passenger.id
+            fullname: contactInfo.fullname ? contactInfo.fullname : '',
+            phone: contactInfo.phone ? contactInfo.phone : '',
+            id: contactInfo.id,
+            email: contactInfo.email ? contactInfo.email : '',
+            address: contactInfo.address ? contactInfo.address : ''
         });
     }
 
@@ -44,16 +39,20 @@ class ListTypesComponent extends Component {
         this.setState({ [name]: value });
     }
 
-    validatePassenger = (passenger) => {
-        const { fullname, phone, id } = passenger;
+    validateContactInfo = (passenger) => {
+        const { fullname, phone, id, email } = passenger;
         const phoneRegex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
+        const emailRegex = /(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/;
         if (!fullname || fullname === '') {
             return false;
         }
         if (!phone || !phoneRegex.test(phone)) {
             return false;
         }
-        if(!id || id === '') {
+        if (!id || id === '') {
+            return false;
+        }
+        if(!email || !emailRegex.test(String(email).toLocaleLowerCase())){
             return false;
         }
         return true;
@@ -61,10 +60,10 @@ class ListTypesComponent extends Component {
 
     handleSave = (event) => {
         event.preventDefault();
-        if (this.validatePassenger(this.state)) {
-            this.props.handleUpdatePassenger(this.state);
+        if (this.validateContactInfo(this.state)) {
+            this.props.handleUpdateContactInfo(this.state);
         } else {
-            this.props.handleUpdatePassenger(null);
+            this.props.handleUpdateContactInfo(null);
         }
     }
 
@@ -73,12 +72,12 @@ class ListTypesComponent extends Component {
     }
 
     render() {
-        const { fullname, phone, sex, birthdate, passport, type_passenger } = this.state;
+        const { fullname, phone, email, id, address } = this.state;
         return (
             <div className="">
                 <section className="content-header">
                     <h1>
-                        Update Passenger
+                        Update Contact Info
                     </h1>
                 </section>
                 <section className="content">
@@ -86,14 +85,19 @@ class ListTypesComponent extends Component {
                         <form onSubmit={this.handleSave} className="form-horizontal">
                             <div className="box-body">
                                 <div className="form-group">
-                                    <label className="col-sm-3 control-label">Name</label>
+                                    <label className="col-sm-3 control-label">ID</label>
                                     <div className="col-sm-8">
                                         <input
+                                            readOnly
                                             type="text"
-                                            onChange={this.handleChange}
-                                            value={fullname}
-                                            name="fullname"
+                                            value={id}
                                             className="form-control" />
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="col-sm-3 control-label">Name</label>
+                                    <div className="col-sm-8">
+                                        <input type="text" onChange={this.handleChange} value={fullname} name="fullname" className="form-control" />
                                     </div>
                                 </div>
                                 <div className="form-group">
@@ -103,37 +107,15 @@ class ListTypesComponent extends Component {
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <label className="col-sm-3 control-label">BirthDate</label>
+                                    <label className="col-sm-3 control-label">Email</label>
                                     <div className="col-sm-8">
-                                        <DatePicker
-                                            className="form-control"
-                                            selected={new Date(birthdate)}
-                                            onChange={this.handleChangeBirthDate}
-                                        />
+                                        <input type="text" onChange={this.handleChange} value={email} name="email" className="form-control" />
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <label className="col-sm-3 control-label">Sex</label>
+                                    <label className="col-sm-3 control-label">Address</label>
                                     <div className="col-sm-8">
-                                        <select onChange={this.handleChange} value={sex} name="sex" className="form-control">
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-sm-3 control-label">Passport</label>
-                                    <div className="col-sm-8">
-                                        <input type="text" onChange={this.handleChange} value={passport} name="passport" className="form-control" />
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-sm-3 control-label">Type</label>
-                                    <div className="col-sm-8">
-                                        <select onChange={this.handleChange} value={type_passenger ? type_passenger : ''} name="type_passenger" className="form-control">
-                                            <option value="1">Adult</option>
-                                            <option value="2">Children</option>
-                                        </select>
+                                        <textarea type="text" onChange={this.handleChange} value={address} name="address" row={3} className="form-control" />
                                     </div>
                                 </div>
                             </div>

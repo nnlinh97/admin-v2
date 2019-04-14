@@ -4,12 +4,15 @@ import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 // import Modal from 'react-bootstrap-modal';
-import './modal.css';
 import * as actions from './../../actions/index';
 import { URL } from '../../constants/url';
 import axios from 'axios';
 import { apiGet, apiPost } from '../../services/api';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import Modal from 'react-responsive-modal';
+import CreateComponent from './create';
+import EditComponent from './edit';
+import './list.css';
 
 class ListTypesComponent extends Component {
 
@@ -44,31 +47,7 @@ class ListTypesComponent extends Component {
             id: props.original.id
         })
     }
-    handleEdit = async () => {
-        if (this.state.id && this.checkTransport()) {
-            try {
-                let transport = await apiPost('/transport/update', {
-                    id: this.state.id,
-                    name_vn: this.state.name_vn,
-                    name_en: this.state.name_en
-                });
-                await this.props.editTransport(transport.data.data);
-                this.setState({
-                    success: true
-                });
-            } catch (error) {
-                console.log(error);
-                this.setState({
-                    error: true
-                });
-            }
-        } else {
-            this.setState({
-                error: true
-            });
-        }
 
-    }
     closeEditModal = () => {
         this.setState({
             editModal: false,
@@ -98,38 +77,59 @@ class ListTypesComponent extends Component {
         })
     }
 
-    checkTransport = () => {
-        const { name_vn, name_en } = this.state;
+    checkTransport = (name_vn, name_en) => {
         if (name_vn === '' || name_en === '') {
             return false;
         }
         return true;
     }
 
-    handleCreate = async () => {
-        if (this.checkTransport()) {
-            const { name_vn, name_en } = this.state;
+    handleCreate = async (name_vn, name_en) => {
+        if (this.checkTransport(name_vn, name_en)) {
             try {
                 let newTransport = await apiPost('/transport/create', {
                     name_vn: name_vn,
                     name_en: name_en
                 });
-                console.log(newTransport.data);
                 await this.props.createTransport(newTransport.data);
                 this.setState({
                     success: true
                 });
             } catch (error) {
-                console.log(error);
                 this.setState({
                     error: true
-                })
+                });
             }
         } else {
             this.setState({
                 error: true
-            })
+            });
         }
+    }
+    
+    handleEdit = async (name_vn, name_en) => {
+        if (this.state.id && this.checkTransport(name_vn, name_en)) {
+            try {
+                let transport = await apiPost('/transport/update', {
+                    id: this.state.id,
+                    name_vn: name_vn,
+                    name_en: name_en
+                });
+                await this.props.editTransport(transport.data.data);
+                this.setState({
+                    success: true
+                });
+            } catch (error) {
+                this.setState({
+                    error: true
+                });
+            }
+        } else {
+            this.setState({
+                error: true
+            });
+        }
+
     }
 
     handleChange = (event) => {
@@ -143,11 +143,11 @@ class ListTypesComponent extends Component {
 
 
     hideSuccessAlert = () => {
+        this.closeCreateModal();
+        this.closeEditModal();
         this.setState({
-            success: false,
-            createModal: false,
-            editModal: false
-        })
+            success: false
+        });
     }
 
     hideFailAlert = () => {
@@ -193,7 +193,7 @@ class ListTypesComponent extends Component {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
                     return (
-                        <button className="btn btn-success"
+                        <button className="btn btn-xs btn-success"
                             onClick={() => this.openEditModal(props)}
                         >
                             <i className="fa fa-pencil" />
@@ -213,13 +213,10 @@ class ListTypesComponent extends Component {
         const { createModal, editModal, name_vn, name_en } = this.state;
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
-                {this.state.success &&
-                    <SweetAlert success title="Successfully" onConfirm={this.hideSuccessAlert}>
+                {this.state.success && <SweetAlert success title="Successfully" onConfirm={this.hideSuccessAlert}>
                         hihihehehaha
-                </SweetAlert>
-                }
-                {this.state.error &&
-                    <SweetAlert
+                </SweetAlert>}
+                {this.state.error && <SweetAlert
                         warning
                         confirmBtnText="Cancel"
                         confirmBtnBsStyle="default"
@@ -227,84 +224,26 @@ class ListTypesComponent extends Component {
                         onConfirm={this.hideFailAlert}
                     >
                         Please check carefully!
-                </SweetAlert>
-                }
-                {this.state.createModal &&
-                    <div className="example-modal">
-                        <div className="modal">
-                            <div className="modal-dialog">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <button onClick={this.closeCreateModal} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">×</span></button>
-                                        <h4 className="modal-title">Create Type</h4>
-                                    </div>
-                                    <div className="modal-body">
-                                        <form className="form-horizontal">
-                                            <div className="box-body">
-                                                <div className="form-group">
-                                                    <label htmlFor="inputEmail3" className="col-sm-2 control-label">Name VN</label>
-                                                    <div className="col-sm-10">
-                                                        <input required onChange={this.handleChange} name="name_vn" value={name_vn} type="text" className="form-control" />
-                                                    </div>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="inputPassword3" className="col-sm-2 control-label">Name EN</label>
-                                                    <div className="col-sm-10">
-                                                        <input onChange={this.handleChange} name="name_en" value={name_en} type="text" className="form-control" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button onClick={this.closeCreateModal} type="button" className="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                                        <button onClick={this.handleCreate} type="button" className="btn btn-primary">Save changes</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
+                </SweetAlert>}
+                <Modal
+                    open={createModal}
+                    onClose={this.closeCreateModal}
+                    center
+                    styles={{ 'modal': { width: '1280px' } }}
+                    blockScroll={true}
+                >
+                    <CreateComponent handleCreate={this.handleCreate} />
+                </Modal>
 
-
-                {this.state.editModal &&
-                    <div className="example-modal">
-                        <div className="modal">
-                            <div className="modal-dialog">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <button onClick={this.closeEditModal} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">×</span></button>
-                                        <h4 className="modal-title">Edit Type</h4>
-                                    </div>
-                                    <div className="modal-body">
-                                        <form className="form-horizontal">
-                                            <div className="box-body">
-                                                <div className="form-group">
-                                                    <label htmlFor="inputEmail" className="col-sm-2 control-label">Name VN</label>
-                                                    <div className="col-sm-10">
-                                                        <input onChange={this.handleChange} name="name_vn" type="text" className="form-control" value={name_vn} />
-                                                    </div>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="inputPassword" className="col-sm-2 control-label">Name EN</label>
-                                                    <div className="col-sm-10">
-                                                        <input onChange={this.handleChange} name="name_en" type="text" className="form-control" value={name_en} />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button onClick={this.closeEditModal} type="button" className="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                                        <button onClick={this.handleEdit} type="button" className="btn btn-primary">Save changes</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
+                <Modal
+                    open={editModal}
+                    onClose={this.closeEditModal}
+                    center
+                    styles={{ 'modal': { width: '1280px' } }}
+                    blockScroll={true}
+                >
+                    <EditComponent handleEdit={this.handleEdit} name_vn={name_vn} name_en={name_en} />
+                </Modal>
 
                 <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content-header">
                     <h1>

@@ -7,7 +7,8 @@ import { URL } from '../../constants/url';
 import axios from 'axios';
 import { apiGet, apiPost } from './../../services/api';
 import SweetAlert from 'react-bootstrap-sweetalert';
-import './index.css'
+import Geocode from "react-geocode";
+import './index.css';
 
 class info extends Component {
     constructor(props) {
@@ -20,17 +21,65 @@ class info extends Component {
             success: false,
             error: false,
             image: null,
-            previewImage: null
+            previewImage: null,
+            listProvinces: [],
+            country: null,
+            province: null,
+            lat: '',
+            lng: '',
+            address: ''
         }
     }
     async componentDidMount() {
-        let allType = await apiGet('/type/getAll');
-        // let allType = await axios.get(`${URL}/type/getAll`);
-        allType.data.data.forEach(item => {
-            item.value = item.id;
-            item.label = item.name;
+        let { allType, listCountries, listProvinces, locationInfo } = this.props;
+        if (!allType) {
+            try {
+                allType = await apiGet('/type/getAll');
+                allType = allType.data.data;
+                allType.forEach(item => {
+                    item.value = item.id;
+                    item.label = item.name;
+                });
+                this.props.getAllType(allType);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        if (!listCountries) {
+            try {
+                listCountries = await apiGet('/tour_classification/getAllCountries_admin');
+                listCountries = listCountries.data.data;
+                listCountries.forEach(item => {
+                    item.value = item.id;
+                    item.label = item.name;
+                });
+                this.props.getListCountries(listCountries);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        if (!listProvinces) {
+            try {
+                listProvinces = await apiGet('/tour_classification/getAllProvinces_admin');
+                listProvinces = listProvinces.data.data;
+                listProvinces.forEach(item => {
+                    item.value = item.id;
+                    item.label = item.name;
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        this.setState({ listProvinces });
+        this.props.getListProvinces(listProvinces);
+    }
+    componentWillReceiveProps = (nextProps) => {
+        const { locationInfo } = nextProps;
+        this.setState({
+            lat: locationInfo ? locationInfo.marker.lat : '',
+            lng: locationInfo ? locationInfo.marker.lng : '',
+            address: locationInfo ? locationInfo.address : ''
         });
-        this.props.getAllType(allType.data.data);
     }
 
 
@@ -39,15 +88,26 @@ class info extends Component {
     }
 
     handleChangeSelect = (selected) => {
-        this.setState({
-            selected
-        })
+        this.setState({ selected });
+    }
+
+    handleSelectProvince = (selected) => {
+        this.setState({ province: selected });
+    }
+
+    handleChangeCountry = (selected) => {
+        const { listProvinces } = this.props;
+        const provinces = listProvinces.filter((item) => item.fk_country === selected.id);
+        this.setState({ country: selected, listProvinces: provinces });
     }
 
     checkLocation = () => {
         if (!this.props || !this.props.info || !this.props.info.marker ||
             this.props.info.marker.lat === '' || this.props.info.marker.lng === '' ||
             this.props.info.address === '' || this.state.name === '' || !this.state.selected || !this.state.image) {
+            return false;
+        }
+        if (!this.state.country || !this.state.province) {
             return false;
         }
         return true;
@@ -66,6 +126,8 @@ class info extends Component {
                 form.append('image', this.state.image, 'name.jpg');
                 form.append('status', this.state.status);
                 form.append('fk_type', this.state.selected.id);
+                form.append('fk_country', this.state.country.id);
+                form.append('fk_province', this.state.province.id);
 
                 const locationCreate = await apiPost('/location/create', form);
                 if (!this.props.listLocation) {
@@ -103,10 +165,31 @@ class info extends Component {
         });
     }
 
+    handleChangeLatLng = async (event) => {
+        let target = event.target;
+        let name = target.name;
+        let value = target.value;
+        this.setState({ [name]: value });
+        setTimeout(async () => {
+            const newLat = this.state.lat;
+            const newLng = this.state.lng;
+            if (newLat !== '' && newLng !== '') {
+                const result = await Geocode.fromLatLng(newLat, newLng);
+                const { lat, lng } = result.results[0].geometry.location;
+                const address = result.results[0].formatted_address;
+                this.props.handleInputLocation({
+                    marker: {
+                        lat,
+                        lng
+                    }, 
+                    address
+                });
+                this.setState({ address, lat, lng });
+            }
+        }, 1000);
+    }
+
     hideSuccessAlert = () => {
-        // this.setState({
-        //     success: false
-        // });
         this.props.history.push('/location/list');
     }
 
@@ -118,9 +201,6 @@ class info extends Component {
 
     handleChangeImage = (event) => {
         let file = event.target.files[0];
-        // if (file.size > 1024 * 1024) {
-        //     return;
-        // }
         let reader = new FileReader();
         event.target.value = null;
         reader.onloadend = () => {
@@ -140,97 +220,163 @@ class info extends Component {
         })
     }
 
-    render() {
-        let marker = null;
-        let address = null;
-        const { name, desc } = this.state;
-        if (this.props.info) {
-            marker = this.props.info.marker;
-            address = this.props.info.address;
+    checkLatLngInput = async () => {
+        const { lat, lng } = this.state;
+        if (lat === '' || lng === '') {
+            return;
+        } else {
+            const location = await Geocode.fromLatLng(lat, lng);
+            console.log(location);
         }
+    }
+
+    render() {
+        const { name, desc } = this.state;
         let allType = this.props.allType ? this.props.allType : [];
+        let listCountries = this.props.listCountries ? this.props.listCountries : [];
+        let listProvinces = this.props.listProvinces ? this.props.listProvinces : [];
         return (
-            <div className="box box-warning">
-                {this.state.success &&
-                    <SweetAlert success title="Successfully" onConfirm={this.hideSuccessAlert}>
-                        Continute...
-                </SweetAlert>
-                }
-                {this.state.error &&
-                    <SweetAlert
-                        warning
-                        confirmBtnText="Cancel"
-                        confirmBtnBsStyle="default"
-                        title="Something went wrong!"
-                        onConfirm={this.hideFailAlert}
-                    >
-                        Please check carefully!
-                </SweetAlert>
-                }
-                <div className="box-header with-border">
-                    <h3 className="box-title">Location Info</h3>
-                </div>
-                <div className="box-body">
-                    <form role="form" onSubmit={this.handleSubmit}>
-                        <div className="form-group double-left">
-                            <label>Latitude</label>
-                            <input value={marker ? marker.lat : ""} required type="text" className="form-control" placeholder="Enter ..." disabled />
-                        </div>
-                        <div className="form-group double-right">
-                            <label>Longitude</label>
-                            <input value={marker ? marker.lng : ""} required type="text" className="form-control" placeholder="Enter ..." disabled />
-                        </div>
-                        <div className="form-group">
-                            <label>Address</label>
-                            <textarea value={address ? address : ""} required readOnly className="form-control" rows={2} placeholder="Enter ..." defaultValue={""} />
-                            {/* <input value={address ? address : ""} type="text" className="form-control" placeholder="Enter ..." disabled /> */}
-                        </div>
-                        <div className="form-group">
-                            <label>Name</label>
-                            <input type="text" onChange={this.handleChange} name="name" value={name} required className="form-control" placeholder="Enter ..." />
-                        </div>
-                        <div className="form-group">
-                            <label>Type</label>
-                            {allType.length > 0 && <Select
-                                value={this.state.selected}
-                                onChange={this.handleChangeSelect}
-                                options={allType}
-                            />}
-                        </div>
-                        <div className="form-group">
-                            <label>Image</label>
-                            <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" />
-                            <div style={{ width: '100%', margin: '1px' }} className="gallery">
-                                <div className="container-image">
-                                    {this.state.previewImage ?
-                                        <img src={this.state.previewImage} alt="Cinque Terre" width="300" height="300" /> :
-                                        <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" alt="Cinque Terre" width="300" height="300" />
-                                    }
-                                    <div className="topright-image">
-                                        {this.state.previewImage ?
-                                            <i onClick={this.deletePreviewImage} className="fa fa-times-circle-o delete-icon" />
-                                            :
-                                            null
-                                        }
+            <section className="content">
+                <div className="row">
+                    <div className="col-lg-4 col-xs-12">
+                        <div className="box box-warning">
+                            <form role="form">
+                                <div className="box-body">
+                                    <div className="form-group">
+                                        <label>Latitude</label>
+                                        <input
+                                            onChange={this.handleChangeLatLng}
+                                            value={this.state.lat}
+                                            name="lat"
+                                            required
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Enter ..." />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Name</label>
+                                        <input type="text" onChange={this.handleChange} name="name" value={name} required className="form-control" placeholder="Enter ..." />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Country</label>
+                                        {listCountries.length > 0 && <Select
+                                            value={this.state.country}
+                                            onChange={this.handleChangeCountry}
+                                            options={listCountries}
+                                            maxMenuHeight={200}
+                                        />}
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Address</label>
+                                        <textarea
+                                            onChange={this.handleChange}
+                                            value={this.state.address}
+                                            name="address"
+                                            required
+                                            className="form-control"
+                                            rows={3}
+                                            placeholder="Enter ..." />
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
-                        <div className="form-group">
-                            <label>Description</label>
-                            <textarea onChange={this.handleChange} name="desc" value={desc} className="form-control" rows={2} placeholder="Enter ..." defaultValue={""} />
+                    </div>
+                    <div className="col-lg-4 col-xs-12">
+                        <div className="box box-warning">
+                            <form role="form">
+                                <div className="box-body">
+                                    <div className="form-group">
+                                        <label>Longitude</label>
+                                        <input
+                                            onChange={this.handleChangeLatLng}
+                                            value={this.state.lng}
+                                            name="lng"
+                                            required
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Enter ..." />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Type</label>
+                                        {allType.length > 0 && <Select
+                                            value={this.state.selected}
+                                            onChange={this.handleChangeSelect}
+                                            options={allType}
+                                            maxMenuHeight={250}
+                                        />}
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Province</label>
+                                        {this.state.listProvinces.length > 0 && <Select
+                                            value={this.state.province}
+                                            onChange={this.handleSelectProvince}
+                                            options={this.state.listProvinces}
+                                            maxMenuHeight={200}
+                                        />}
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Description</label>
+                                        <textarea onChange={this.handleChange} name="desc" value={desc} className="form-control" rows={3} placeholder="Enter ..." />
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <div className="form-group">
-                            <label>Active</label>
-                            <select value={this.state.status} onChange={this.handleChange} name="status" className="form-control">
-                                <option value="active">Yes</option>
-                                <option value="inactive">No</option>
-                            </select>
+                    </div>
+                    <div className="col-lg-4 col-xs-12">
+                        <div className="box box-warning">
+                            <form role="form">
+                                <div className="box-body">
+                                    <div className="form-group">
+                                        <label>Image</label>
+                                        <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" />
+                                        <div style={{ width: '100%', margin: '1px' }} className="gallery">
+                                            <div className="container-image">
+                                                {this.state.previewImage ?
+                                                    <img src={this.state.previewImage} alt="Cinque Terre" width="300" height="195" /> :
+                                                    <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" alt="Cinque Terre" width="300" height="195" />
+                                                }
+                                                <div className="topright-image">
+                                                    {this.state.previewImage ?
+                                                        <i onClick={this.deletePreviewImage} className="fa fa-times-circle-o delete-icon" />
+                                                        :
+                                                        null
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Active</label>
+                                        <select value={this.state.status} onChange={this.handleChange} name="status" className="form-control">
+                                            <option value="active">Yes</option>
+                                            <option value="inactive">No</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </form>
                         </div>
-                        <button type="submit" className="btn btn-primary pull-right">Save</button>
-                    </form>
+                    </div>
                 </div>
-            </div>
+                <div className="row">
+                    <div className="form-group">
+                        <label>&nbsp;</label>
+                        <button onClick={this.handleSubmit} type="button" className="btn btn-primary pull-right">Save</button>
+                    </div>
+                </div>
+                {this.state.success && <SweetAlert success title="Successfully" onConfirm={this.hideSuccessAlert}>
+                    Continute...
+                </SweetAlert>}
+                {this.state.error && <SweetAlert
+                    warning
+                    confirmBtnText="Cancel"
+                    confirmBtnBsStyle="default"
+                    title="Something went wrong!"
+                    onConfirm={this.hideFailAlert} >
+                    Please check carefully!
+                </SweetAlert>}
+            </section>
         );
     }
 }
@@ -239,7 +385,9 @@ const mapStateToProps = (state) => {
     return {
         info: state.infoLocation,
         allType: state.allType,
-        listLocation: state.allLocation
+        listLocation: state.allLocation,
+        listCountries: state.listCountries,
+        listProvinces: state.listProvinces
     }
 }
 
@@ -248,7 +396,9 @@ const mapDispatchToProps = (dispatch, action) => {
         changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
         getAllType: (type) => dispatch(actions.getAllType(type)),
         createLocation: (location) => dispatch(actions.createLocation(location)),
-        getAllLocation: (locations) => dispatch(actions.getAllLocation(locations))
+        getAllLocation: (locations) => dispatch(actions.getAllLocation(locations)),
+        getListCountries: (countries) => dispatch(actions.getListCountries(countries)),
+        getListProvinces: (provinces) => dispatch(actions.getListProvinces(provinces))
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(info));
