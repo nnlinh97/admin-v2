@@ -26,6 +26,8 @@ import ListUserPage from './pages/user/list';
 import ChangePasswordPage from './pages/change-password';
 import ListBookTourPage from './pages/book-tour/list';
 import BookTourTurnDetail from './pages/book-tour/detail';
+import ListCountryPage from './pages/country/list';
+import ListProvincePage from './pages/province/list';
 import './App.css';
 
 class App extends Component {
@@ -65,6 +67,10 @@ class App extends Component {
           <PrivateRoute exact path='/book-tour/list' component={ListBookTourPage} />
 
           <PrivateRoute exact path='/book-tour/detail/:id' component={BookTourTurnDetail} />
+
+          <PrivateRoute exact path='/country/list' component={ListCountryPage} />
+
+          <PrivateRoute exact path='/province/list' component={ListProvincePage} />
 
           <PrivateRoute exact path='' component={NotFound} />
         </Switch>

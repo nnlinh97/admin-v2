@@ -186,7 +186,7 @@ class info extends Component {
                 });
                 this.setState({ address, lat, lng });
             }
-        }, 1000);
+        }, 500);
     }
 
     hideSuccessAlert = () => {

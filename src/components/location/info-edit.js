@@ -7,6 +7,7 @@ import { URL } from '../../constants/url';
 import axios from 'axios';
 import { apiGet, apiPost } from './../../services/api';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import Geocode from "react-geocode";
 import './index.css'
 
 class InfoEdit extends Component {
@@ -30,11 +31,13 @@ class InfoEdit extends Component {
             country: null,
             province: null,
             lat: '',
-            lng: ''
+            lng: '',
+            address: ''
         }
     }
     async componentDidMount() {
-        let { allType, listCountries, listProvinces } = this.props;
+        let { allType, listCountries, listProvinces, locationInfo } = this.props;
+        console.log('componentDidMount: ', locationInfo);
         const id = this.props.match.params.id;
         if (this.props.match) {
             const id = this.props.match.params.id;
@@ -104,6 +107,19 @@ class InfoEdit extends Component {
 
         }
     }
+
+    componentWillReceiveProps = (nextProps) => {
+        const { locationInfo } = nextProps;
+        console.log('componentWillReceiveProps: ', locationInfo);
+        if(locationInfo) {
+            this.setState({
+                lat: locationInfo.marker.lat,
+                lng: locationInfo.marker.lng,
+                address: locationInfo.address
+            });
+        }
+    }
+
 
 
     componentWillUnmount = () => {
@@ -250,6 +266,30 @@ class InfoEdit extends Component {
         reader.readAsDataURL(file)
     }
 
+    handleChangeLatLng = async (event) => {
+        let target = event.target;
+        let name = target.name;
+        let value = target.value;
+        this.setState({ [name]: value });
+        setTimeout(async () => {
+            const newLat = this.state.lat;
+            const newLng = this.state.lng;
+            if (newLat !== '' && newLng !== '') {
+                const result = await Geocode.fromLatLng(newLat, newLng);
+                const { lat, lng } = result.results[0].geometry.location;
+                const address = result.results[0].formatted_address;
+                this.props.handleInputLocation({
+                    marker: {
+                        lat,
+                        lng
+                    }, 
+                    address
+                });
+                this.setState({ address, lat, lng });
+            }
+        }, 500);
+    }
+
     deletePreviewImage = () => {
         this.setState({
             newImage: null,
@@ -258,13 +298,13 @@ class InfoEdit extends Component {
     }
 
     render() {
-        let marker = null;
-        let address = null;
-        if (this.props.info) {
-            marker = this.props.info.marker;
-            address = this.props.info.address;
-        }
-        let { name, desc, listType, selected, status, listProvinces } = this.state;
+        // let marker = null;
+        // let address = null;
+        // if (this.props.info) {
+        //     marker = this.props.info.marker;
+        //     address = this.props.info.address;
+        // }
+        let { name, desc, listType, selected, status, listProvinces, lat, lng, address } = this.state;
         let listCountries = this.props.listCountries ? this.props.listCountries : [];
         return (<section className="content">
             <div className="row">
@@ -275,9 +315,9 @@ class InfoEdit extends Component {
                                 <div className="form-group">
                                     <label>Latitude</label>
                                     <input
-                                        onChange={this.handleChange}
+                                        onChange={this.handleChangeLatLng}
                                         name="lat"
-                                        value={marker ? marker.lat : ''}
+                                        value={lat}
                                         required
                                         type="text"
                                         className="form-control"
@@ -301,7 +341,7 @@ class InfoEdit extends Component {
                                     <textarea
                                         onChange={this.handleChange}
                                         name="address"
-                                        value={address ? address : ''}
+                                        value={address}
                                         required
                                         className="form-control" rows={3}
                                         placeholder="Enter ..." />
@@ -317,9 +357,9 @@ class InfoEdit extends Component {
                                 <div className="form-group">
                                     <label>Longitude</label>
                                     <input
-                                        onChange={this.handleChange}
+                                        onChange={this.handleChangeLatLng}
                                         name="lng"
-                                        value={marker ? marker.lng : ''}
+                                        value={lng}
                                         required
                                         type="text"
                                         className="form-control"

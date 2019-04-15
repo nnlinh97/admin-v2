@@ -21,7 +21,6 @@ class CreateLocationComponent extends Component {
         this.setState({ location });
     }
 
-
     render() {
         return (
             <div className="content-wrapper">

@@ -6,6 +6,20 @@ import InfoEdit from './info-edit';
 import MyMap from './my-map';
 
 class EditLocationComponent extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            location: null
+        }
+    }
+
+    handleChangeLocation = (location) => {
+        this.setState({ location });
+    }
+
+    handleInputLocation = (location) => {
+        this.setState({ location });
+    }
 
     render() {
         return (
@@ -18,12 +32,12 @@ class EditLocationComponent extends Component {
                 <section className="content">
                     <div className="row">
                         <div className="col-lg-12 col-xs-12">
-                            <MyMap />
+                            <MyMap locationInfo={this.state.location} handleChangeLocation={this.handleChangeLocation} />
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-lg-12 col-xs-12">
-                            <InfoEdit />
+                            <InfoEdit locationInfo={this.state.location} handleInputLocation={this.handleInputLocation} />
                         </div>
                     </div>
 

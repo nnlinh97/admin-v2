@@ -5,6 +5,16 @@ export const menus = [
         icon: 'fa fa-dashboard'
     },
     {
+        path: '/country/list',
+        title: 'COUNTRY',
+        icon: 'fa fa-grav'
+    },
+    {
+        path: '/province/list',
+        title: 'PROVINCE',
+        icon: 'fa fa-arrows'
+    },
+    {
         path: '/type-location/list',
         title: 'TYPE LOCATION',
         icon: 'fa fa-flag'

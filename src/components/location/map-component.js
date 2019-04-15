@@ -71,6 +71,13 @@ class MapComponent extends React.Component {
             // console.log(location.data.data);
             let data = location.data.data;
             this.props.getLocationDetail(data);
+            this.props.handleChangeLocation({
+                marker: {
+                    lat: data.latitude,
+                    lng: data.longitude
+                },
+                address: data.address
+            });
             this.setState({
                 center: {
                     lat: data.latitude,
