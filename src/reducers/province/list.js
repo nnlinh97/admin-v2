@@ -8,16 +8,16 @@ const info = (state = initialState, action) => {
             state = [...action.provinces];
             return state;
         
-        // case Types.CREATE_LOCAION:
-        //     state = [...state, action.location];
-        //     return state;
+            case Types.CREATE_PROVINCE:
+            state = [...state, action.province];
+            return state;
 
-        // case Types.EDIT_LOCATION:
-        //     let index = _.findIndex(state, (item) => {
-        //         return item.id === action.location.id
-        //     })
-        //     state[index] = action.location;
-        //     return [...state];
+        case Types.UPDATE_PROVINCE:
+            let index = _.findIndex(state, (item) => {
+                return item.id === action.province.id
+            });
+            state[index] = action.province;
+            return [...state];
 
         default: return state;
     }

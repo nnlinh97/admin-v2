@@ -12,7 +12,6 @@ class Sidebar extends Component {
     }
 
     componentDidMount = () => {
-      console.log(window.location.pathname);
       const path = window.location.pathname;
       let index = _.findIndex(menus, (menu) => {
           return menu.path === path;

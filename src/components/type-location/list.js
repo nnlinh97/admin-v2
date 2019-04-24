@@ -163,7 +163,7 @@ class ListTypesComponent extends Component {
                 minWidth: 100
             },
             {
-                Header: "NAME",
+                Header: "Tên Tiếng Việt",
                 accessor: "name",
                 sortable: true,
                 filterable: true,
@@ -172,7 +172,7 @@ class ListTypesComponent extends Component {
                 }
             },
             {
-                Header: "MARKER",
+                Header: "Tên Tiếng Anh",
                 accessor: "marker",
                 sortable: true,
                 filterable: true,
@@ -189,6 +189,7 @@ class ListTypesComponent extends Component {
                     return (
                         <button className="btn btn-xs btn-success"
                             onClick={() => this.openEditModal(props)}
+                            title="chỉnh sửa"
                         >
                             <i className="fa fa-pencil" />
                         </button>
@@ -209,17 +210,17 @@ class ListTypesComponent extends Component {
             <div style={{ height: '100vh' }} className="content-wrapper">
                 {this.state.success && <SweetAlert
                     success
-                    title="Successfully"
+                    title="Lưu Thành Công"
                     onConfirm={this.hideSuccessAlert}>
-                    Continute...
+                    Tiếp Tục...
                 </SweetAlert>}
                 {this.state.error && <SweetAlert
                     warning
                     confirmBtnText="Cancel"
                     confirmBtnBsStyle="default"
-                    title="Something went wrong!"
+                    title="Đã Có Lỗi Xảy Ra!"
                     onConfirm={this.hideFailAlert}>
-                    Please check carefully!
+                    Vui Lòng Kiểm Tra Lại...
                 </SweetAlert>}
                 <Modal
                     open={createModal}
@@ -242,7 +243,7 @@ class ListTypesComponent extends Component {
 
                 <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content-header">
                     <h1>
-                        List Type Location
+                        Danh Sách Loại Địa Điểm
                     </h1>
                 </section>
                 <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content">
@@ -254,8 +255,9 @@ class ListTypesComponent extends Component {
                                 marginRight: '15px'
                             }}
                             type="button"
+                            title="thêm mới"
                             className="btn btn-success pull-right">
-                            <i className="fa fa-plus" />&nbsp;Create
+                            <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
                     </div>
 

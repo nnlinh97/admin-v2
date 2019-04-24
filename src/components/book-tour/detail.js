@@ -112,9 +112,7 @@ class CreateTourTurnComponent extends Component {
                 } else {
                     await this.props.editRoute(item);
                 }
-                this.setState({
-                    success: true
-                })
+                this.setState({ success: true });
             } catch (error) {
                 console.log(error);
             }
@@ -623,6 +621,20 @@ class CreateTourTurnComponent extends Component {
                 </section>
                 <section className="content">
                     <div className="row">
+                        <i
+                            onClick={() => window.open(`/print-passengers/${this.props.match.params.id}`, '_blank')}
+                            style={{
+                                fontSize: '35px',
+                                marginBottom: '2px',
+                                marginRight: '15px',
+                                color: '#3c8dbc',
+                                cursor: 'pointer'
+                            }}
+                            className="fa fa-print pull-right"
+                            title="print"
+                        />
+                    </div>
+                    <div className="row">
                         <div className="col-lg-12 col-xs-12">
                             <div className="nav-tabs-custom">
                                 <ul className="nav nav-tabs">
@@ -696,7 +708,7 @@ class CreateTourTurnComponent extends Component {
                                                     </div>
                                                     <div className="box-footer">
                                                         <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                        <button type="submit" className="btn btn-info pull-right">Confirm</button>
+                                                        {/* <button type="submit" className="btn btn-info pull-right">Confirm</button> */}
                                                     </div>
                                                 </form>
                                             </div>
@@ -717,7 +729,7 @@ class CreateTourTurnComponent extends Component {
                                                     </div>
                                                     <div className="box-footer">
                                                         <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                        <button type="submit" className="btn btn-info pull-right">Confirm</button>
+                                                        {/* <button type="submit" className="btn btn-info pull-right">Confirm</button> */}
                                                     </div>
                                                 </form>
                                             </div>

@@ -78,6 +78,9 @@ class ListTypesComponent extends Component {
                                 {
                                     Header: "START DATE",
                                     accessor: "start_date",
+                                    Cell: props => {
+                                        return (<p>{moment(props.original.start_date).format('DD/MM/YYYY')}</p>)
+                                    },
                                     sortable: true,
                                     filterable: true,
                                     style: {
@@ -90,6 +93,9 @@ class ListTypesComponent extends Component {
                                 {
                                     Header: "END DATE",
                                     accessor: "end_date",
+                                    Cell: props => {
+                                        return (<p>{moment(props.original.end_date).format('DD/MM/YYYY')}</p>)
+                                    },
                                     sortable: true,
                                     filterable: true,
                                     style: {

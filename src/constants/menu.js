@@ -1,32 +1,32 @@
 export const menus = [
     {
         path: '/',
-        title: 'DASHBOARD',
+        title: 'TRANG CHỦ',
         icon: 'fa fa-dashboard'
     },
     {
         path: '/country/list',
-        title: 'COUNTRY',
+        title: 'QUỐC GIA',
         icon: 'fa fa-grav'
     },
     {
         path: '/province/list',
-        title: 'PROVINCE',
+        title: 'TỈNH THÀNH',
         icon: 'fa fa-arrows'
     },
     {
         path: '/type-location/list',
-        title: 'TYPE LOCATION',
-        icon: 'fa fa-flag'
+        title: 'LOẠI ĐỊA ĐIỂM',
+        icon: 'fa fa-industry'
     },
     {
         path: '/location/list',
-        title: 'LOCATION',
+        title: 'ĐỊA ĐIỂM',
         icon: 'fa fa-flag'
     },
     {
         path: '/route/list',
-        title: 'ROUTE',
+        title: 'ĐIỂM LỘ TRÌNH',
         icon: 'fa fa-map-pin'
     },
     {
@@ -36,27 +36,27 @@ export const menus = [
     },
     {
         path: '/tour-turn/list',
-        title: 'TOUR TURN',
+        title: 'CHUYẾN ĐI',
         icon: 'fa fa-plane'
     },
     {
         path: '/transport/list',
-        title: 'TRANSPORT',
+        title: 'PHƯƠNG TIỆN DI CHUYỂN',
         icon: 'fa fa-bus'
     },
     {
         path: '/type-passenger/list',
-        title: 'TYPE PASSENGER',
+        title: 'LOẠI HÀNH KHÁCH',
         icon: 'fa fa-certificate'
     },
     {
         path: '/user/list',
-        title: 'USER',
+        title: 'HÀNH KHÁCH',
         icon: 'fa fa-user'
     },
     {
         path: '/book-tour/list',
-        title: 'BOOK TOUR',
+        title: 'LỊCH SỬ ĐẶT TOUR',
         icon: 'fa fa-bookmark-o'
     },
 ];

@@ -181,25 +181,23 @@ class CreateTourTurnComponent extends Component {
     render() {
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
-                {this.state.success &&
-                    <SweetAlert success title="Successfully" onConfirm={this.hideSuccessAlert}>
-                        hihihehehaha
-                    </SweetAlert>
-                }
-                {this.state.error &&
-                    <SweetAlert
-                        warning
-                        confirmBtnText="Cancel"
-                        confirmBtnBsStyle="default"
-                        title="Fail!!!!!"
-                        onConfirm={this.hideFailAlert}
-                    >
-                        Please check carefully!
-                    </SweetAlert>
-                }
+                {this.state.success && <SweetAlert
+                    success
+                    title="Lưu Thành Công"
+                    onConfirm={this.hideSuccessAlert}>
+                    Tiếp Tục...
+                </SweetAlert>}
+                {this.state.error && <SweetAlert
+                    warning
+                    confirmBtnText="Hủy"
+                    confirmBtnBsStyle="default"
+                    title="Đã Có Lỗi Xảy Ra!"
+                    onConfirm={this.hideFailAlert}>
+                    Vui Lòng Kiểm Tra Lại...
+                </SweetAlert>}
                 <section className="content-header">
                     <h1>
-                        Create Route
+                        Thêm Mới
                     </h1>
                 </section>
                 <section className="content">
@@ -211,25 +209,24 @@ class CreateTourTurnComponent extends Component {
                                 </div>
                                 <form onSubmit={this.handleSave} className="form-horizontal">
                                     <div className="box-body">
-                                        <div className="form-group">
+                                        {/* <div className="form-group">
                                             <label className="col-sm-3 control-label">Title</label>
                                             <div className="col-sm-9">
                                                 <input type="text" onChange={this.handleChange} value={this.state.title} name="title" className="form-control" />
                                             </div>
-                                        </div>
+                                        </div> */}
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Location (*)</label>
+                                            <label className="col-sm-3 control-label">Địa Điểm (*)</label>
                                             <div className="col-sm-9">
                                                 {this.state.locations && <Select
-                                                    // value={selected}
                                                     onChange={this.handleChangeSelect}
                                                     options={this.state.locations}
-                                                // defaultValue={{ label: selected.name ? selected.name : 'linh', value: selected.id ? selected.id : '' }}
+                                                    placeholder=""
                                                 />}
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Arrive Time</label>
+                                            <label className="col-sm-3 control-label">Thời Gian Đến</label>
                                             <div className="col-sm-9">
                                                 <TimePicker
                                                     value={this.state.arriveTime}
@@ -238,7 +235,7 @@ class CreateTourTurnComponent extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Leave Time</label>
+                                            <label className="col-sm-3 control-label">Thời Gian Đi</label>
                                             <div className="col-sm-9">
                                                 <TimePicker
                                                     value={this.state.leaveTime}
@@ -247,26 +244,25 @@ class CreateTourTurnComponent extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Day (*)</label>
+                                            <label className="col-sm-3 control-label">Ngày (*)</label>
                                             <div className="col-sm-9">
                                                 <input type="number" onChange={this.handleChange} value={this.state.day} name="day" className="form-control" />
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Transport (*)</label>
+                                            <label className="col-sm-3 control-label">Phương Tiện (*)</label>
                                             <div className="col-sm-9">
                                                 {this.state.transports && <Select
-                                                    // value={selected}
                                                     onChange={this.handleChangeTransport}
                                                     options={this.state.transports}
-                                                // defaultValue={{ label: selected.name ? selected.name : 'linh', value: selected.id ? selected.id : '' }}
+                                                    placeholder=""
                                                 />}
                                             </div>
                                         </div>
                                     </div>
                                     <div className="box-footer">
-                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                        <button type="submit" className="btn btn-info pull-right">Save</button>
+                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Hủy</button>
+                                        <button type="submit" className="btn btn-info pull-right">Lưu Thay Đổi</button>
                                     </div>
                                 </form>
                             </div>

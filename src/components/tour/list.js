@@ -51,7 +51,7 @@ class ListTourComponent extends Component {
                 minWidth: 80
             },
             {
-                Header: "NAME",
+                Header: "Tên",
                 accessor: "name",
                 sortable: false,
                 filterable: true,
@@ -64,6 +64,7 @@ class ListTourComponent extends Component {
                 Cell: props => {
                     return (
                         <button className="btn btn-xs btn-success"
+                        title="chỉnh sửa"
                             onClick={() => this.handleEditTour(props.original.id)}
                         >
                             <i className="fa fa-pencil" />
@@ -84,7 +85,7 @@ class ListTourComponent extends Component {
             <div style={{height: '100vh'}} className="content-wrapper">
                 <section className="content-header">
                     <h1>
-                        List Tour
+                        Danh Sách Tour
                     </h1>
                 </section>
                 <section className="content">
@@ -96,8 +97,9 @@ class ListTourComponent extends Component {
                                 marginRight: '15px'
                             }}
                             type="button"
+                            title="thêm mới"
                             className="btn btn-success pull-right">
-                            <i className="fa fa-plus" />&nbsp;Create
+                            <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
                     </div>
 

@@ -14,13 +14,10 @@ import CreateTourPage from './pages/tour/create';
 import CreateTourTurnPage from './pages/tour-turn/create';
 import EditTourTurnPage from './pages/tour-turn/edit';
 import PrivateRoute from './components/private-route';
-
 import ListRoutePage from './pages/route/list';
 import CreateRoutePage from './pages/route/create';
 import EditRoutePage from './pages/route/edit';
-
 import ListTransportPage from './pages/transport/list';
-
 import ListTypePassengerPage from './pages/type-passenger/list';
 import ListUserPage from './pages/user/list';
 import ChangePasswordPage from './pages/change-password';
@@ -28,6 +25,7 @@ import ListBookTourPage from './pages/book-tour/list';
 import BookTourTurnDetail from './pages/book-tour/detail';
 import ListCountryPage from './pages/country/list';
 import ListProvincePage from './pages/province/list';
+import PrintListPassenger from './components/book-tour/print';
 import './App.css';
 
 class App extends Component {
@@ -71,6 +69,8 @@ class App extends Component {
           <PrivateRoute exact path='/country/list' component={ListCountryPage} />
 
           <PrivateRoute exact path='/province/list' component={ListProvincePage} />
+
+          <PrivateRoute exact path='/print-passengers/:id' component={PrintListPassenger} />
 
           <PrivateRoute exact path='' component={NotFound} />
         </Switch>

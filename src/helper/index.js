@@ -63,3 +63,11 @@ export function formatCurrency(amount) {
         return 'NaN';
     }
 }
+
+export function newListSelect(list) {
+    list.forEach(item => {
+        item.value = item.id;
+        item.label = item.name;
+    });
+    return list;
+}

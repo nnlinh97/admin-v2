@@ -48,7 +48,7 @@ class ListTypesComponent extends Component {
             <div style={{height: '100vh'}} className="content-wrapper">
                 <section className="content-header">
                     <h1>
-                        List Route
+                        Danh Sách Điểm Lộ Trình
                     </h1>
                 </section>
                 <section className="content">
@@ -60,8 +60,9 @@ class ListTypesComponent extends Component {
                                 marginRight: '15px'
                             }}
                             type="button"
+                            title="thêm mới"
                             className="btn btn-success pull-right">
-                            <i className="fa fa-plus" />&nbsp;Create
+                            <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
                     </div>
                     {this.props.listRoute &&
@@ -80,25 +81,17 @@ class ListTypesComponent extends Component {
                                     width: 90,
                                     maxWidth: 100,
                                     minWidth: 80
-                                },
+                                }, 
                                 {
-                                    Header: "TITLE",
-                                    accessor: "title",
-                                    filterable: true,
-                                    style: {
-                                        textAlign: 'center'
-                                    }
-                                },
-                                {
-                                    Header: "NAME",
+                                    Header: "Tên",
                                     accessor: "location.name",
                                     filterable: true,
                                     style: {
-                                        textAlign: 'center'
+                                        textAlign: 'left'
                                     }
                                 },
                                 {
-                                    Header: "ARRIVE TIME",
+                                    Header: "Thời Gian Đến",
                                     accessor: "arrive_time",
                                     style: {
                                         textAlign: 'center'
@@ -108,7 +101,7 @@ class ListTypesComponent extends Component {
                                     minWidth: 140
                                 },
                                 {
-                                    Header: "LEAVE TIME",
+                                    Header: "Thời Gian Đi",
                                     accessor: "leave_time",
                                     style: {
                                         textAlign: 'center'
@@ -118,7 +111,7 @@ class ListTypesComponent extends Component {
                                     minWidth: 140
                                 },
                                 {
-                                    Header: "DAY",
+                                    Header: "Ngày",
                                     accessor: "day",
                                     style: {
                                         textAlign: 'center'
@@ -128,7 +121,7 @@ class ListTypesComponent extends Component {
                                     minWidth: 100
                                 },
                                 {
-                                    Header: "TRANSPORT",
+                                    Header: "Phương Tiện",
                                     accessor: "transport.name_vn",
                                     style: {
                                         textAlign: 'center'
@@ -142,6 +135,7 @@ class ListTypesComponent extends Component {
                                     Cell: props => {
                                         return (
                                             <button className="btn btn-xs btn-success"
+                                            title="chỉnh sửa"
                                                 onClick={() => this.handleEditRoute(props)}
                                             >
                                                 <i className="fa fa-pencil" />

@@ -26,7 +26,7 @@ class CreateLocationComponent extends Component {
             <div className="content-wrapper">
                 <section className="content-header">
                     <h1>
-                        Create Location
+                        Thêm Mới
                     </h1>
                 </section>
                 <section className="content">

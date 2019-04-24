@@ -6,6 +6,7 @@ import * as actions from './../../actions/index';
 import { URL } from '../../constants/url';
 import axios from 'axios';
 import { apiGet, apiPost } from './../../services/api';
+import { newListSelect } from '../../helper';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Geocode from "react-geocode";
 import './index.css';
@@ -36,10 +37,6 @@ class info extends Component {
             try {
                 allType = await apiGet('/type/getAll');
                 allType = allType.data.data;
-                allType.forEach(item => {
-                    item.value = item.id;
-                    item.label = item.name;
-                });
                 this.props.getAllType(allType);
             } catch (error) {
                 console.log(error);
@@ -49,10 +46,6 @@ class info extends Component {
             try {
                 listCountries = await apiGet('/tour_classification/getAllCountries_admin');
                 listCountries = listCountries.data.data;
-                listCountries.forEach(item => {
-                    item.value = item.id;
-                    item.label = item.name;
-                });
                 this.props.getListCountries(listCountries);
             } catch (error) {
                 console.log(error);
@@ -97,13 +90,12 @@ class info extends Component {
 
     handleChangeCountry = (selected) => {
         const { listProvinces } = this.props;
-        const provinces = listProvinces.filter((item) => item.fk_country === selected.id);
+        const provinces = listProvinces.filter((item) => item.country.id === selected.id);
         this.setState({ country: selected, listProvinces: provinces });
     }
 
     checkLocation = () => {
-        if (!this.props || !this.props.info || !this.props.info.marker ||
-            this.props.info.marker.lat === '' || this.props.info.marker.lng === '' ||
+        if (this.state.lat === '' || this.state.lng === '' ||
             this.props.info.address === '' || this.state.name === '' || !this.state.selected || !this.state.image) {
             return false;
         }
@@ -118,11 +110,11 @@ class info extends Component {
         if (this.checkLocation()) {
             try {
                 const form = new FormData();
-                form.append('latitude', this.props.info.marker.lat);
-                form.append('longitude', this.props.info.marker.lng);
+                form.append('latitude', this.state.lat);
+                form.append('longitude', this.state.lng);
                 form.append('name', this.state.name);
                 form.append('description', this.state.desc);
-                form.append('address', this.props.info.address);
+                form.append('address', this.state.address);
                 form.append('image', this.state.image, 'name.jpg');
                 form.append('status', this.state.status);
                 form.append('fk_type', this.state.selected.id);
@@ -181,7 +173,7 @@ class info extends Component {
                     marker: {
                         lat,
                         lng
-                    }, 
+                    },
                     address
                 });
                 this.setState({ address, lat, lng });
@@ -243,31 +235,31 @@ class info extends Component {
                             <form role="form">
                                 <div className="box-body">
                                     <div className="form-group">
-                                        <label>Latitude</label>
+                                        <label>Vĩ Độ (*)</label>
                                         <input
                                             onChange={this.handleChangeLatLng}
                                             value={this.state.lat}
                                             name="lat"
                                             required
                                             type="text"
-                                            className="form-control"
-                                            placeholder="Enter ..." />
+                                            className="form-control" />
                                     </div>
                                     <div className="form-group">
-                                        <label>Name</label>
-                                        <input type="text" onChange={this.handleChange} name="name" value={name} required className="form-control" placeholder="Enter ..." />
+                                        <label>Tên (*)</label>
+                                        <input type="text" onChange={this.handleChange} name="name" value={name} required className="form-control" />
                                     </div>
                                     <div className="form-group">
-                                        <label>Country</label>
+                                        <label>Quốc Gia (*)</label>
                                         {listCountries.length > 0 && <Select
                                             value={this.state.country}
                                             onChange={this.handleChangeCountry}
-                                            options={listCountries}
+                                            options={newListSelect(listCountries)}
                                             maxMenuHeight={200}
+                                            placeholder=""
                                         />}
                                     </div>
                                     <div className="form-group">
-                                        <label>Address</label>
+                                        <label>Địa Chỉ (*)</label>
                                         <textarea
                                             onChange={this.handleChange}
                                             value={this.state.address}
@@ -275,7 +267,7 @@ class info extends Component {
                                             required
                                             className="form-control"
                                             rows={3}
-                                            placeholder="Enter ..." />
+                                        />
                                     </div>
                                 </div>
                             </form>
@@ -286,7 +278,7 @@ class info extends Component {
                             <form role="form">
                                 <div className="box-body">
                                     <div className="form-group">
-                                        <label>Longitude</label>
+                                        <label>Kinh Độ (*)</label>
                                         <input
                                             onChange={this.handleChangeLatLng}
                                             value={this.state.lng}
@@ -297,27 +289,29 @@ class info extends Component {
                                             placeholder="Enter ..." />
                                     </div>
                                     <div className="form-group">
-                                        <label>Type</label>
+                                        <label>Loại (*)</label>
                                         {allType.length > 0 && <Select
                                             value={this.state.selected}
                                             onChange={this.handleChangeSelect}
-                                            options={allType}
+                                            options={newListSelect(allType)}
                                             maxMenuHeight={250}
+                                            placeholder=""
                                         />}
                                     </div>
                                     <div className="form-group">
-                                        <label>Province</label>
-                                        {this.state.listProvinces.length > 0 && <Select
+                                        <label>Tỉnh Thành (*)</label>
+                                        <Select
                                             value={this.state.province}
                                             onChange={this.handleSelectProvince}
-                                            options={this.state.listProvinces}
+                                            options={newListSelect(this.state.listProvinces)}
                                             maxMenuHeight={200}
-                                        />}
+                                            placeholder=""
+                                        />
                                     </div>
 
                                     <div className="form-group">
-                                        <label>Description</label>
-                                        <textarea onChange={this.handleChange} name="desc" value={desc} className="form-control" rows={3} placeholder="Enter ..." />
+                                        <label>Mô Tả</label>
+                                        <textarea onChange={this.handleChange} name="desc" value={desc} className="form-control" rows={3} />
                                     </div>
                                 </div>
                             </form>
@@ -328,7 +322,7 @@ class info extends Component {
                             <form role="form">
                                 <div className="box-body">
                                     <div className="form-group">
-                                        <label>Image</label>
+                                        <label>Hình Ảnh (*)</label>
                                         <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" />
                                         <div style={{ width: '100%', margin: '1px' }} className="gallery">
                                             <div className="container-image">
@@ -347,10 +341,10 @@ class info extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label>Active</label>
+                                        <label>Trạng Thái (*)</label>
                                         <select value={this.state.status} onChange={this.handleChange} name="status" className="form-control">
-                                            <option value="active">Yes</option>
-                                            <option value="inactive">No</option>
+                                            <option value="active">Mở</option>
+                                            <option value="inactive">Đóng</option>
                                         </select>
                                     </div>
 
@@ -362,19 +356,22 @@ class info extends Component {
                 <div className="row">
                     <div className="form-group">
                         <label>&nbsp;</label>
-                        <button onClick={this.handleSubmit} type="button" className="btn btn-primary pull-right">Save</button>
+                        <button onClick={this.handleSubmit} type="button" className="btn btn-primary pull-right">Lưu Thay Đổi</button>
                     </div>
                 </div>
-                {this.state.success && <SweetAlert success title="Successfully" onConfirm={this.hideSuccessAlert}>
-                    Continute...
+                {this.state.success && <SweetAlert
+                    success
+                    title="Lưu Thành Công"
+                    onConfirm={this.hideSuccessAlert}>
+                    Tiếp Tục...
                 </SweetAlert>}
                 {this.state.error && <SweetAlert
                     warning
-                    confirmBtnText="Cancel"
+                    confirmBtnText="Hủy"
                     confirmBtnBsStyle="default"
-                    title="Something went wrong!"
-                    onConfirm={this.hideFailAlert} >
-                    Please check carefully!
+                    title="Đã Có Lỗi Xảy Ra!"
+                    onConfirm={this.hideFailAlert}>
+                    Vui Lòng Kiểm Tra Lại...
                 </SweetAlert>}
             </section>
         );

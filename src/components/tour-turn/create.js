@@ -282,7 +282,7 @@ class CreateTourTurnComponent extends Component {
                 minWidth: 100
             },
             {
-                Header: "NAME",
+                Header: "Loại Khách",
                 accessor: "name",
                 sortable: true,
                 filterable: true,
@@ -291,7 +291,7 @@ class CreateTourTurnComponent extends Component {
                 }
             },
             {
-                Header: "PRICE PERCENT",
+                Header: "Phần Trăm Giá Vé",
                 accessor: "percent",
                 Cell: props => {
                     if (props.original.checked) {
@@ -335,25 +335,23 @@ class CreateTourTurnComponent extends Component {
         ];
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
-                {this.state.success &&
-                    <SweetAlert success title="Successfully" onConfirm={this.hideSuccessAlert}>
-                        hihihehehaha
-                    </SweetAlert>
-                }
-                {this.state.error &&
-                    <SweetAlert
-                        warning
-                        confirmBtnText="Cancel"
-                        confirmBtnBsStyle="default"
-                        title="Something went wrong!"
-                        onConfirm={this.hideFailAlert}
-                    >
-                        Please check carefully!
-                    </SweetAlert>
-                }
+                {this.state.success && <SweetAlert
+                    success
+                    title="Lưu Thành Công"
+                    onConfirm={this.hideSuccessAlert}>
+                    Tiếp Tục...
+                </SweetAlert>}
+                {this.state.error && <SweetAlert
+                    warning
+                    confirmBtnText="Hủy"
+                    confirmBtnBsStyle="default"
+                    title="Đã Có Lỗi Xảy Ra!"
+                    onConfirm={this.hideFailAlert}>
+                    Vui Lòng Kiểm Tra Lại...
+                </SweetAlert>}
                 <section className="content-header">
                     <h1>
-                        Create Tour Turn
+                        Thêm Mới
                     </h1>
                 </section>
                 <section className="content">
@@ -361,8 +359,8 @@ class CreateTourTurnComponent extends Component {
                         <div className="col-lg-8 col-lg-offset-2 col-xs-8 col-xs-offset-2">
                             <div className="nav-tabs-custom">
                                 <ul className="nav nav-tabs">
-                                    <li className="active"><a href="#activity" data-toggle="tab">Information</a></li>
-                                    <li><a href="#timeline" data-toggle="tab">Type Passenger</a></li>
+                                    <li className="active"><a href="#activity" data-toggle="tab">Thông Tin Chuyến Đi</a></li>
+                                    <li><a href="#timeline" data-toggle="tab">Loại Hành Khách và Giá Tiền</a></li>
                                     {/* <li><a href="#settings" data-toggle="tab">Settings</a></li> */}
                                 </ul>
                                 <div className="tab-content">
@@ -375,27 +373,26 @@ class CreateTourTurnComponent extends Component {
                                                             <label className="col-sm-4 control-label">Tour (*)</label>
                                                             <div className="col-sm-8">
                                                                 {this.state.tours.length ? <Select
-                                                                    // value={selected}
                                                                     onChange={this.handleChangeSelect}
                                                                     options={this.state.tours}
-                                                                // defaultValue={{ label: selected.name ? selected.name : 'linh', value: selected.id ? selected.id : '' }}
+                                                                    placeholder=""
                                                                 /> : null}
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Price (*)</label>
+                                                            <label className="col-sm-4 control-label">Giá Tiền (*)</label>
                                                             <div className="col-sm-8">
                                                                 <input type="number" onChange={this.handleChange} value={this.state.price} name="price" className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Discount</label>
+                                                            <label className="col-sm-4 control-label">Giảm Giá</label>
                                                             <div className="col-sm-8">
                                                                 <input type="number" onChange={this.handleChange} value={this.state.discount} name="discount" className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Start Date (*)</label>
+                                                            <label className="col-sm-4 control-label">Ngày Bắt Đầu (*)</label>
                                                             <div className="col-sm-8">
                                                                 <DatePicker
                                                                     className="form-control"
@@ -405,7 +402,7 @@ class CreateTourTurnComponent extends Component {
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
-                                                            <label className="col-sm-4 control-label">End Date (*)</label>
+                                                            <label className="col-sm-4 control-label">Ngày Kết Thúc (*)</label>
                                                             <div className="col-sm-8">
                                                                 <DatePicker
                                                                     className="form-control"
@@ -415,24 +412,24 @@ class CreateTourTurnComponent extends Component {
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
-                                                            <label className="col-sm-4 control-label">People Limit (*)</label>
+                                                            <label className="col-sm-4 control-label">SL Tối Đa (*)</label>
                                                             <div className="col-sm-8">
                                                                 <input type="number" onChange={this.handleChange} value={this.state.limitPeople} name="limitPeople" className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Public (*)</label>
+                                                            <label className="col-sm-4 control-label">Trạng Thái (*)</label>
                                                             <div className="col-sm-8">
                                                                 <select value={this.state.status} onChange={this.handleChange} name="status" className="form-control">
-                                                                    <option value="public">Yes</option>
-                                                                    <option value="private">No</option>
+                                                                    <option value="public">Công Khai</option>
+                                                                    <option value="private">Ẩn</option>
                                                                 </select>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className="box-footer">
-                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                        <button type="submit" className="btn btn-info pull-right">Save</button>
+                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Hủy</button>
+                                                        <button type="submit" className="btn btn-info pull-right">Lưu Thay Đổi</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -452,8 +449,8 @@ class CreateTourTurnComponent extends Component {
                                                         </ReactTable>
                                                     </div>
                                                     <div className="box-footer">
-                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                        <button type="submit" className="btn btn-info pull-right">Save</button>
+                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Hủy</button>
+                                                        <button type="submit" className="btn btn-info pull-right">Lưu Thay Đổi</button>
                                                     </div>
                                                 </form>
                                             </div>

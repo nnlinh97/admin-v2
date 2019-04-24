@@ -24,17 +24,28 @@ class ListTypesComponent extends Component {
             createModal: false,
             editModal: false,
             error: false,
-            success: false
+            success: false,
+            country: ''
         }
     }
 
     async componentDidMount() {
-        let { listProvinces } = this.props;
+        let { listProvinces, listCountries } = this.props;
         if (!listProvinces) {
             try {
                 listProvinces = await apiGet('/tour_classification/getAllProvinces_admin');
                 listProvinces = listProvinces.data.data;
+                console.log(listProvinces);
                 this.props.getlistProvinces(listProvinces);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        if (!listCountries) {
+            try {
+                listCountries = await apiGet('/tour_classification/getAllCountries_admin');
+                listCountries = listCountries.data.data;
+                this.props.getListCountries(listCountries);
             } catch (error) {
                 console.log(error);
             }
@@ -47,7 +58,8 @@ class ListTypesComponent extends Component {
             editModal: true,
             name: props.original.name,
             marker: props.original.marker,
-            id: props.original.id
+            id: props.original.id,
+            country: props.original.country
         })
     }
 
@@ -61,15 +73,11 @@ class ListTypesComponent extends Component {
     }
 
     redirectToCreateTypePage = () => {
-        this.setState({
-            createModal: true
-        })
+        this.setState({ createModal: true })
     }
 
     openCreateModal = () => {
-        this.setState({
-            createModal: true
-        })
+        this.setState({ createModal: true })
     }
 
     closeCreateModal = () => {
@@ -80,49 +88,34 @@ class ListTypesComponent extends Component {
         })
     }
 
-    handleEdit = async (name, marker) => {
-        if (!this.state.id || name === '') {
-            this.setState({
-                error: true
-            });
+    handleEdit = async (name, country) => {
+        if (!this.state.id || name === '' || country === '') {
+            this.setState({ error: true });
         } else {
             try {
-                let typeEdit = await apiPost('/type/update', {
-                    id: this.state.id,
+                let province = await apiPost('/tour_classification/updateProvince', { 
+                    id: this.state.id, 
                     name: name,
-                    marker: marker
-                });
-                await this.props.editType(typeEdit.data.data);
-                this.setState({
-                    success: true
-                });
+                    fk_country: country.id
+                 });
+                await this.props.updateProvince(province.data.data);
+                this.setState({ success: true });
             } catch (error) {
-                this.setState({
-                    error: true
-                });
+                this.setState({ error: true });
             }
         }
     }
 
-    handleCreate = async (name, marker) => {
-        if (name === '') {
-            this.setState({
-                error: true
-            });
+    handleCreate = async (name, country) => {
+        if (name === '' || country === '') {
+            this.setState({ error: true });
         } else {
             try {
-                let newType = await apiPost('/type/create', {
-                    name: name,
-                    marker: marker
-                });
-                await this.props.createType(newType.data);
-                this.setState({
-                    success: true
-                });
+                let province = await apiPost('/tour_classification/createProvince', { name: name, idCountry: country.id });
+                await this.props.createProvince(province.data);
+                this.setState({ success: true });
             } catch (error) {
-                this.setState({
-                    error: true
-                });
+                this.setState({ error: true });
             }
         }
     }
@@ -165,8 +158,17 @@ class ListTypesComponent extends Component {
                 minWidth: 100
             },
             {
-                Header: "NAME",
+                Header: "Tỉnh Thành",
                 accessor: "name",
+                sortable: true,
+                filterable: true,
+                style: {
+                    textAlign: 'center'
+                }
+            },
+            {
+                Header: "Quốc Gia",
+                accessor: "country.name",
                 sortable: true,
                 filterable: true,
                 style: {
@@ -179,6 +181,7 @@ class ListTypesComponent extends Component {
                     return (
                         <button className="btn btn-xs btn-success"
                             onClick={() => this.openEditModal(props)}
+                            title="chỉnh sửa"
                         >
                             <i className="fa fa-pencil" />
                         </button>
@@ -194,22 +197,23 @@ class ListTypesComponent extends Component {
                 minWidth: 100
             }
         ];
-        const { createModal, editModal, name, listProvinces } = this.state;
+        const { createModal, editModal, name, country } = this.state;
+        const { listProvinces, listCountries } = this.props;
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
                 {this.state.success && <SweetAlert
                     success
-                    title="Successfully"
+                    title="Lưu Thành Công"
                     onConfirm={this.hideSuccessAlert}>
-                    Continute...
+                    Tiếp Tục...
                 </SweetAlert>}
                 {this.state.error && <SweetAlert
                     warning
                     confirmBtnText="Cancel"
                     confirmBtnBsStyle="default"
-                    title="Something went wrong!"
+                    title="Đã Có Lỗi Xảy Ra!"
                     onConfirm={this.hideFailAlert}>
-                    Please check carefully!
+                    Vui Lòng Kiểm Tra Lại...
                 </SweetAlert>}
                 <Modal
                     open={createModal}
@@ -217,7 +221,7 @@ class ListTypesComponent extends Component {
                     center
                     styles={{ 'modal': { width: '1280px' } }}
                     blockScroll={true} >
-                    <CreateComponent handleCreate={this.handleCreate} />
+                    <CreateComponent handleCreate={this.handleCreate} listCountries={listCountries ? listCountries : []} />
                 </Modal>
 
                 <Modal
@@ -227,12 +231,17 @@ class ListTypesComponent extends Component {
                     styles={{ 'modal': { width: '1280px' } }}
                     blockScroll={true}
                 >
-                    <EditComponent handleEdit={this.handleEdit} name={name} />
+                    <EditComponent 
+                    handleEdit={this.handleEdit} 
+                    name={name} 
+                    listCountries={listCountries ? listCountries : []} 
+                    country={country}
+                    />
                 </Modal>
 
                 <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content-header">
                     <h1>
-                        List Provinces
+                        Danh Sách Tỉnh Thành
                     </h1>
                 </section>
                 <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content">
@@ -244,14 +253,15 @@ class ListTypesComponent extends Component {
                                 marginRight: '15px'
                             }}
                             type="button"
+                            title="thêm mới"
                             className="btn btn-success pull-right">
-                            <i className="fa fa-plus" />&nbsp;Create
+                            <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
                     </div>
 
                     <ReactTable
                         columns={columns}
-                        data={listProvinces}
+                        data={listProvinces ? listProvinces : []}
                         defaultPageSize={10}
                         noDataText={'Please wait...'}
                     >
@@ -271,7 +281,8 @@ const mapStateToProps = (state) => {
         info: state.infoLocation,
         allType: state.allType,
         allLocation: state.allLocation,
-        listProvinces: state.listProvinces
+        listProvinces: state.listProvinces,
+        listCountries: state.listCountries
     }
 }
 
@@ -282,7 +293,10 @@ const mapDispatchToProps = (dispatch, action) => {
         getAllLocation: (locations) => dispatch(actions.getAllLocation(locations)),
         createType: (type) => dispatch(actions.createType(type)),
         editType: (type) => dispatch(actions.editType(type)),
-        getListProvinces: (provinces) => dispatch(actions.getListProvinces(provinces)),
+        getlistProvinces: (provinces) => dispatch(actions.getListProvinces(provinces)),
+        updateProvince: (province) => dispatch(actions.updateProvince(province)),
+        createProvince: (province) => dispatch(actions.createProvince(province)),
+        getListCountries: (countries) => dispatch(actions.getListCountries(countries))
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListTypesComponent));

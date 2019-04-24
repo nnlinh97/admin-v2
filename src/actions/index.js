@@ -246,6 +246,20 @@ export const getListCountries = (countries) => {
     }
 }
 
+export const updateCountry = (country) => {
+    return {
+        type: Types.UPDATE_COUNTRY,
+        country
+    }
+}
+
+export const createCountry = (country) => {
+    return {
+        type: Types.CREATE_COUNTRY,
+        country
+    }
+}
+
 //province
 export const getListProvinces = (provinces) => {
     return {
@@ -253,6 +267,21 @@ export const getListProvinces = (provinces) => {
         provinces
     }
 }
+
+export const updateProvince = (province) => {
+    return {
+        type: Types.UPDATE_PROVINCE,
+        province
+    }
+}
+
+export const createProvince = (province) => {
+    return {
+        type: Types.CREATE_PROVINCE,
+        province
+    }
+}
+
 
 
 

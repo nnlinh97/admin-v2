@@ -26,7 +26,7 @@ class EditLocationComponent extends Component {
             <div className="content-wrapper">
                 <section className="content-header">
                     <h1>
-                        Edit Location
+                        Chỉnh Sửa
                     </h1>
                 </section>
                 <section className="content">

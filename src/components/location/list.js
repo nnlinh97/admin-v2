@@ -60,7 +60,7 @@ class ListLocationComponent extends Component {
                 minWidth: 80
             },
             {
-                Header: "NAME",
+                Header: "Tên Địa Điểm",
                 accessor: "name",
                 sortable: true,
                 filterable: true,
@@ -72,7 +72,7 @@ class ListLocationComponent extends Component {
                 minWidth: 320
             },
             {
-                Header: "ADDRESS",
+                Header: "Địa Chỉ",
                 accessor: "address",
                 sortable: true,
                 filterable: true,
@@ -83,7 +83,7 @@ class ListLocationComponent extends Component {
                 filterable: false,
             },
             {
-                Header: "TYPE",
+                Header: "Loại",
                 accessor: "type.name",
                 sortable: true,
                 filterable: true,
@@ -95,13 +95,13 @@ class ListLocationComponent extends Component {
                 minWidth: 200
             },
             {
-                Header: "STATUS",
+                Header: "Trạng Thái",
                 Cell: props => {
                     return (
                         <h4>
                             <label className={`label label-${props.original.status === 'active' ? 'primary' : 'danger'} disabled`}
                             >
-                                {props.original.status}
+                                {props.original.status === 'active' ? 'mở cửa' : 'đóng cửa'}
                             </label>
                         </h4>
                     );
@@ -128,6 +128,7 @@ class ListLocationComponent extends Component {
                 Cell: props => {
                     return (
                         <button className="btn btn-xs btn-success"
+                        title="chỉnh sửa"
                             onClick={() => this.handleEditLocation(props)}
                         >
                             <i className="fa fa-pencil" />
@@ -149,7 +150,7 @@ class ListLocationComponent extends Component {
             <div style={{ height: '100vh' }} className="content-wrapper">
                 <section className="content-header">
                     <h1>
-                        List Location
+                        Danh Sách Địa Điểm
                     </h1>
                 </section>
                 <section className="content">
@@ -161,8 +162,9 @@ class ListLocationComponent extends Component {
                                 marginRight: '15px'
                             }}
                             type="button"
+                            title="thêm mới"
                             className="btn btn-success pull-right">
-                            <i className="fa fa-plus" />&nbsp;Create
+                            <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
                     </div>
 

@@ -6,6 +6,7 @@ import 'react-table/react-table.css';
 // import Modal from 'react-bootstrap-modal';
 import * as actions from './../../actions/index';
 import { apiGet } from '../../services/api';
+import { formatCurrency } from '../../helper'
 import moment from 'moment';
 import './list.css';
 
@@ -54,7 +55,7 @@ class ListTypesComponent extends Component {
             <div style={{ height: '100vh' }} className="content-wrapper">
                 <section className="content-header">
                     <h1>
-                        List Tour Turn
+                        Danh Sách Chuyến Đi
                     </h1>
                 </section>
                 <section className="content">
@@ -67,7 +68,7 @@ class ListTypesComponent extends Component {
                             }}
                             type="button"
                             className="btn btn-success pull-right">
-                            <i className="fa fa-plus" />&nbsp;Create
+                            <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
                     </div>
                     {this.props.listTourTurn &&
@@ -84,12 +85,12 @@ class ListTypesComponent extends Component {
                                     style: {
                                         textAlign: 'center'
                                     },
-                                    width: 90,
-                                    maxWidth: 100,
-                                    minWidth: 80
+                                    width: 70,
+                                    maxWidth: 80,
+                                    minWidth: 60
                                 },
                                 {
-                                    Header: "NAME",
+                                    Header: "Tên",
                                     accessor: "tour.name",
                                     sortable: true,
                                     filterable: true,
@@ -98,8 +99,11 @@ class ListTypesComponent extends Component {
                                     }
                                 },
                                 {
-                                    Header: "START DATE",
+                                    Header: "Ngày Bắt Đầu",
                                     accessor: "start_date",
+                                    Cell: props => {
+                                        return (<p>{moment(props.original.start_date).format('DD/MM/YYYY')}</p>)
+                                    },
                                     sortable: true,
                                     filterable: true,
                                     style: {
@@ -110,8 +114,11 @@ class ListTypesComponent extends Component {
                                     minWidth: 140
                                 },
                                 {
-                                    Header: "END DATE",
+                                    Header: "Ngày Kết Thúc",
                                     accessor: "end_date",
+                                    Cell: props => {
+                                        return (<p>{moment(props.original.end_date).format('DD/MM/YYYY')}</p>)
+                                    },
                                     sortable: true,
                                     filterable: true,
                                     style: {
@@ -122,19 +129,22 @@ class ListTypesComponent extends Component {
                                     minWidth: 140
                                 },
                                 {
-                                    Header: "PRICE",
+                                    Header: "Giá Tiền/Người vnđ",
                                     accessor: "price",
+                                    Cell: props => {
+                                        return (<p>{formatCurrency(props.original.price)}</p>)
+                                    },
                                     sortable: true,
                                     filterable: false,
                                     style: {
                                         textAlign: 'center'
                                     },
-                                    width: 100,
-                                    maxWidth: 100,
-                                    minWidth: 100
+                                    width: 120,
+                                    maxWidth: 120,
+                                    minWidth: 120
                                 },
                                 {
-                                    Header: "DISCOUNT(%)",
+                                    Header: "Giảm Giá (%)",
                                     accessor: "discount",
                                     sortable: false,
                                     filterable: false,
@@ -146,7 +156,7 @@ class ListTypesComponent extends Component {
                                     minWidth: 100
                                 },
                                 {
-                                    Header: "MAX PEOPLE",
+                                    Header: "SL Tối Đa",
                                     accessor: "num_max_people",
                                     sortable: true,
                                     filterable: false,
@@ -158,7 +168,7 @@ class ListTypesComponent extends Component {
                                     minWidth: 100
                                 },
                                 {
-                                    Header: "CURRENT",
+                                    Header: "SL Hiện Tại",
                                     accessor: "num_current_people",
                                     sortable: false,
                                     filterable: false,
@@ -170,7 +180,7 @@ class ListTypesComponent extends Component {
                                     minWidth: 100
                                 },
                                 {
-                                    Header: "PUBLICED",
+                                    Header: "Trạng Thái",
                                     Cell: props => {
                                         const status = props.original.status;
                                         const css = status === 'public' ? 'info' : 'default';
@@ -178,7 +188,7 @@ class ListTypesComponent extends Component {
                                             <h4>
                                                 <label className={`label label-${css} disabled`}
                                                 >
-                                                    {status}
+                                                    {status === 'public' ? 'công khai' : 'ẩn'}
                                                 </label>
                                             </h4>
                                         );
@@ -193,7 +203,7 @@ class ListTypesComponent extends Component {
                                     minWidth: 100
                                 },
                                 {
-                                    Header: "STATUS",
+                                    Header:  props => <i className="fa fa-suitcase" />,
                                     Cell: props => {
                                         const startDate = props.original.start_date;
                                         const endDate = props.original.end_date;
@@ -242,6 +252,7 @@ class ListTypesComponent extends Component {
                                         }
                                         return (
                                             <button className={`btn btn-xs btn-success ${startDate > currentDate ? '' : 'disabled'}`}
+                                                title="chỉnh sửa"
                                                 onClick={() => this.handleEditTourTurn(props)}
                                             >
                                                 <i className="fa fa-pencil" />

@@ -35,22 +35,22 @@ class ListTypesComponent extends Component {
         const { name } = this.state;
         return (<div className="modal-content">
             <div className="modal-header">
-                <h4 className="modal-title">Create Country</h4>
+                <h4 className="modal-title">Thêm mới</h4>
             </div>
             <div className="modal-body">
                 <form className="form-horizontal">
                     <div className="box-body">
                         <div className="form-group">
-                            <label htmlFor="inputEmail3" className="col-sm-2 control-label">Name</label>
+                            <label htmlFor="inputEmail3" className="col-sm-2 control-label">Tên Quốc Gia</label>
                             <div className="col-sm-10">
-                                <input required onChange={this.handleChange} name="name" value={name} type="text" className="form-control" id="inputEmail3" placeholder="Name" />
+                                <input required onChange={this.handleChange} name="name" value={name} type="text" className="form-control" />
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
             <div className="modal-footer">
-                <button onClick={this.handleCreate} type="button" className="btn btn-primary">Save</button>
+                <button onClick={this.handleCreate} type="button" className="btn btn-primary">Lưu Thay Đổi</button>
             </div>
         </div>);
     }

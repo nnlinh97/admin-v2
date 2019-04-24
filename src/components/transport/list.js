@@ -213,17 +213,19 @@ class ListTypesComponent extends Component {
         const { createModal, editModal, name_vn, name_en } = this.state;
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
-                {this.state.success && <SweetAlert success title="Successfully" onConfirm={this.hideSuccessAlert}>
-                        hihihehehaha
+                {this.state.success && <SweetAlert
+                    success
+                    title="Lưu Thành Công"
+                    onConfirm={this.hideSuccessAlert}>
+                    Tiếp Tục...
                 </SweetAlert>}
                 {this.state.error && <SweetAlert
-                        warning
-                        confirmBtnText="Cancel"
-                        confirmBtnBsStyle="default"
-                        title="Fail!!!!!"
-                        onConfirm={this.hideFailAlert}
-                    >
-                        Please check carefully!
+                    warning
+                    confirmBtnText="Hủy"
+                    confirmBtnBsStyle="default"
+                    title="Đã Có Lỗi Xảy Ra!"
+                    onConfirm={this.hideFailAlert}>
+                    Vui Lòng Kiểm Tra Lại...
                 </SweetAlert>}
                 <Modal
                     open={createModal}

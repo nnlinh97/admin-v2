@@ -153,17 +153,17 @@ class ListTypesComponent extends Component {
             <div style={{ height: '100vh' }} className="content-wrapper">
                 {this.state.success && <SweetAlert
                     success
-                    title="Successfully"
+                    title="Lưu Thành Công"
                     onConfirm={this.hideSuccessAlert}>
-                    Continute...
+                    Tiếp Tục...
                 </SweetAlert>}
                 {this.state.error && <SweetAlert
                     warning
-                    confirmBtnText="Cancel"
+                    confirmBtnText="Hủy"
                     confirmBtnBsStyle="default"
-                    title="Something went wrong!"
+                    title="Đã Có Lỗi Xảy Ra!"
                     onConfirm={this.hideFailAlert}>
-                    Please check carefully!
+                    Vui Lòng Kiểm Tra Lại...
                 </SweetAlert>}
 
                 <Modal

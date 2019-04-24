@@ -373,22 +373,20 @@ class CreateTourTurnComponent extends Component {
         ];
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
-                {this.state.success &&
-                    <SweetAlert success title="Successfully" onConfirm={this.hideSuccessAlert}>
-                        hihihehehaha
-                    </SweetAlert>
-                }
-                {this.state.error &&
-                    <SweetAlert
-                        warning
-                        confirmBtnText="Cancel"
-                        confirmBtnBsStyle="default"
-                        title="Something went wrong!"
-                        onConfirm={this.hideFailAlert}
-                    >
-                        Please check carefully!
-                    </SweetAlert>
-                }
+                {this.state.success && <SweetAlert
+                    success
+                    title="Lưu Thành Công"
+                    onConfirm={this.hideSuccessAlert}>
+                    Tiếp Tục...
+                </SweetAlert>}
+                {this.state.error && <SweetAlert
+                    warning
+                    confirmBtnText="Hủy"
+                    confirmBtnBsStyle="default"
+                    title="Đã Có Lỗi Xảy Ra!"
+                    onConfirm={this.hideFailAlert}>
+                    Vui Lòng Kiểm Tra Lại...
+                </SweetAlert>}
                 <section className="content-header">
                     <h1>
                         Update Tour Turn

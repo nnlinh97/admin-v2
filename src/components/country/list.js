@@ -39,7 +39,7 @@ class ListTypesComponent extends Component {
                 console.log(error);
             }
         }
-        this.setState({listCountries});
+        this.setState({ listCountries });
     }
 
     openEditModal = (props) => {
@@ -87,12 +87,11 @@ class ListTypesComponent extends Component {
             });
         } else {
             try {
-                let typeEdit = await apiPost('/type/update', {
+                let country = await apiPost('/tour_classification/updateCountry', {
                     id: this.state.id,
-                    name: name,
-                    marker: marker
+                    name: name
                 });
-                await this.props.editType(typeEdit.data.data);
+                await this.props.updateCountry(country.data.data);
                 this.setState({
                     success: true
                 });
@@ -111,18 +110,11 @@ class ListTypesComponent extends Component {
             });
         } else {
             try {
-                let newType = await apiPost('/type/create', {
-                    name: name,
-                    marker: marker
-                });
-                await this.props.createType(newType.data);
-                this.setState({
-                    success: true
-                });
+                let country = await apiPost('/tour_classification/createCountry', { name });
+                await this.props.createCountry(country.data);
+                this.setState({ success: true });
             } catch (error) {
-                this.setState({
-                    error: true
-                });
+                this.setState({ error: true });
             }
         }
     }
@@ -165,12 +157,13 @@ class ListTypesComponent extends Component {
                 minWidth: 100
             },
             {
-                Header: "NAME",
+                Header: "Tên Quốc Gia",
                 accessor: "name",
                 sortable: true,
                 filterable: true,
                 style: {
-                    textAlign: 'center'
+                    textAlign: 'left',
+                    marginLeft: '50px'
                 }
             },
             {
@@ -179,6 +172,7 @@ class ListTypesComponent extends Component {
                     return (
                         <button className="btn btn-xs btn-success"
                             onClick={() => this.openEditModal(props)}
+                            title="chỉnh sửa"
                         >
                             <i className="fa fa-pencil" />
                         </button>
@@ -194,22 +188,23 @@ class ListTypesComponent extends Component {
                 minWidth: 100
             }
         ];
-        const { createModal, editModal, name, listCountries } = this.state;
+        const { createModal, editModal, name } = this.state;
+        const { listCountries } = this.props;
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
                 {this.state.success && <SweetAlert
                     success
-                    title="Successfully"
+                    title="Lưu Thành Công"
                     onConfirm={this.hideSuccessAlert}>
-                    Continute...
+                    Tiếp Tục...
                 </SweetAlert>}
                 {this.state.error && <SweetAlert
                     warning
-                    confirmBtnText="Cancel"
+                    confirmBtnText="Hủy"
                     confirmBtnBsStyle="default"
-                    title="Something went wrong!"
+                    title="Đã Có Lỗi Xảy Ra!"
                     onConfirm={this.hideFailAlert}>
-                    Please check carefully!
+                    Vui Lòng Kiểm Tra Lại...
                 </SweetAlert>}
                 <Modal
                     open={createModal}
@@ -227,12 +222,12 @@ class ListTypesComponent extends Component {
                     styles={{ 'modal': { width: '1280px' } }}
                     blockScroll={true}
                 >
-                    <EditComponent handleEdit={this.handleEdit} name={name}/>
+                    <EditComponent handleEdit={this.handleEdit} name={name} />
                 </Modal>
 
                 <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content-header">
                     <h1>
-                        List Countries
+                        Danh sách Quốc Gia
                     </h1>
                 </section>
                 <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content">
@@ -244,14 +239,15 @@ class ListTypesComponent extends Component {
                                 marginRight: '15px'
                             }}
                             type="button"
+                            title="thêm mới"
                             className="btn btn-success pull-right">
-                            <i className="fa fa-plus" />&nbsp;Create
+                            <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
                     </div>
 
                     <ReactTable
                         columns={columns}
-                        data={listCountries}
+                        data={listCountries ? listCountries : []}
                         defaultPageSize={10}
                         noDataText={'Please wait...'}
                     >
@@ -283,6 +279,8 @@ const mapDispatchToProps = (dispatch, action) => {
         createType: (type) => dispatch(actions.createType(type)),
         editType: (type) => dispatch(actions.editType(type)),
         getListCountries: (countries) => dispatch(actions.getListCountries(countries)),
+        updateCountry: (country) => dispatch(actions.updateCountry(country)),
+        createCountry: (country) => dispatch(actions.createCountry(country))
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListTypesComponent));
