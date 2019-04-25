@@ -17,8 +17,9 @@ class ListTypesComponent extends Component {
         }
     }
 
-    handleCreate = () => {
-        const {name} = this.state;
+    handleCreate = (event) => {
+        event.preventDefault();
+        const { name } = this.state;
         this.props.handleCreate(name);
     }
 
@@ -26,33 +27,41 @@ class ListTypesComponent extends Component {
         let target = event.target;
         let name = target.name;
         let value = target.value;
-        this.setState({
-            [name]: value
-        });
+        this.setState({ [name]: value });
     }
 
     render() {
-        const { name } = this.state;
-        return (<div className="modal-content">
-            <div className="modal-header">
-                <h4 className="modal-title">Thêm mới</h4>
-            </div>
-            <div className="modal-body">
-                <form className="form-horizontal">
-                    <div className="box-body">
-                        <div className="form-group">
-                            <label htmlFor="inputEmail3" className="col-sm-2 control-label">Tên Quốc Gia</label>
-                            <div className="col-sm-10">
-                                <input required onChange={this.handleChange} name="name" value={name} type="text" className="form-control" />
-                            </div>
+        return <div style={{ marginLeft: '0px', height: '250px' }} className="content-wrapper">
+            <section style={{ marginBottom: "20px" }} className="content-header">
+                <h1> Thêm Mới Quốc Gia </h1>
+            </section>
+            <section className="content">
+                <div className="row">
+                    <div className="col-lg-12 col-xs-12 ">
+                        <div className="box box-info">
+                            <form onSubmit={this.handleCreate} className="form-horizontal">
+                                <div className="box-body">
+                                    <div className="form-group">
+                                        <label className="col-sm-3 control-label">Tên Quốc Gia</label>
+                                        <div className="col-sm-8">
+                                            <input
+                                                type="text"
+                                                onChange={this.handleChange}
+                                                value={this.state.name}
+                                                name="name"
+                                                className="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="box-footer col-sm-11">
+                                    <button type="submit" className="btn btn-info pull-right">Lưu Thay Đổi</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </form>
-            </div>
-            <div className="modal-footer">
-                <button onClick={this.handleCreate} type="button" className="btn btn-primary">Lưu Thay Đổi</button>
-            </div>
-        </div>);
+                </div>
+            </section>
+        </div>;
     }
 }
 
