@@ -131,15 +131,11 @@ class ListTypesComponent extends Component {
     hideSuccessAlert = () => {
         this.closeCreateModal();
         this.closeEditModal();
-        this.setState({
-            success: false
-        });
+        this.setState({ success: false });
     }
 
     hideFailAlert = () => {
-        this.setState({
-            error: false
-        });
+        this.setState({ error: false });
     }
 
     render() {

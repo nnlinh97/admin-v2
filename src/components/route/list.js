@@ -3,10 +3,14 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-// import Modal from 'react-bootstrap-modal';
+import Modal from 'react-responsive-modal';
 import * as actions from './../../actions/index';
 import { apiGet } from '../../services/api';
 import moment from 'moment';
+import CreateRouteComponent from './create';
+import EditRouteComponent from './edit';
+import { matchString } from '../../helper';
+import SweetAlert from 'react-bootstrap-sweetalert';
 import './list.css';
 
 class ListTypesComponent extends Component {
@@ -14,38 +18,114 @@ class ListTypesComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            listTypes: []
-        }
+            listRoute: [],
+            routeDetail: null,
+            modalCreateIsOpen: false,
+            modalEditIsOpen: false,
+            error: false,
+            success: false,
+            keySearch: ''
+        };
     }
 
     async componentDidMount() {
-        if (!this.props.listRoute) {
+        let { listRoute } = this.props;
+        if (!listRoute.length) {
             try {
-                let listRoute = await apiGet('/route/getAll');
-                this.props.getListRoute(listRoute.data.data);
+                listRoute = await apiGet('/route/getAll');
+                listRoute = listRoute.data.data;
+                this.props.getListRoute(listRoute);
             } catch (error) {
                 console.log(error);
             }
         }
-
+        this.setState({ listRoute });
     }
 
-    handleCreateRoute = (event) => {
+    openModalCreateRoute = (event) => {
         event.preventDefault();
-        this.props.history.push("/route/create");
+        this.setState({ modalCreateIsOpen: true });
     }
 
-    handleEditRoute = async (props) => {
-        const id = props.original.id;
-        const routeDetail = await apiGet(`/route/getById/${id}`);
-        await this.props.getRouteById(routeDetail.data.data);
-        this.props.history.push(`/route/edit/${id}`);
+    openModalEditRoute = (routeDetail) => {
+        this.setState({ modalEditIsOpen: true, routeDetail: routeDetail });
     }
 
+    handleCreateRoute = (result) => {
+        this.setState({ success: result, error: !result });
+    }
+
+    handleEditRoute = (result) => {
+        this.setState({ success: result, error: !result });
+    }
+
+    handleCloseModalCreateRoute = () => {
+        this.setState({ modalCreateIsOpen: false });
+    }
+
+    handleCloseModalEditRoute = () => {
+        this.setState({ modalEditIsOpen: false });
+    }
+
+    handleHiddenSuccess = () => {
+        this.handleCloseModalCreateRoute();
+        this.handleCloseModalEditRoute();
+        this.setState({ success: false });
+    }
+
+    handleHiddenError = () => {
+        this.setState({ error: false });
+    }
+
+    handleChange = ({ target }) => {
+        this.setState({ keySearch: target.value.toLowerCase() });
+    }
+
+    handleSearchRoute = (listRoute, keySearch) => {
+        if (keySearch !== '' && listRoute.length > 0) {
+            return listRoute.filter(route => matchString(route.location.name, keySearch) || matchString(route.id.toString(), keySearch));
+        }
+        return listRoute;
+    }
 
     render() {
+        console.log(this.state.listRoute)
         return (
-            <div style={{height: '100vh'}} className="content-wrapper">
+            <div style={{ height: '90vh' }} className="content-wrapper">
+                {this.state.success && <SweetAlert
+                    success
+                    title="Lưu Thành Công"
+                    onConfirm={this.handleHiddenSuccess}>
+                    Tiếp Tục...
+                </SweetAlert>}
+
+                {this.state.error && <SweetAlert
+                    warning
+                    confirmBtnText="Hủy"
+                    confirmBtnBsStyle="default"
+                    title="Đã Có Lỗi Xảy Ra!"
+                    onConfirm={this.handleHiddenError}>
+                    Vui Lòng Kiểm Tra Lại...
+                </SweetAlert>}
+
+                <Modal
+                    open={this.state.modalCreateIsOpen}
+                    onClose={this.handleCloseModalCreateRoute}
+                    center
+                    styles={{ 'modal': { width: '1280px' } }}
+                    blockScroll={true} >
+                    <CreateRouteComponent handleCreateRoute={this.handleCreateRoute} />
+                </Modal>
+
+                <Modal
+                    open={this.state.modalEditIsOpen}
+                    onClose={this.handleCloseModalEditRoute}
+                    center
+                    styles={{ 'modal': { width: '1280px' } }}
+                    blockScroll={true} >
+                    <EditRouteComponent handleEditRoute={this.handleEditRoute} routeDetail={this.state.routeDetail} />
+                </Modal>
+
                 <section className="content-header">
                     <h1>
                         Danh Sách Điểm Lộ Trình
@@ -53,107 +133,122 @@ class ListTypesComponent extends Component {
                 </section>
                 <section className="content">
                     <div className="row">
-                        <button
-                            onClick={this.handleCreateRoute}
-                            style={{
-                                marginBottom: '2px',
-                                marginRight: '15px'
-                            }}
-                            type="button"
-                            title="thêm mới"
-                            className="btn btn-success pull-right">
-                            <i className="fa fa-plus" />&nbsp;Thêm
+                        <div style={{ width: '150px', float: 'left' }}>
+                            <input
+                                type="text"
+                                onChange={this.handleChange}
+                                value={this.state.keySearch}
+                                name="title"
+                                className="form-control"
+                                placeholder="tìm kiếm..."
+                            />
+                        </div>
+                        <div style={{ float: 'right' }}>
+                            <button
+                                onClick={this.openModalCreateRoute}
+                                style={{
+                                    marginBottom: '2px',
+                                    marginRight: '15px'
+                                }}
+                                type="button"
+                                title="thêm mới"
+                                className="btn btn-success pull-right">
+                                <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
+                        </div>
                     </div>
-                    {this.props.listRoute &&
-                        <ReactTable
-                            data={this.props.listRoute ? this.props.listRoute : []}
-                            defaultPageSize={10}
-                            noDataText={'Please wait...'}
-                            columns={[
-                                {
-                                    Header: "ID",
-                                    accessor: "id",
-                                    filterable: true,
-                                    style: {
-                                        textAlign: 'center'
-                                    },
-                                    width: 90,
-                                    maxWidth: 100,
-                                    minWidth: 80
-                                }, 
-                                {
-                                    Header: "Tên",
-                                    accessor: "location.name",
-                                    filterable: true,
-                                    style: {
-                                        textAlign: 'left'
-                                    }
+                    <ReactTable
+                        data={this.handleSearchRoute(this.props.listRoute, this.state.keySearch)}
+                        defaultPageSize={10}
+                        noDataText={'Please wait...'}
+                        columns={[
+                            {
+                                Header: "ID",
+                                accessor: "id",
+                                style: {
+                                    textAlign: 'center'
                                 },
-                                {
-                                    Header: "Thời Gian Đến",
-                                    accessor: "arrive_time",
-                                    style: {
-                                        textAlign: 'center'
-                                    },
-                                    width: 140,
-                                    maxWidth: 140,
-                                    minWidth: 140
-                                },
-                                {
-                                    Header: "Thời Gian Đi",
-                                    accessor: "leave_time",
-                                    style: {
-                                        textAlign: 'center'
-                                    },
-                                    width: 140,
-                                    maxWidth: 140,
-                                    minWidth: 140
-                                },
-                                {
-                                    Header: "Ngày",
-                                    accessor: "day",
-                                    style: {
-                                        textAlign: 'center'
-                                    },
-                                    width: 100,
-                                    maxWidth: 100,
-                                    minWidth: 100
-                                },
-                                {
-                                    Header: "Phương Tiện",
-                                    accessor: "transport.name_vn",
-                                    style: {
-                                        textAlign: 'center'
-                                    },
-                                    width: 140,
-                                    maxWidth: 140,
-                                    minWidth: 140
-                                },
-                                {
-                                    Header: props => <i className="fa fa-pencil" />,
-                                    Cell: props => {
-                                        return (
-                                            <button className="btn btn-xs btn-success"
-                                            title="chỉnh sửa"
-                                                onClick={() => this.handleEditRoute(props)}
-                                            >
-                                                <i className="fa fa-pencil" />
-                                            </button>
-                                        )
-                                    },
-                                    style: {
-                                        textAlign: 'center'
-                                    },
-                                    width: 100,
-                                    maxWidth: 100,
-                                    minWidth: 100
+                                width: 90,
+                                maxWidth: 100,
+                                minWidth: 80
+                            },
+                            {
+                                Header: "Title",
+                                accessor: "title",
+                                style: {
+                                    textAlign: 'left'
                                 }
+                            },
+                            {
+                                Header: "Tên",
+                                accessor: "location.name",
+                                style: {
+                                    textAlign: 'left'
+                                }
+                            },
+                            {
+                                Header: "Thời Gian Đến",
+                                accessor: "arrive_time",
+                                style: {
+                                    textAlign: 'center'
+                                },
+                                width: 140,
+                                maxWidth: 140,
+                                minWidth: 140
+                            },
+                            {
+                                Header: "Thời Gian Đi",
+                                accessor: "leave_time",
+                                style: {
+                                    textAlign: 'center'
+                                },
+                                width: 140,
+                                maxWidth: 140,
+                                minWidth: 140
+                            },
+                            {
+                                Header: "Ngày",
+                                accessor: "day",
+                                style: {
+                                    textAlign: 'center'
+                                },
+                                width: 100,
+                                maxWidth: 100,
+                                minWidth: 100
+                            },
+                            {
+                                Header: "Phương Tiện",
+                                accessor: "transport.name_vn",
+                                style: {
+                                    textAlign: 'center'
+                                },
+                                width: 140,
+                                maxWidth: 140,
+                                minWidth: 140
+                            },
+                            {
+                                Header: props => <i className="fa fa-pencil" />,
+                                Cell: props => {
+                                    return (
+                                        <button className="btn btn-xs btn-success"
+                                            title="chỉnh sửa"
+                                            onClick={() => this.openModalEditRoute(props.original)}
+                                        >
+                                            <i className="fa fa-pencil" />
+                                        </button>
+                                    )
+                                },
+                                style: {
+                                    textAlign: 'center'
+                                },
+                                width: 100,
+                                maxWidth: 100,
+                                minWidth: 100
+                            }
 
-                            ]}
-                        >
-                        </ReactTable>
-                    }
+                        ]}
+                    >
+                    </ReactTable>
                 </section>
             </div>
         );

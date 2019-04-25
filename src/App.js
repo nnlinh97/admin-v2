@@ -15,8 +15,8 @@ import CreateTourTurnPage from './pages/tour-turn/create';
 import EditTourTurnPage from './pages/tour-turn/edit';
 import PrivateRoute from './components/private-route';
 import ListRoutePage from './pages/route/list';
-import CreateRoutePage from './pages/route/create';
-import EditRoutePage from './pages/route/edit';
+// import CreateRoutePage from './pages/route/create';
+// import EditRoutePage from './pages/route/edit';
 import ListTransportPage from './pages/transport/list';
 import ListTypePassengerPage from './pages/type-passenger/list';
 import ListUserPage from './pages/user/list';
@@ -50,9 +50,9 @@ class App extends Component {
           <PrivateRoute exact path='/tour/list' component={ListTourPage} />
           <PrivateRoute exact path='/tour/edit/:id' component={EditTourPage} />
 
-          <PrivateRoute exact path='/route/create' component={CreateRoutePage} />
+          {/* <PrivateRoute exact path='/route/create' component={CreateRoutePage} /> */}
           <PrivateRoute exact path='/route/list' component={ListRoutePage} />
-          <PrivateRoute exact path='/route/edit/:id' component={EditRoutePage} />
+          {/* <PrivateRoute exact path='/route/edit/:id' component={EditRoutePage} /> */}
 
           <PrivateRoute exact path='/transport/list' component={ListTransportPage} />
 
