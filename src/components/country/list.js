@@ -123,9 +123,7 @@ class ListTypesComponent extends Component {
         let target = event.target;
         let name = target.name;
         let value = target.value;
-        this.setState({
-            [name]: value
-        });
+        this.setState({ [name]: value });
     }
 
     hideSuccessAlert = () => {
@@ -143,8 +141,6 @@ class ListTypesComponent extends Component {
             {
                 Header: "ID",
                 accessor: "id",
-                sortable: true,
-                filterable: true,
                 style: {
                     textAlign: 'center'
                 },
@@ -155,8 +151,6 @@ class ListTypesComponent extends Component {
             {
                 Header: "Tên Quốc Gia",
                 accessor: "name",
-                sortable: true,
-                filterable: true,
                 style: {
                     textAlign: 'left',
                     marginLeft: '50px'
@@ -174,8 +168,6 @@ class ListTypesComponent extends Component {
                         </button>
                     )
                 },
-                sortable: false,
-                filterable: false,
                 style: {
                     textAlign: 'center'
                 },
@@ -187,7 +179,7 @@ class ListTypesComponent extends Component {
         const { createModal, editModal, name } = this.state;
         const { listCountries } = this.props;
         return (
-            <div style={{ height: '100vh' }} className="content-wrapper">
+            <div style={{ height: '90vh' }} className="content-wrapper">
                 {this.state.success && <SweetAlert
                     success
                     title="Lưu Thành Công"
