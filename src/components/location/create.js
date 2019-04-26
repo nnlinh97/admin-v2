@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import Map from './map';
-import SearchBox from './searchbox';
-import Map1 from './map1';
 import Info from './info';
 import MyMap from './my-map';
 
 class CreateLocationComponent extends Component {
+    
     constructor(props) {
         super(props);
         this.state = {
@@ -25,9 +23,7 @@ class CreateLocationComponent extends Component {
         return (
             <div className="content-wrapper">
                 <section className="content-header">
-                    <h1>
-                        Thêm Mới
-                    </h1>
+                    <h1> Thêm Mới Địa Điểm</h1>
                 </section>
                 <section className="content">
                     <div className="row">

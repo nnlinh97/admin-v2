@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import * as actions from './../../actions/index';
-import { URL } from '../../constants/url';
-import axios from 'axios';
-import { apiGet, apiPost } from './../../services/api';
-import { newListSelect } from '../../helper';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Geocode from "react-geocode";
+import * as actions from './../../actions/index';
+import { apiGet, apiPost } from './../../services/api';
+import { newListSelect } from '../../helper';
 import './index.css';
 
 class info extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -31,18 +30,19 @@ class info extends Component {
             address: ''
         }
     }
+
     async componentDidMount() {
-        let { allType, listCountries, listProvinces, locationInfo } = this.props;
-        if (!allType) {
+        let { listTypeLocation, listCountries, listProvinces, locationInfo } = this.props;
+        if (!listTypeLocation.length) {
             try {
-                allType = await apiGet('/type/getAll');
-                allType = allType.data.data;
-                this.props.getAllType(allType);
+                listTypeLocation = await apiGet('/type/getAll');
+                listTypeLocation = listTypeLocation.data.data;
+                this.props.getListTypeLocation(listTypeLocation);
             } catch (error) {
                 console.log(error);
             }
         }
-        if (!listCountries) {
+        if (!listCountries.length) {
             try {
                 listCountries = await apiGet('/tour_classification/getAllCountries_admin');
                 listCountries = listCountries.data.data;
@@ -51,14 +51,10 @@ class info extends Component {
                 console.log(error);
             }
         }
-        if (!listProvinces) {
+        if (!listProvinces.length) {
             try {
                 listProvinces = await apiGet('/tour_classification/getAllProvinces_admin');
-                listProvinces = listProvinces.data.data;
-                listProvinces.forEach(item => {
-                    item.value = item.id;
-                    item.label = item.name;
-                });
+                listProvinces = newListSelect(listProvinces.data.data);
             } catch (error) {
                 console.log(error);
             }
@@ -66,6 +62,7 @@ class info extends Component {
         this.setState({ listProvinces });
         this.props.getListProvinces(listProvinces);
     }
+
     componentWillReceiveProps = (nextProps) => {
         const { locationInfo } = nextProps;
         this.setState({
@@ -75,10 +72,9 @@ class info extends Component {
         });
     }
 
-
-    componentWillUnmount = () => {
-        this.props.changeLocationInfo(null);
-    }
+    // componentWillUnmount = () => {
+    //     this.props.changeLocationInfo(null);
+    // }
 
     handleChangeSelect = (selected) => {
         this.setState({ selected });
@@ -96,7 +92,7 @@ class info extends Component {
 
     checkLocation = () => {
         if (this.state.lat === '' || this.state.lng === '' ||
-            this.props.info.address === '' || this.state.name === '' || !this.state.selected || !this.state.image) {
+            this.state.address === '' || this.state.name === '' || !this.state.selected || !this.state.image) {
             return false;
         }
         if (!this.state.country || !this.state.province) {
@@ -125,26 +121,20 @@ class info extends Component {
                 if (!this.props.listLocation) {
                     try {
                         let listLocation = await apiGet('/location/getAllWithoutPagination');
-                        this.props.getAllLocation(listLocation.data.data);
+                        this.props.getListLocation(listLocation.data.data);
                     } catch (error) {
                         console.log(error);
                     }
                 } else {
                     await this.props.createLocation(locationCreate.data);
                 }
-                this.setState({
-                    success: true
-                });
+                this.setState({ success: true });
             } catch (error) {
                 console.log(error);
-                this.setState({
-                    error: true
-                });
+                this.setState({ error: true });
             }
         } else {
-            this.setState({
-                error: true
-            })
+            this.setState({ error: true });
         }
     }
 
@@ -152,9 +142,7 @@ class info extends Component {
         let target = event.target;
         let name = target.name;
         let value = target.value;
-        this.setState({
-            [name]: value
-        });
+        this.setState({ [name]: value });
     }
 
     handleChangeLatLng = async (event) => {
@@ -170,10 +158,7 @@ class info extends Component {
                 const { lat, lng } = result.results[0].geometry.location;
                 const address = result.results[0].formatted_address;
                 this.props.handleInputLocation({
-                    marker: {
-                        lat,
-                        lng
-                    },
+                    marker: { lat, lng },
                     address
                 });
                 this.setState({ address, lat, lng });
@@ -186,9 +171,7 @@ class info extends Component {
     }
 
     hideFailAlert = () => {
-        this.setState({
-            error: false
-        });
+        this.setState({ error: false });
     }
 
     handleChangeImage = (event) => {
@@ -197,19 +180,13 @@ class info extends Component {
         event.target.value = null;
         reader.onloadend = () => {
             event.target = null;
-            this.setState({
-                image: file,
-                previewImage: reader.result
-            });
+            this.setState({ image: file, previewImage: reader.result });
         }
         reader.readAsDataURL(file)
     }
 
     deletePreviewImage = () => {
-        this.setState({
-            image: null,
-            previewImage: null
-        })
+        this.setState({ image: null, previewImage: null });
     }
 
     checkLatLngInput = async () => {
@@ -224,9 +201,6 @@ class info extends Component {
 
     render() {
         const { name, desc } = this.state;
-        let allType = this.props.allType ? this.props.allType : [];
-        let listCountries = this.props.listCountries ? this.props.listCountries : [];
-        let listProvinces = this.props.listProvinces ? this.props.listProvinces : [];
         return (
             <section className="content">
                 <div className="row">
@@ -250,13 +224,13 @@ class info extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label>Quốc Gia (*)</label>
-                                        {listCountries.length > 0 && <Select
+                                        <Select
                                             value={this.state.country}
                                             onChange={this.handleChangeCountry}
-                                            options={newListSelect(listCountries)}
+                                            options={newListSelect(this.props.listCountries)}
                                             maxMenuHeight={200}
                                             placeholder=""
-                                        />}
+                                        />
                                     </div>
                                     <div className="form-group">
                                         <label>Địa Chỉ (*)</label>
@@ -286,17 +260,17 @@ class info extends Component {
                                             required
                                             type="text"
                                             className="form-control"
-                                            placeholder="Enter ..." />
+                                            placeholder="" />
                                     </div>
                                     <div className="form-group">
                                         <label>Loại (*)</label>
-                                        {allType.length > 0 && <Select
+                                        <Select
                                             value={this.state.selected}
                                             onChange={this.handleChangeSelect}
-                                            options={newListSelect(allType)}
+                                            options={newListSelect(this.props.listTypeLocation)}
                                             maxMenuHeight={250}
                                             placeholder=""
-                                        />}
+                                        />
                                     </div>
                                     <div className="form-group">
                                         <label>Tỉnh Thành (*)</label>
@@ -347,7 +321,6 @@ class info extends Component {
                                             <option value="inactive">Đóng</option>
                                         </select>
                                     </div>
-
                                 </div>
                             </form>
                         </div>
@@ -380,9 +353,9 @@ class info extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        info: state.infoLocation,
-        allType: state.allType,
-        listLocation: state.allLocation,
+        // info: state.infoLocation,
+        listTypeLocation: state.listTypeLocation,
+        listLocation: state.listLocation,
         listCountries: state.listCountries,
         listProvinces: state.listProvinces
     }
@@ -391,9 +364,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, action) => {
     return {
         changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
-        getAllType: (type) => dispatch(actions.getAllType(type)),
+        getListTypeLocation: (type) => dispatch(actions.getListTypeLocation(type)),
         createLocation: (location) => dispatch(actions.createLocation(location)),
-        getAllLocation: (locations) => dispatch(actions.getAllLocation(locations)),
+        getListLocation: (locations) => dispatch(actions.getListLocation(locations)),
         getListCountries: (countries) => dispatch(actions.getListCountries(countries)),
         getListProvinces: (provinces) => dispatch(actions.getListProvinces(provinces))
     }

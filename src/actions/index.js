@@ -15,11 +15,11 @@ export const changeLocationInfo = (info) => {
     }
 }
 
-export const getAllType = (allType) => {
+export const getListTypeLocation = (list) => {
     return {
-        type: Types.GET_ALL_TYPE,
-        allType
-    }
+        type: Types.GET_LIST_TYPE_LOCATION,
+        list
+    };
 }
 
 export const createLocation = (location) => {
@@ -29,7 +29,7 @@ export const createLocation = (location) => {
     }
 }
 
-export const getAllLocation = (locations) => {
+export const getListLocation = (locations) => {
     return {
         type: Types.GET_ALL_LOCATION,
         locations

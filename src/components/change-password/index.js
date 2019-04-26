@@ -34,9 +34,7 @@ class CreateTourTurnComponent extends Component {
     handleChange = (event) => {
         const value = event.target.value;
         const name = event.target.name;
-        this.setState({
-            [name]: value
-        })
+        this.setState({ [name]: value });
     }
 
     checkNewAndConfirmPassword = () => {
@@ -144,7 +142,7 @@ class CreateTourTurnComponent extends Component {
                 }
                 <section className="content-header">
                     <h1>
-                        Create Route
+                        ĐỔI MẬT KHẨU
                     </h1>
                 </section>
                 <section className="content">
@@ -198,8 +196,8 @@ class CreateTourTurnComponent extends Component {
 const mapStateToProps = (state) => {
     return {
         info: state.infoLocation,
-        allType: state.allType,
-        allLocation: state.allLocation,
+        listTypeLocation: state.listTypeLocation,
+        listLocation: state.listLocation,
         listTour: state.listTour,
         listRoute: state.listRoute
     }
@@ -208,8 +206,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, action) => {
     return {
         changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
-        getAllType: (type) => dispatch(actions.getAllType(type)),
-        getAllLocation: (locations) => dispatch(actions.getAllLocation(locations)),
+        getListTypeLocation: (type) => dispatch(actions.getListTypeLocation(type)),
         createType: (type) => dispatch(actions.createType(type)),
         editType: (type) => dispatch(actions.editType(type)),
         getListTour: (tour) => dispatch(actions.getListTour(tour)),

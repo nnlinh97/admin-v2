@@ -2,27 +2,22 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import * as actions from './../../actions/index';
-import { URL } from '../../constants/url';
-import axios from 'axios';
-import { apiGet, apiPost } from './../../services/api';
-import { newListSelect } from '../../helper'
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Geocode from "react-geocode";
+import * as actions from './../../actions/index';
+import { apiGet, apiPost } from './../../services/api';
+import { newListSelect } from '../../helper'
 import './index.css'
 
 class InfoEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected: {
-                name: null,
-                id: null
-            },
+            type: null,
             name: '',
             desc: '',
             status: null,
-            listType: null,
+            listTypeLocation: null,
             success: false,
             error: false,
             image: null,
@@ -38,66 +33,58 @@ class InfoEdit extends Component {
         }
     }
     async componentDidMount() {
-        let { allType, listCountries, listProvinces, locationInfo } = this.props;
-        const id = this.props.match.params.id;
-        if (this.props.match) {
-            const id = this.props.match.params.id;
+        let { listTypeLocation, listCountries, listProvinces, locationInfo } = this.props;
+        const { id } = this.props.match.params;
+        let location = null;
+        try {
+            location = await apiGet(`/location/getById/${id}`)
+            location = location.data.data;
+            this.props.changeLocationInfo({
+                marker: { lat: location.latitude, lng: location.longitude },
+                address: location.address
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        if (!listTypeLocation.length) {
             try {
-                let location = await apiGet(`/location/getById/${id}`)
-                const data = location.data.data;
-                await this.props.changeLocationInfo({
-                    marker: {
-                        lat: data.latitude,
-                        lng: data.longitude
-                    },
-                    address: data.address
-                });
-                if (!allType) {
-                    try {
-                        allType = await apiGet('/type/getAll');
-                        allType = allType.data.data;
-                        this.props.getAllType(allType);
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }
-                if (!listCountries) {
-                    try {
-                        listCountries = await apiGet('/tour_classification/getAllCountries_admin');
-                        listCountries = listCountries.data.data;
-                        this.props.getListCountries(listCountries);
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }
-                if (!listProvinces) {
-                    try {
-                        listProvinces = await apiGet('/tour_classification/getAllProvinces_admin');
-                        listProvinces = listProvinces.data.data;
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }
-                this.props.getListProvinces(listProvinces);
-                this.setState({
-                    name: data.name,
-                    desc: data.description,
-                    status: data.status,
-                    selected: {
-                        ...data.type
-                    },
-                    province: data.province,
-                    country: data.province.country,
-                    image: data.featured_img,
-                    listType: allType,
-                    listProvinces,
-                    listCountries
-                });
+                listTypeLocation = await apiGet('/type/getAll');
+                listTypeLocation = listTypeLocation.data.data;
+                this.props.getListTypeLocation(listTypeLocation);
             } catch (error) {
                 console.log(error);
             }
-
         }
+        if (!listCountries.length) {
+            try {
+                listCountries = await apiGet('/tour_classification/getAllCountries_admin');
+                listCountries = listCountries.data.data;
+                this.props.getListCountries(listCountries);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        if (!listProvinces.length) {
+            try {
+                listProvinces = await apiGet('/tour_classification/getAllProvinces_admin');
+                listProvinces = listProvinces.data.data;
+                this.props.getListProvinces(listProvinces);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        this.setState({
+            name: location.name,
+            desc: location.description,
+            status: location.status,
+            selected: { ...location.type },
+            province: location.province,
+            country: location.province.country,
+            image: location.featured_img,
+            listTypeLocation: listTypeLocation,
+            listProvinces,
+            listCountries
+        });
     }
 
     componentWillReceiveProps = (nextProps) => {
@@ -111,16 +98,8 @@ class InfoEdit extends Component {
         }
     }
 
-
-
-    componentWillUnmount = () => {
-        this.props.changeLocationInfo(null);
-    }
-
     handleChangeSelect = (selected) => {
-        this.setState({
-            selected
-        })
+        this.setState({ selected });
     }
 
     handleSelectProvince = (selected) => {
@@ -133,6 +112,13 @@ class InfoEdit extends Component {
         this.setState({ country: selected, listProvinces: provinces });
     }
 
+    handleChange = (event) => {
+        let target = event.target;
+        let name = target.name;
+        let value = target.value;
+        this.setState({ [name]: value });
+    }
+
     checkLocation = () => {
         if (this.state.lat === '' || this.state.lng === '' ||
             this.state.address === '' || this.state.name === '' || !this.state.selected.id || (!this.state.image && !this.state.newImage)) {
@@ -143,7 +129,6 @@ class InfoEdit extends Component {
 
     handleSubmit = async (event) => {
         event.preventDefault();
-        console.log('state: ', this.state);
         if (this.checkLocation()) {
             try {
                 let form = new FormData();
@@ -164,7 +149,7 @@ class InfoEdit extends Component {
                 if (!this.props.listLocation) {
                     try {
                         let listLocation = await apiGet('/location/getAllWithoutPagination');
-                        this.props.getAllLocation(listLocation.data.data);
+                        this.props.getListLocation(listLocation.data.data);
                     } catch (error) {
                         console.log(error);
                     }
@@ -174,7 +159,6 @@ class InfoEdit extends Component {
                         type: this.state.selected
                     });
                 }
-                console.log('data: ', itemEdit.data.data);
                 this.setState({ success: true });
             } catch (error) {
                 this.setState({ error: true });
@@ -184,43 +168,12 @@ class InfoEdit extends Component {
         }
     }
 
-    handleChange = (event) => {
-        let target = event.target;
-        let name = target.name;
-        let value = target.value;
-        this.setState({
-            [name]: value
-        });
-    }
-
-    handleRefresh = async (event) => {
-        event.preventDefault();
-        window.location.reload();
-        try {
-            let data = await axios.get(`${URL}/location/getById/${this.props.match.params.id}`);
-            const location = data.data.data;
-            this.props.changeMarkerPosition({
-                lat: location.latitude,
-                lng: location.longitude,
-                address: location.address
-            })
-        } catch (error) {
-
-        }
-
-    }
-
     hideSuccessAlert = () => {
-        // this.setState({
-        //     success: false
-        // });
         this.props.history.push('/location/list');
     }
 
     hideFailAlert = () => {
-        this.setState({
-            error: false
-        });
+        this.setState({ error: false });
     }
 
     handleChangeImage = (event) => {
@@ -232,10 +185,7 @@ class InfoEdit extends Component {
         event.target.value = null;
         reader.onloadend = () => {
             event.target = null;
-            this.setState({
-                newImage: file,
-                newPreviewImage: reader.result
-            });
+            this.setState({ newImage: file, newPreviewImage: reader.result });
         }
         reader.readAsDataURL(file)
     }
@@ -253,10 +203,7 @@ class InfoEdit extends Component {
                 const { lat, lng } = result.results[0].geometry.location;
                 const address = result.results[0].formatted_address;
                 this.props.handleInputLocation({
-                    marker: {
-                        lat,
-                        lng
-                    },
+                    marker: { lat, lng },
                     address
                 });
                 this.setState({ address, lat: parseFloat(lat), lng: parseFloat(lng) });
@@ -265,20 +212,11 @@ class InfoEdit extends Component {
     }
 
     deletePreviewImage = () => {
-        this.setState({
-            newImage: null,
-            newPreviewImage: null
-        });
+        this.setState({ newImage: null, newPreviewImage: null });
     }
 
     render() {
-        // let marker = null;
-        // let address = null;
-        // if (this.props.info) {
-        //     marker = this.props.info.marker;
-        //     address = this.props.info.address;
-        // }
-        let { name, desc, listType, selected, status, listProvinces, lat, lng, address, province, country, listCountries } = this.state;
+        // let { name, desc, listType, selected, status, listProvinces, lat, lng, address, province, country, listCountries } = this.state;
         return (<section className="content">
             <div className="row">
                 <div className="col-lg-4 col-xs-12">
@@ -290,21 +228,30 @@ class InfoEdit extends Component {
                                     <input
                                         onChange={this.handleChangeLatLng}
                                         name="lat"
-                                        value={lat}
+                                        value={this.state.lat}
                                         required
                                         type="text"
                                         className="form-control" />
                                 </div>
                                 <div className="form-group">
                                     <label>Tên</label>
-                                    <input type="text" onChange={this.handleChange} name="name" value={name ? name : ''} required className="form-control" />
+                                    <input
+                                        required
+                                        type="text"
+                                        onChange={this.handleChange}
+                                        name="name"
+                                        value={this.state.name}
+                                        className="form-control" />
                                 </div>
                                 <div className="form-group">
                                     <label>Tỉnh Thành</label>
-                                    {listCountries && <Select
+                                    {this.state.listCountries && <Select
                                         onChange={this.handleChangeCountry}
-                                        options={newListSelect(listCountries)}
-                                        defaultValue={{ label: country ? country.name : '', value: country ? country.id : '' }}
+                                        options={newListSelect(this.state.listCountries)}
+                                        defaultValue={{
+                                            label: this.state.country ? this.state.country.name : '',
+                                            value: this.state.country ? this.state.country.id : ''
+                                        }}
                                         maxMenuHeight={200}
                                         placeholder=""
                                     />}
@@ -314,7 +261,7 @@ class InfoEdit extends Component {
                                     <textarea
                                         onChange={this.handleChange}
                                         name="address"
-                                        value={address}
+                                        value={this.state.address}
                                         required
                                         className="form-control" rows={3} />
                                 </div>
@@ -331,35 +278,44 @@ class InfoEdit extends Component {
                                     <input
                                         onChange={this.handleChangeLatLng}
                                         name="lng"
-                                        value={lng}
+                                        value={this.state.lng}
                                         required
                                         type="text"
                                         className="form-control" />
                                 </div>
                                 <div className="form-group">
                                     <label>Loại</label>
-                                    {listType && <Select
-                                        // value={selected}
+                                    {this.state.listTypeLocation && <Select
                                         onChange={this.handleChangeSelect}
-                                        options={newListSelect(listType)}
-                                        defaultValue={{ label: selected.name ? selected.name : '', value: selected.id ? selected.id : '' }}
+                                        options={newListSelect(this.state.listTypeLocation)}
+                                        defaultValue={{
+                                            label: this.state.selected ? this.state.selected.name : '',
+                                            value: this.state.selected ? this.state.selected.id : ''
+                                        }}
                                         maxMenuHeight={250}
                                         placeholder=""
                                     />}
                                 </div>
                                 <div className="form-group">
                                     <label>Thành Phố</label>
-                                    {listProvinces && <Select
+                                    {this.state.listProvinces && <Select
                                         onChange={this.handleSelectProvince}
-                                        options={newListSelect(this.state.listProvinces)}
-                                        defaultValue={{ label: province ? province.name : '', value: province ? province.id : '' }}
+                                        options={newListSelect(this.state.listProvinces.filter(province => province.country.id === this.state.country.id))}
+                                        defaultValue={{
+                                            label: this.state.province ? this.state.province.name : '',
+                                            value: this.state.province ? this.state.province.id : ''
+                                        }}
                                         maxMenuHeight={200}
                                     />}
                                 </div>
-
                                 <div className="form-group">
                                     <label>Mô Tả</label>
-                                    <textarea onChange={this.handleChange} name="desc" value={desc ? desc : ''} className="form-control" rows={3} />
+                                    <textarea
+                                        onChange={this.handleChange}
+                                        name="desc"
+                                        value={this.state.desc}
+                                        className="form-control"
+                                        rows={3} />
                                 </div>
                             </div>
                         </form>
@@ -389,7 +345,11 @@ class InfoEdit extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Trạng Thái</label>
-                                    <select value={status ? status : 'active'} onChange={this.handleChange} name="status" className="form-control">
+                                    <select
+                                        value={this.state.status ? this.state.status : 'active'}
+                                        onChange={this.handleChange}
+                                        name="status"
+                                        className="form-control">
                                         <option value="active">Mở</option>
                                         <option value="inactive">Đóng</option>
                                     </select>
@@ -402,15 +362,22 @@ class InfoEdit extends Component {
             <div className="row">
                 <div className="form-group">
                     <label>&nbsp;</label>
-                    <button onClick={this.handleSubmit} type="button" className="btn btn-primary pull-right">Lưu Thay Đổi</button>
+                    <button
+                        onClick={this.handleSubmit}
+                        type="button"
+                        className="btn btn-primary pull-right">
+                        Lưu Thay Đổi
+                    </button>
                 </div>
             </div>
+
             {this.state.success && <SweetAlert
                 success
                 title="Lưu Thành Công"
                 onConfirm={this.hideSuccessAlert}>
                 Tiếp Tục...
             </SweetAlert>}
+
             {this.state.error && <SweetAlert
                 warning
                 confirmBtnText="Hủy"
@@ -419,6 +386,7 @@ class InfoEdit extends Component {
                 onConfirm={this.hideFailAlert}>
                 Vui Lòng Kiểm Tra Lại...
             </SweetAlert>}
+
         </section>
         );
     }
@@ -426,10 +394,8 @@ class InfoEdit extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        info: state.infoLocation,
-        allType: state.allType,
+        listTypeLocation: state.listTypeLocation,
         listLocation: state.allLocation,
-        locationDetail: state.locationDetail,
         listCountries: state.listCountries,
         listProvinces: state.listProvinces
     }
@@ -437,12 +403,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, action) => {
     return {
-        changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
-        getAllType: (type) => dispatch(actions.getAllType(type)),
-        createLocation: (location) => dispatch(actions.createLocation(location)),
-        changeMarkerPosition: (marker) => dispatch(actions.changeMarkerPosition(marker)),
+        getListTypeLocation: (type) => dispatch(actions.getListTypeLocation(type)),
         editLocation: (location) => dispatch(actions.editLocation(location)),
-        getAllLocation: (location) => dispatch(actions.getAllLocation(location)),
+        getListLocation: (location) => dispatch(actions.getListLocation(location)),
         getListCountries: (countries) => dispatch(actions.getListCountries(countries)),
         getListProvinces: (provinces) => dispatch(actions.getListProvinces(provinces))
     }

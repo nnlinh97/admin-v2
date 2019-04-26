@@ -1,32 +1,27 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import './../modal.css';
-import * as actions from './../../../actions/index';
-import { URL } from '../../../constants/url';
-import axios from 'axios';
-import { apiGet, apiPost } from './../../../services/api';
 import Modal from 'react-responsive-modal';
+import './../modal.css';
+import { apiGet, apiPost } from './../../../services/api';
 
-class ListTypesComponent extends Component {
+class EditCountryComponent extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            name: ''
+            name: '',
+            id: ''
         }
     }
 
     componentDidMount = () => {
-        const { name } = this.props;
-        this.setState({ name });
+        const { name, id } = this.props;
+        this.setState({ name, id });
     }
 
-
-    handleEdit = (event) => {
+    handleEditCountry = (event) => {
         event.preventDefault();
-        const { name } = this.state;
-        this.props.handleEdit(name);
+        const { name, id } = this.state;
+        this.props.handleEditCountry(name, id);
     }
 
     handleChange = (event) => {
@@ -46,8 +41,18 @@ class ListTypesComponent extends Component {
                 <div className="row">
                     <div className="col-lg-12 col-xs-12 ">
                         <div className="box box-info">
-                            <form onSubmit={this.handleCreate} className="form-horizontal">
+                            <form onSubmit={this.handleEditCountry} className="form-horizontal">
                                 <div className="box-body">
+                                <div className="form-group">
+                                        <label className="col-sm-3 control-label">ID</label>
+                                        <div className="col-sm-8">
+                                            <input
+                                                type="text"
+                                                value={this.state.id}
+                                                readOnly
+                                                className="form-control" />
+                                        </div>
+                                    </div>
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Tên Quốc Gia</label>
                                         <div className="col-sm-8">
@@ -72,4 +77,4 @@ class ListTypesComponent extends Component {
     }
 }
 
-export default withRouter(ListTypesComponent);
+export default EditCountryComponent;

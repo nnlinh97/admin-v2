@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 import searchLocation from './searchLocation';
 import infoLocation from './location/info';
-import allLocation from './location/list';
+import listLocation from './location/list';
 import locationDetail from './location/detail'
-import allType from './type';
+import listTypeLocation from './type-location/list';
 import marker from './location/marker';
 import listTour from './tour/list';
 import tourDetail from './tour/detail';
@@ -23,8 +23,8 @@ import listProvinces from './province/list';
 const appReducers = combineReducers({
    searchLocation,
    infoLocation,
-   allType,
-   allLocation,
+   listTypeLocation,
+   listLocation,
    locationDetail,
    marker,
    listTour,

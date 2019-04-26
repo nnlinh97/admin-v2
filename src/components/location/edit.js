@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import Map from './map';
-import SearchBox from './searchbox';
-import Map1 from './map1';
 import InfoEdit from './info-edit';
 import MyMap from './my-map';
 
@@ -25,9 +22,7 @@ class EditLocationComponent extends Component {
         return (
             <div className="content-wrapper">
                 <section className="content-header">
-                    <h1>
-                        Chỉnh Sửa
-                    </h1>
+                    <h1> Chỉnh Sửa Địa Điểm </h1>
                 </section>
                 <section className="content">
                     <div className="row">

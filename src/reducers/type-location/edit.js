@@ -2,9 +2,9 @@ import * as Types from './../../constants/index';
 import _ from 'lodash';
 
 const initialState = null;
-const getAllType = (state = initialState, action) => {
+const getListTypeLocation = (state = initialState, action) => {
     switch (action.type) {
-        case Types.GET_ALL_TYPE:
+        case Types.GET_LIST_TYPE_LOCATION:
             state = [...action.allType] ;
             return state;
         
@@ -23,4 +23,4 @@ const getAllType = (state = initialState, action) => {
     }
 }
 
-export default getAllType;
+export default getListTypeLocation;

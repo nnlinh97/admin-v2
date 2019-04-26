@@ -3,55 +3,53 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-// import Modal from 'react-bootstrap-modal';
 import * as actions from './../../actions/index';
-import { URL } from '../../constants/url';
-import axios from 'axios';
-import './modal.css';
-import './list.css';
 import { apiGet, apiPost } from './../../services/api';
+import { matchString } from '../../helper';
+import './list.css';
 
 class ListLocationComponent extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            listTypes: [],
-            createModal: false,
-            editModal: false,
-            type: null,
-            name: '',
-            marker: ''
-        }
+            keySearch: ''
+        };
     }
 
     async componentDidMount() {
-        if (!this.props.allLocation) {
-            try {
-                let listLocation = await apiGet('/location/getAllWithoutPagination');
-                this.props.getAllLocation(listLocation.data.data);
-            } catch (error) {
-                console.log(error);
-            }
+        try {
+            const listLocation = await apiGet('/location/getAllWithoutPagination');
+            this.props.getListLocation(listLocation.data.data);
+        } catch (error) {
+            console.log(error);
         }
     }
-    handleEditLocation = (props) => {
-        console.log(props.original);
-        this.props.history.push(`/location/edit/${props.original.id}`);
+
+    handleEditLocation = ({ original }) => {
+        this.props.history.push(`/location/edit/${original.id}`);
     }
 
-    redirectCreateLocationPage = () => {
+    toCreateLocationPage = () => {
         this.props.history.push('/location/create');
     }
 
+    handleChange = ({ target }) => {
+        this.setState({ keySearch: target.value });
+    }
+
+    handleSearchLocation = (listLocation, keySearch) => {
+        if (keySearch !== '' && listLocation.length > 0) {
+            return listLocation.filter(location => matchString(location.name, keySearch) || matchString(location.id.toString(), keySearch));
+        }
+        return listLocation;
+    }
 
     render() {
         const columns = [
             {
                 Header: "ID",
                 accessor: "id",
-                sortable: true,
-                filterable: true,
                 style: {
                     textAlign: 'center'
                 },
@@ -62,11 +60,6 @@ class ListLocationComponent extends Component {
             {
                 Header: "Tên Địa Điểm",
                 accessor: "name",
-                sortable: true,
-                filterable: true,
-                style: {
-                    // textAlign: 'center'
-                },
                 width: 320,
                 maxWidth: 320,
                 minWidth: 320
@@ -74,22 +67,10 @@ class ListLocationComponent extends Component {
             {
                 Header: "Địa Chỉ",
                 accessor: "address",
-                sortable: true,
-                filterable: true,
-                style: {
-                    // textAlign: 'center'
-                },
-                sortable: false,
-                filterable: false,
             },
             {
                 Header: "Loại",
                 accessor: "type.name",
-                sortable: true,
-                filterable: true,
-                style: {
-                    // textAlign: 'center'
-                },
                 width: 200,
                 maxWidth: 200,
                 minWidth: 200
@@ -99,22 +80,12 @@ class ListLocationComponent extends Component {
                 Cell: props => {
                     return (
                         <h4>
-                            <label className={`label label-${props.original.status === 'active' ? 'primary' : 'danger'} disabled`}
-                            >
+                            <label className={`label label-${props.original.status === 'active' ? 'primary' : 'danger'} disabled`}>
                                 {props.original.status === 'active' ? 'mở cửa' : 'đóng cửa'}
                             </label>
                         </h4>
                     );
-                    // return (
-                    //     <button className={`btn btn-${props.original.status === 'active' ? 'primary' : 'danger'}`}
-                    //         onClick={() => this.handleEditLocation(props)}
-                    //     >
-                    //         {props.original.status}
-                    //     </button>
-                    // )
                 },
-                sortable: true,
-                filterable: false,
                 style: {
                     textAlign: 'center'
                 },
@@ -128,15 +99,12 @@ class ListLocationComponent extends Component {
                 Cell: props => {
                     return (
                         <button className="btn btn-xs btn-success"
-                        title="chỉnh sửa"
-                            onClick={() => this.handleEditLocation(props)}
-                        >
+                            title="chỉnh sửa"
+                            onClick={() => this.handleEditLocation(props)} >
                             <i className="fa fa-pencil" />
                         </button>
                     )
                 },
-                sortable: false,
-                filterable: false,
                 style: {
                     textAlign: 'center'
                 },
@@ -145,18 +113,25 @@ class ListLocationComponent extends Component {
                 minWidth: 60
             }
         ];
-        const { createModal, editModal, name, marker } = this.state;
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
                 <section className="content-header">
-                    <h1>
-                        Danh Sách Địa Điểm
-                    </h1>
+                    <h1> Danh Sách Địa Điểm </h1>
                 </section>
                 <section className="content">
                     <div className="row">
+                        <div style={{ width: '150px', float: 'left' }}>
+                            <input
+                                type="text"
+                                onChange={this.handleChange}
+                                value={this.state.keySearch}
+                                name="title"
+                                className="form-control"
+                                placeholder="tìm kiếm..."
+                            />
+                        </div>
                         <button
-                            onClick={this.redirectCreateLocationPage}
+                            onClick={this.toCreateLocationPage}
                             style={{
                                 marginBottom: '2px',
                                 marginRight: '15px'
@@ -168,36 +143,26 @@ class ListLocationComponent extends Component {
                         </button>
                     </div>
 
-                    {this.props.allLocation && <ReactTable
+                    <ReactTable
                         columns={columns}
-                        data={this.props.allLocation}
-                        defaultPageSize={10}
-                        noDataText={'Please wait...'}
-                    >
-                    </ReactTable>}
+                        data={this.handleSearchLocation(this.props.listLocation, this.state.keySearch)}
+                        defaultPageSize={10} >
+                    </ReactTable>
                 </section>
-
-
-
             </div>
         );
     }
 }
 
-// export default withRouter(ListLocationComponent);
 const mapStateToProps = (state) => {
     return {
-        info: state.infoLocation,
-        allType: state.allType,
-        allLocation: state.allLocation
+        listLocation: state.listLocation
     }
 }
 
 const mapDispatchToProps = (dispatch, action) => {
     return {
-        changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
-        getAllType: (type) => dispatch(actions.getAllType(type)),
-        getAllLocation: (locations) => dispatch(actions.getAllLocation(locations))
+        getListLocation: (locations) => dispatch(actions.getListLocation(locations))
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListLocationComponent));
