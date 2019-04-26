@@ -3,34 +3,34 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-// import Modal from 'react-bootstrap-modal';
-import './modal.css';
-import * as actions from './../../actions/index';
-import { URL } from '../../constants/url';
-import axios from 'axios';
-import { apiGet, apiPost } from './../../services/api';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
+import * as actions from './../../actions/index';
+import { apiGet, apiPost } from './../../services/api';
 import CreateComponent from './create';
 import EditComponent from './edit';
+import { matchString } from '../../helper';
+import './modal.css';
 import './list.css';
 
-class ListTypesComponent extends Component {
+class ListCountryComponent extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             listCountries: [],
-            createModal: false,
-            editModal: false,
+            modalCreateIsOpen: false,
+            modalEditIsOpen: false,
             error: false,
-            success: false
+            success: false,
+            keySearch: '',
+            id: ''
         }
     }
 
     async componentDidMount() {
         let { listCountries } = this.props;
-        if (!listCountries) {
+        if (!listCountries.length) {
             try {
                 listCountries = await apiGet('/tour_classification/getAllCountries_admin');
                 listCountries = listCountries.data.data;
@@ -42,76 +42,38 @@ class ListTypesComponent extends Component {
         this.setState({ listCountries });
     }
 
-    openEditModal = (props) => {
+    handleOpenEditModal = ({ original }) => {
         this.setState({
-            editModal: true,
-            name: props.original.name,
-            marker: props.original.marker,
-            id: props.original.id
-        })
-    }
-
-    closeEditModal = () => {
-        this.setState({
-            editModal: false,
-            id: null,
-            name: '',
-            marker: ''
+            modalEditIsOpen: true,
+            name: original.name,
+            marker: original.marker,
+            id: original.id
         });
     }
 
-    redirectToCreateTypePage = () => {
+    handleCloseEditModal = () => {
         this.setState({
-            createModal: true
-        })
+            modalEditIsOpen: false,
+            id: '',
+            name: ''
+        });
     }
 
-    openCreateModal = () => {
-        this.setState({
-            createModal: true
-        })
+    handleOpenCreateModal = () => {
+        this.setState({ modalCreateIsOpen: true });
     }
 
-    closeCreateModal = () => {
-        this.setState({
-            createModal: false,
-            name: '',
-            marker: ''
-        })
+    handleCloseCreateModal = () => {
+        this.setState({ modalCreateIsOpen: false, name: '' });
     }
 
-    handleEdit = async (name, marker) => {
-        if (!this.state.id || name === '') {
-            this.setState({
-                error: true
-            });
+    handleEditCountry = async (name, id) => {
+        if (id === '' || name === '') {
+            this.setState({ error: true });
         } else {
             try {
-                let country = await apiPost('/tour_classification/updateCountry', {
-                    id: this.state.id,
-                    name: name
-                });
+                let country = await apiPost('/tour_classification/updateCountry', { id: id, name: name });
                 await this.props.updateCountry(country.data.data);
-                this.setState({
-                    success: true
-                });
-            } catch (error) {
-                this.setState({
-                    error: true
-                });
-            }
-        }
-    }
-
-    handleCreate = async (name, marker) => {
-        if (name === '') {
-            this.setState({
-                error: true
-            });
-        } else {
-            try {
-                let country = await apiPost('/tour_classification/createCountry', { name });
-                await this.props.createCountry(country.data);
                 this.setState({ success: true });
             } catch (error) {
                 this.setState({ error: true });
@@ -119,21 +81,39 @@ class ListTypesComponent extends Component {
         }
     }
 
-    handleChange = (event) => {
-        let target = event.target;
-        let name = target.name;
-        let value = target.value;
-        this.setState({ [name]: value });
+    handleCreateCountry = async (name) => {
+        if (name !== '') {
+            try {
+                let country = await apiPost('/tour_classification/createCountry', { name });
+                await this.props.createCountry(country.data);
+                this.setState({ success: true });
+            } catch (error) {
+                this.setState({ error: true });
+            }
+        } else {
+            this.setState({ error: true });
+        }
     }
 
     hideSuccessAlert = () => {
-        this.closeCreateModal();
-        this.closeEditModal();
+        this.handleCloseCreateModal();
+        this.handleCloseEditModal();
         this.setState({ success: false });
     }
 
     hideFailAlert = () => {
         this.setState({ error: false });
+    }
+
+    handleChange = ({ target }) => {
+        this.setState({ keySearch: target.value });
+    }
+
+    handleSearchCountry= (listCountries, keySearch) => {
+        if (keySearch !== '' && listCountries.length > 0) {
+            return listCountries.filter(country => matchString(country.name, keySearch) || matchString(country.id.toString(), keySearch));
+        }
+        return listCountries;
     }
 
     render() {
@@ -161,9 +141,8 @@ class ListTypesComponent extends Component {
                 Cell: props => {
                     return (
                         <button className="btn btn-xs btn-success"
-                            onClick={() => this.openEditModal(props)}
-                            title="chỉnh sửa"
-                        >
+                            onClick={() => this.handleOpenEditModal(props)}
+                            title="chỉnh sửa" >
                             <i className="fa fa-pencil" />
                         </button>
                     )
@@ -176,16 +155,16 @@ class ListTypesComponent extends Component {
                 minWidth: 100
             }
         ];
-        const { createModal, editModal, name } = this.state;
-        const { listCountries } = this.props;
         return (
             <div style={{ height: '90vh' }} className="content-wrapper">
+
                 {this.state.success && <SweetAlert
                     success
                     title="Lưu Thành Công"
                     onConfirm={this.hideSuccessAlert}>
                     Tiếp Tục...
                 </SweetAlert>}
+
                 {this.state.error && <SweetAlert
                     warning
                     confirmBtnText="Hủy"
@@ -194,34 +173,48 @@ class ListTypesComponent extends Component {
                     onConfirm={this.hideFailAlert}>
                     Vui Lòng Kiểm Tra Lại...
                 </SweetAlert>}
+
                 <Modal
-                    open={createModal}
-                    onClose={this.closeCreateModal}
+                    open={this.state.modalCreateIsOpen}
+                    onClose={this.handleCloseCreateModal}
                     center
                     styles={{ 'modal': { width: '1280px' } }}
                     blockScroll={true} >
-                    <CreateComponent handleCreate={this.handleCreate} />
+                    <CreateComponent handleCreateCountry={this.handleCreateCountry} />
                 </Modal>
 
                 <Modal
-                    open={editModal}
-                    onClose={this.closeEditModal}
+                    open={this.state.modalEditIsOpen}
+                    onClose={this.handleCloseEditModal}
                     center
                     styles={{ 'modal': { width: '1280px' } }}
-                    blockScroll={true}
-                >
-                    <EditComponent handleEdit={this.handleEdit} name={name} />
+                    blockScroll={true} >
+                    <EditComponent
+                        handleEditCountry={this.handleEditCountry}
+                        name={this.state.name}
+                        id={this.state.id}
+                    />
                 </Modal>
 
-                <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content-header">
+                <section className="content-header">
                     <h1>
                         Danh sách Quốc Gia
                     </h1>
                 </section>
-                <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content">
+                <section className="content">
                     <div className="row">
+                        <div style={{ width: '150px', float: 'left' }}>
+                            <input
+                                type="text"
+                                onChange={this.handleChange}
+                                value={this.state.keySearch}
+                                name="title"
+                                className="form-control"
+                                placeholder="tìm kiếm..."
+                            />
+                        </div>
                         <button
-                            onClick={this.openCreateModal}
+                            onClick={this.handleOpenCreateModal}
                             style={{
                                 marginBottom: '2px',
                                 marginRight: '15px'
@@ -235,40 +228,28 @@ class ListTypesComponent extends Component {
 
                     <ReactTable
                         columns={columns}
-                        data={listCountries ? listCountries : []}
+                        data={this.handleSearchCountry(this.props.listCountries, this.state.keySearch)}
                         defaultPageSize={10}
-                        noDataText={'Please wait...'}
-                    >
+                        noDataText={'Please wait...'} >
                     </ReactTable>
                 </section>
-
-
-
             </div>
         );
     }
 }
 
-// export default withRouter(ListTypesComponent);
 const mapStateToProps = (state) => {
     return {
-        info: state.infoLocation,
-        allType: state.allType,
-        allLocation: state.allLocation,
         listCountries: state.listCountries
-    }
+    };
 }
 
 const mapDispatchToProps = (dispatch, action) => {
     return {
-        changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
-        getAllType: (type) => dispatch(actions.getAllType(type)),
-        getAllLocation: (locations) => dispatch(actions.getAllLocation(locations)),
-        createType: (type) => dispatch(actions.createType(type)),
-        editType: (type) => dispatch(actions.editType(type)),
         getListCountries: (countries) => dispatch(actions.getListCountries(countries)),
         updateCountry: (country) => dispatch(actions.updateCountry(country)),
         createCountry: (country) => dispatch(actions.createCountry(country))
-    }
+    };
 }
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListTypesComponent));
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListCountryComponent));

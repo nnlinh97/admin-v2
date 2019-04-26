@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import './../modal.css';
-import * as actions from './../../../actions/index';
-import { URL } from '../../../constants/url';
-import axios from 'axios';
-import { apiGet, apiPost } from './../../../services/api';
 import Modal from 'react-responsive-modal';
+import './../modal.css';
+import { apiGet, apiPost } from './../../../services/api';
 
-class ListTypesComponent extends Component {
+class CreateCountryComponent extends Component {
 
     constructor(props) {
         super(props);
@@ -19,8 +14,7 @@ class ListTypesComponent extends Component {
 
     handleCreate = (event) => {
         event.preventDefault();
-        const { name } = this.state;
-        this.props.handleCreate(name);
+        this.props.handleCreateCountry(this.state.name);
     }
 
     handleChange = (event) => {
@@ -31,7 +25,7 @@ class ListTypesComponent extends Component {
     }
 
     render() {
-        return <div style={{ marginLeft: '0px', height: '250px' }} className="content-wrapper">
+        return <div style={{ marginLeft: '0px', height: '230px' }} className="content-wrapper">
             <section style={{ marginBottom: "20px" }} className="content-header">
                 <h1> Thêm Mới Quốc Gia </h1>
             </section>
@@ -65,4 +59,4 @@ class ListTypesComponent extends Component {
     }
 }
 
-export default withRouter(ListTypesComponent);
+export default CreateCountryComponent;

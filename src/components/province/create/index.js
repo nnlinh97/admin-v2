@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import './../modal.css';
-import * as actions from './../../../actions/index';
-import { newListSelect } from '../../../helper';
-import Modal from 'react-responsive-modal';
 import Select from 'react-select';
+import { newListSelect } from '../../../helper';
 
 class CreateProvinceComponent extends Component {
 
@@ -21,10 +18,10 @@ class CreateProvinceComponent extends Component {
         this.setState({ listCountries });
     }
 
-    handleCreate = (event) => {
+    handleCreateProvince = (event) => {
         event.preventDefault();
         const { name, country } = this.state;
-        this.props.handleCreate(name, country);
+        this.props.handleCreateProvince(name, country);
     }
 
     handleChange = (event) => {
@@ -39,7 +36,7 @@ class CreateProvinceComponent extends Component {
     }
 
     render() {
-        return <div style={{ marginLeft: '0px', height: '285px' }} className="content-wrapper">
+        return <div style={{ marginLeft: '0px', height: '245px' }} className="content-wrapper">
             <section style={{ marginBottom: "20px" }} className="content-header">
                 <h1> Thêm Mới Tỉnh Thành </h1>
             </section>
@@ -47,7 +44,7 @@ class CreateProvinceComponent extends Component {
                 <div className="row">
                     <div className="col-lg-12 col-xs-12 ">
                         <div className="box box-info">
-                            <form onSubmit={this.handleCreate} className="form-horizontal">
+                            <form onSubmit={this.handleCreateProvince} className="form-horizontal">
                                 <div className="box-body">
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Tỉnh Thành</label>
@@ -60,8 +57,6 @@ class CreateProvinceComponent extends Component {
                                                 className="form-control" />
                                         </div>
                                     </div>
-                                </div>
-                                <div className="box-body">
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Quốc Gia</label>
                                         <div className="col-sm-8">

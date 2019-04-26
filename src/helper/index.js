@@ -89,5 +89,5 @@ function changeAlias(alias) {
 }
 
 export function matchString(str, key) {
-    return changeAlias(str.toLowerCase()).indexOf(changeAlias(key)) !== -1;
+    return changeAlias(str.toLowerCase()).indexOf(changeAlias(key.toLowerCase())) !== -1;
 }

@@ -32,7 +32,7 @@ class EditRouteComponent extends Component {
             try {
                 listLocation = await apiGet('/location/getAllWithoutPagination');
                 listLocation = listLocation.data.data;
-                await this.props.getAllLocation(listLocation);
+                await this.props.getListLocation(listLocation);
             } catch (error) {
                 console.log(error);
             }
@@ -249,7 +249,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, action) => {
     return {
-        getAllLocation: (locations) => dispatch(actions.getAllLocation(locations)),
         getListTransport: (transport) => dispatch(actions.getListTransport(transport)),
         updateRoute: (route) => dispatch(actions.editRoute(route))
     }

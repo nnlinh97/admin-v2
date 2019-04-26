@@ -36,7 +36,7 @@ class Route extends Component {
         if (!this.props.allLocation) {
             try {
                 let listLocation = await axios.get(`${URL}/location/getAllWithoutPagination`);
-                this.props.getAllLocation(listLocation.data.data);
+                this.props.getListLocation(listLocation.data.data);
             } catch (error) {
                 console.log(error);
             }
@@ -212,8 +212,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, action) => {
     return {
         changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
-        getAllType: (type) => dispatch(actions.getAllType(type)),
-        getAllLocation: (locations) => dispatch(actions.getAllLocation(locations))
+        getListTypeLocation: (type) => dispatch(actions.getListTypeLocation(type)),
+        getListLocation: (locations) => dispatch(actions.getListLocation(locations))
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Route));

@@ -78,7 +78,7 @@ class ListTypesComponent extends Component {
     }
 
     handleChange = ({ target }) => {
-        this.setState({ keySearch: target.value.toLowerCase() });
+        this.setState({ keySearch: target.value });
     }
 
     handleSearchRoute = (listRoute, keySearch) => {
@@ -89,7 +89,6 @@ class ListTypesComponent extends Component {
     }
 
     render() {
-        console.log(this.state.listRoute)
         return (
             <div style={{ height: '90vh' }} className="content-wrapper">
                 {this.state.success && <SweetAlert
@@ -154,7 +153,7 @@ class ListTypesComponent extends Component {
                                 title="thêm mới"
                                 className="btn btn-success pull-right">
                                 <i className="fa fa-plus" />&nbsp;Thêm
-                        </button>
+                            </button>
                         </div>
                     </div>
                     <ReactTable
@@ -270,8 +269,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, action) => {
     return {
         changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
-        getAllType: (type) => dispatch(actions.getAllType(type)),
-        getAllLocation: (locations) => dispatch(actions.getAllLocation(locations)),
+        getListTypeLocation: (type) => dispatch(actions.getListTypeLocation(type)),
+        getListLocation: (locations) => dispatch(actions.getListLocation(locations)),
         createType: (type) => dispatch(actions.createType(type)),
         editType: (type) => dispatch(actions.editType(type)),
         getListTour: (tour) => dispatch(actions.getListTour(tour)),

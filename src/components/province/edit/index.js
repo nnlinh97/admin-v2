@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-// import './../modal.css';
 import { newListSelect } from '../../../helper';
-import Modal from 'react-responsive-modal';
 import Select from 'react-select';
 
 class EditProvinceComponent extends Component {
@@ -10,20 +8,26 @@ class EditProvinceComponent extends Component {
         super(props);
         this.state = {
             name: '',
-            listCountries: null,
-            country: ''
-        }
+            id: '',
+            country: null,
+            listCountries: null
+        };
     }
 
     componentDidMount = () => {
-        const { name, listCountries, country } = this.props;
-        this.setState({ name, listCountries, country });
+        const { listCountries, province } = this.props;
+        this.setState({
+            listCountries,
+            id: province ? province.id : '',
+            name: province ? province.name : '',
+            country: province ? province.country : null
+        });
     }
 
-    handleEdit = (event) => {
+    handleEditProvince = (event) => {
         event.preventDefault();
-        const { name, country } = this.state;
-        this.props.handleEdit(name, country);
+        const { name, country, id } = this.state;
+        this.props.handleEditProvince(name, country, id);
     }
 
     handleChange = (event) => {
@@ -39,16 +43,27 @@ class EditProvinceComponent extends Component {
 
     render() {
         const { name, listCountries, country } = this.state;
-        return <div style={{ marginLeft: '0px', height: '285px' }} className="content-wrapper">
+        return <div style={{ marginLeft: '0px', height: '295px' }} className="content-wrapper">
             <section style={{ marginBottom: "20px" }} className="content-header">
-                <h1> Thêm Mới Tỉnh Thành </h1>
+                <h1> Chỉnh Sửa Tỉnh Thành </h1>
             </section>
             <section className="content">
                 <div className="row">
                     <div className="col-lg-12 col-xs-12 ">
                         <div className="box box-info">
-                            <form onSubmit={this.handleEdit} className="form-horizontal">
+                            <form onSubmit={this.handleEditProvince} className="form-horizontal">
                                 <div className="box-body">
+                                    <div className="form-group">
+                                        <label className="col-sm-3 control-label">ID</label>
+                                        <div className="col-sm-8">
+                                            <input
+                                                type="text"
+                                                value={this.state.id}
+                                                name="id"
+                                                readOnly
+                                                className="form-control" />
+                                        </div>
+                                    </div>
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Tỉnh Thành</label>
                                         <div className="col-sm-8">
@@ -60,8 +75,6 @@ class EditProvinceComponent extends Component {
                                                 className="form-control" />
                                         </div>
                                     </div>
-                                </div>
-                                <div className="box-body">
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Quốc Gia</label>
                                         <div className="col-sm-8">

@@ -233,8 +233,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, action) => {
     return {
         changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
-        getAllType: (type) => dispatch(actions.getAllType(type)),
-        getAllLocation: (locations) => dispatch(actions.getAllLocation(locations)),
+        getListTypeLocation: (type) => dispatch(actions.getListTypeLocation(type)),
         createType: (type) => dispatch(actions.createType(type)),
         editType: (type) => dispatch(actions.editType(type)),
         getListTypePassenger: (listTypePassenger) => dispatch(actions.getListTypePassenger(listTypePassenger)),
