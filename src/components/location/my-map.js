@@ -30,10 +30,8 @@ class MyMap extends React.Component {
     componentDidMount() {
         if (this.props.userLocation) {
             Geocode.fromLatLng(this.props.userLocation.latitude, this.props.userLocation.longitude).then((result) => {
-                this.setState({
-                    myLocation: result.results[0].formatted_address
-                })
-            })
+                this.setState({ myLocation: result.results[0].formatted_address });
+            });
         }
         this.setState({ locationInfo: this.props.locationInfo });
     }
@@ -48,21 +46,19 @@ class MyMap extends React.Component {
     }
 
     render() {
-        return (
-            <div className="custom-map">
-                <MapComponent
-                    isMarkerShown={this.props.isMarkerShown}
-                    isSearchBox={this.props.isSearchBox}
-                    googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${KEY_GOOGLE_MAP}&v=3.exp&libraries=geometry,drawing,places`}
-                    loadingElement={<div style={{ height: `100%` }} />}
-                    containerElement={<div style={{ height: `100vh` }} />}
-                    mapElement={<div style={{ height: `100%` }} />}
-                    myLocation={{ position: this.props.userLocation, address: this.state.myLocation }}
-                    handleChangeLocation={this.handleChangeLocation}
-                    locationInfo={this.state.locationInfo}
-                />
-            </div>
-        )
+        return <div className="custom-map">
+            <MapComponent
+                isMarkerShown={this.props.isMarkerShown}
+                isSearchBox={this.props.isSearchBox}
+                googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${KEY_GOOGLE_MAP}&v=3.exp&libraries=geometry,drawing,places`}
+                loadingElement={<div style={{ height: `100%` }} />}
+                containerElement={<div style={{ height: `100vh` }} />}
+                mapElement={<div style={{ height: `100%` }} />}
+                myLocation={{ position: this.props.userLocation, address: this.state.myLocation }}
+                handleChangeLocation={this.handleChangeLocation}
+                locationInfo={this.state.locationInfo}
+            />
+        </div>;
     }
 }
 

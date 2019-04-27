@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
 import { compose, withProps } from "recompose";
 import { withRouter } from 'react-router-dom';
-import { withScriptjs, withGoogleMap, GoogleMap, InfoWindow, Marker, DirectionsRenderer } from "react-google-maps"
-import { SearchBox } from "react-google-maps/lib/components/places/SearchBox"
-import { InfoBox } from "react-google-maps/lib/components/addons/InfoBox"
-import _ from 'lodash'
+import { withScriptjs, withGoogleMap, GoogleMap, InfoWindow, Marker, DirectionsRenderer } from "react-google-maps";
+import { SearchBox } from "react-google-maps/lib/components/places/SearchBox";
+import { InfoBox } from "react-google-maps/lib/components/addons/InfoBox";
+import _ from 'lodash';
 import Geocode from "react-geocode";
-import { mapOption } from '../../constants/map-option'
+import { mapOption } from '../../constants/map-option';
 import { connect } from 'react-redux';
 import * as actions from './../../actions/index';
-import { URL } from '../../constants/url';
-import axios from 'axios';
 import { apiGet, apiPost } from './../../services/api';
 
 class MapComponent extends React.Component {
-
 
     static defaultProps = {
         center: { lat: 10.762622, lng: 106.660172 }, //Vietnam
@@ -72,21 +69,12 @@ class MapComponent extends React.Component {
             let data = location.data.data;
             this.props.getLocationDetail(data);
             this.props.handleChangeLocation({
-                marker: {
-                    lat: data.latitude,
-                    lng: data.longitude
-                },
+                marker: { lat: data.latitude, lng: data.longitude },
                 address: data.address
             });
             this.setState({
-                center: {
-                    lat: data.latitude,
-                    lng: data.longitude
-                },
-                marker: {
-                    lat: data.latitude,
-                    lng: data.longitude
-                },
+                center: { lat: data.latitude, lng: data.longitude },
+                marker: { lat: data.latitude, lng: data.longitude },
                 address: data.address,
                 zoom: this.googleMap.current.getZoom(),
                 isShowInfo: false,
@@ -106,7 +94,6 @@ class MapComponent extends React.Component {
         }
     }
 
-
     onBoundsChanged() {
         this.setState({ bounds: this.googleMap.current.getBounds() });
     }
@@ -119,28 +106,16 @@ class MapComponent extends React.Component {
         Geocode.fromLatLng(newLat, newLng).then((result) => {
             const { lat, lng } = result.results[0].geometry.location;
             this.props.handleChangeLocation({
-                marker: {
-                    lat,
-                    lng
-                },
+                marker: { lat, lng },
                 address: result.results[0].formatted_address,
             });
             this.props.changeLocationInfo({
-                marker: {
-                    lat,
-                    lng
-                },
+                marker: { lat, lng },
                 address: result.results[0].formatted_address,
             });
             this.setState({
-                center: {
-                    lat: newCenter.lat(),
-                    lng: newCenter.lng()
-                },
-                marker: {
-                    lat: lat,
-                    lng: lng
-                },
+                center: { lat: newCenter.lat(), lng: newCenter.lng() },
+                marker: { lat: lat, lng: lng  },
                 address: result.results[0].formatted_address,
                 zoom: this.googleMap.current.getZoom(),
                 isShowInfo: false
@@ -153,40 +128,26 @@ class MapComponent extends React.Component {
         Geocode.fromAddress(places[0].formatted_address).then((result) => {
             const { lat, lng } = result.results[0].geometry.location;
             this.props.handleChangeLocation({
-                marker: {
-                    lat,
-                    lng
-                },
+                marker: { lat, lng },
                 address: result.results[0].formatted_address,
             });
             this.props.changeLocationInfo({
-                marker: {
-                    lat,
-                    lng
-                },
+                marker: { lat, lng },
                 address: result.results[0].formatted_address,
                 map: true
             });
             this.setState({
-                center: {
-                    lat,
-                    lng
-                },
-                marker: {
-                    lat,
-                    lng
-                },
+                center: { lat, lng },
+                marker: { lat, lng },
                 address: result.results[0].formatted_address,
                 zoom: this.googleMap.current.getZoom(),
                 isShowInfo: false
             });
-        })
+        });
     }
 
     onToggleOpenClickedMarker = () => {
-        this.setState({
-            isShowInfo: !this.state.isShowInfo
-        })
+        this.setState({ isShowInfo: !this.state.isShowInfo });
     }
 
     render() {
@@ -228,12 +189,10 @@ class MapComponent extends React.Component {
                 {this.state.marker &&  //Clicked marker location
                     <Marker
                         position={{ lat: this.state.marker.lat, lng: this.state.marker.lng }}
-                        onClick={this.onToggleOpenClickedMarker}
-                    >
+                        onClick={this.onToggleOpenClickedMarker} >
                         {this.state.isShowInfo && <InfoBox
                             // onCloseClick={props.onToggleOpenClickedMarker}
-                            options={{ closeBoxURL: ``, enableEventPropagation: true }}
-                        >
+                            options={{ closeBoxURL: ``, enableEventPropagation: true }} >
                             <div style={{ backgroundColor: `yellow`, opacity: 0.75, padding: `12px` }}>
                                 <div style={{ fontSize: `16px`, fontColor: `#08233B` }}>
                                     {this.state.address}
@@ -247,8 +206,6 @@ class MapComponent extends React.Component {
     }
 }
 
-// export default (compose(withScriptjs, withGoogleMap)(MapComponent))
-
 const mapStateToProps = (state) => {
     return {
     }
@@ -260,4 +217,5 @@ const mapDispatchToProps = (dispatch, action) => {
         getLocationDetail: (location) => dispatch(actions.getLocationDetail(location))
     }
 }
+
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)((compose(withScriptjs, withGoogleMap)(MapComponent))));

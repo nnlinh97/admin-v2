@@ -1,15 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-    withGoogleMap,
-    GoogleMap,
-    withScriptjs,
-    InfoWindow,
-    Marker
-} from "react-google-maps";
-import { mapOption } from '../../constants/map-option';
+import { withGoogleMap, GoogleMap, withScriptjs, InfoWindow, Marker } from "react-google-maps";
 import Geocode from "react-geocode";
-// import ReactAutocomplete from 'react-autocomplete';
+import { mapOption } from '../../constants/map-option';
 Geocode.setApiKey("AIzaSyA5aHhKGZxiy_9OZ0vyakabi1FCbOHrEWI");
 Geocode.enableDebug();
 
@@ -25,20 +18,13 @@ class Map extends Component {
             city: '',
             area: '',
             state: '',
-            mapPosition: {
-                lat: this.props.center.lat,
-                lng: this.props.center.lng
-            },
-            markerPosition: {
-                lat: 10.8230989,
-                lng: 106.6296638
-            },
+            mapPosition: { lat: this.props.center.lat, lng: this.props.center.lng },
+            markerPosition: { lat: 10.8230989, lng: 106.6296638 },
             location: '',
             zoom: 8,
             showInfoWindow: false,
             isLoading: false,
             clicked: false,
-
             value: ''
         }
     }
@@ -47,40 +33,27 @@ class Map extends Component {
         Geocode.fromAddress("hcmus").then((result) => {
             const { lat, lng } = result.results[0].geometry.location;
             this.setState({
-                mapPosition: {
-                    lat: lat,
-                    lng: lng
-                },
-                markerPosition: {
-                    lat: lat,
-                    lng: lng
-                },
+                mapPosition: { lat: lat, lng: lng },
+                markerPosition: { lat: lat, lng: lng },
                 address: result.results[0].formatted_address
-            })
-        })
+            });
+        });
     }
 
     onMarkerDragEnd = (event) => {
         let newLat = event.latLng.lat(),
             newLng = event.latLng.lng();
         const newCenter = this.googleMap.current.getCenter();
-
         Geocode.fromLatLng(newLat, newLng).then((result) => {
             const { lat, lng } = result.results[0].geometry.location;
             this.setState({
-                mapPosition: {
-                    lat: newCenter.lat(),
-                    lng: newCenter.lng()
-                },
-                markerPosition: {
-                    lat: lat,
-                    lng: lng
-                },
+                mapPosition: { lat: newCenter.lat(), lng: newCenter.lng() },
+                markerPosition: { lat: lat,  lng: lng },
                 address: result.results[0].formatted_address,
                 zoom: this.googleMap.current.getZoom(),
                 isLoading: true
-            })
-        })
+            });
+        });
     };
 
     onClickedMap = (event) => {
@@ -90,25 +63,16 @@ class Map extends Component {
         Geocode.fromLatLng(newLat, newLng).then((result) => {
             const { lat, lng } = result.results[0].geometry.location;
             this.setState({
-                mapPosition: {
-                    lat: newCenter.lat(),
-                    lng: newCenter.lng()
-                },
-                markerPosition: {
-                    lat: lat,
-                    lng: lng
-                },
+                mapPosition: { lat: newCenter.lat(), lng: newCenter.lng() },
+                markerPosition: { lat: lat, lng: lng },
                 address: result.results[0].formatted_address,
                 zoom: this.googleMap.current.getZoom(),
-            })
-        })
+            });
+        });
     }
 
     onClickedMaker = () => {
-        this.setState({
-            showInfoWindow: !this.state.showInfoWindow,
-            zoom: this.googleMap.current.getZoom()
-        })
+        this.setState({ showInfoWindow: !this.state.showInfoWindow, zoom: this.googleMap.current.getZoom() });
     }
 
     render() {

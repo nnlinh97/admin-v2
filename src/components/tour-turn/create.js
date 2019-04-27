@@ -1,37 +1,21 @@
-import 'froala-editor/js/froala_editor.pkgd.min.js';
-import 'froala-editor/css/froala_style.min.css';
-import 'froala-editor/css/froala_editor.pkgd.min.css';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-// import Modal from 'react-bootstrap-modal';
-import * as actions from './../../actions/index';
-
-// import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import _ from 'lodash';
 import moment from 'moment';
-import DatePicker from "react-datepicker";
-import TimePicker from 'react-time-picker';
-import './create.css';
-
-import "react-datepicker/dist/react-datepicker.css";
-// Require Font Awesome.
-import 'font-awesome/css/font-awesome.css';
-import { NotificationContainer, NotificationManager } from 'react-notifications';
-
-import FroalaEditor from 'react-froala-wysiwyg';
-import SuccessNotify from '../notification/success';
-import 'react-notifications/lib/notifications.css';
-import { useAlert } from "react-alert";
-import { configEditor } from './config';
-import Route from './route';
-import SweetAlert from 'react-bootstrap-sweetalert';
-
-import { helper } from '../../helper';
-import { apiGet, apiPost } from '../../services/api';
+// import DatePicker from "react-datepicker";
+import InputMask from 'react-input-mask';
 import Select from 'react-select';
+import SweetAlert from 'react-bootstrap-sweetalert';
+import { apiGet, apiPost } from '../../services/api';
+import * as actions from './../../actions/index';
+import { formatCurrency } from '../../helper';
+import './create.css';
+// import "react-datepicker/dist/react-datepicker.css";
+import 'font-awesome/css/font-awesome.css';
+import 'react-notifications/lib/notifications.css';
 
 class CreateTourTurnComponent extends Component {
 
@@ -43,8 +27,8 @@ class CreateTourTurnComponent extends Component {
             tour: null,
             price: '',
             limitPeople: '',
-            startDate: null,
-            endDate: null,
+            startDate: '',
+            endDate: '',
             tours: [],
             discount: 0,
             status: 'public',
@@ -55,13 +39,12 @@ class CreateTourTurnComponent extends Component {
     }
 
     async componentDidMount() {
-        let listTour = this.props.listTour;
-        let listTypePassenger = this.props.listTypePassenger;
-        if (!listTour) {
+        let { listTour, listTypePassenger } = this.props;
+        if (!listTour.length) {
             try {
                 listTour = await apiGet('/tour/getAllWithoutPagination');
                 listTour = listTour.data.data;
-                await this.props.getListTour(listTour);
+                this.props.getListTour(listTour);
             } catch (error) {
                 console.log(error);
             }
@@ -92,31 +75,22 @@ class CreateTourTurnComponent extends Component {
         })
     }
 
-
-    handleChangeEndDate = (time) => {
-        this.setState({
-            endDate: time
-        })
+    handleChangeEndDate = ({ target }) => {
+        this.setState({ endDate: target.value });
     }
 
-    handleChangeStartDate = (time) => {
-        this.setState({
-            startDate: time
-        })
+    handleChangeStartDate = ({ target }) => {
+        this.setState({ startDate: target.value });
     }
 
-    handleChangeSelect = (selected) => {
-        this.setState({
-            tour: selected
-        })
+    handleChangeTour = (selected) => {
+        this.setState({ tour: selected });
     }
 
     handleChange = (event) => {
         const value = event.target.value;
         const name = event.target.name;
-        this.setState({
-            [name]: value
-        })
+        this.setState({ [name]: value });
     }
 
     getListTypePassenger = () => {
@@ -124,18 +98,18 @@ class CreateTourTurnComponent extends Component {
     }
 
     checkListTypePassenger = (typePassenger) => {
-        let flag = 1;
+        typePassenger.filter(type => type.checked);
         typePassenger.forEach(item => {
             const percent = parseInt(item.percent);
             if (item.percent === '' || !Number.isInteger(percent) || percent < 0 || percent > 100) {
-                flag = -1;
+                return false;
             }
         });
-        return flag === 1;
+        console.log(typePassenger)
+        return typePassenger.length ? true : false;
     }
 
-
-    handleSave = async (event) => {
+    handleCreateTourTurn = async (event) => {
         event.preventDefault();
         const typePassenger = this.getListTypePassenger();
         if (this.checkTourTurn() && this.checkListTypePassenger(typePassenger)) {
@@ -151,43 +125,12 @@ class CreateTourTurnComponent extends Component {
                     status,
                     price_passenger: typePassenger
                 });
-                const { data } = newTourTurn;
-                console.log(data);
-                if (!this.props.listTourTurn) {
-                    try {
-                        let listTourTurn = await apiGet('/tour_turn/getAllWithoutPagination');
-                        this.props.getListTourTurn(listTourTurn.data.data);
-                    } catch (error) {
-                        console.log(error);
-                    }
-                } else {
-                    await this.props.createTourTurn({
-                        discount: data.discount,
-                        end_date: data.end_date,
-                        id: data.id,
-                        num_current_people: data.num_current_people,
-                        start_date: data.end_date,
-                        num_max_people: data.num_max_people,
-                        price: data.price,
-                        tour: {
-                            id: tour.id,
-                            name: tour.name
-                        },
-                        status: data.status
-                    });
-                }
-                this.setState({
-                    success: true
-                })
+                this.setState({ success: true });
             } catch (error) {
-                this.setState({
-                    error: true
-                })
+                this.setState({ error: true });
             }
         } else {
-            this.setState({
-                error: true
-            })
+            this.setState({ error: true });
         }
     }
 
@@ -199,9 +142,12 @@ class CreateTourTurnComponent extends Component {
     checkTourTurn = () => {
         let { tour, price, startDate, endDate, limitPeople, discount } = this.state;
         const currentDate = moment(new Date()).format('YYYY-MM-DD').toString();
-        startDate = moment(startDate).format('YYYY-MM-DD').toString();
-        endDate = moment(endDate).format('YYYY-MM-DD').toString();
-        if (!tour || !Number.isInteger(parseInt(price)) || parseInt(price) < 0 || !Number.isInteger(parseInt(discount)) || parseInt(discount) < 0 || parseInt(discount) > 100 || startDate > endDate || !Number.isInteger(parseInt(limitPeople)) || parseInt(limitPeople) < 0 || startDate < currentDate) {
+        startDate = moment(new Date(startDate)).format('YYYY-MM-DD').toString();
+        endDate = moment(new Date(endDate)).format('YYYY-MM-DD').toString();
+        if (!tour || !Number.isInteger(parseInt(price)) || parseInt(price) < 0 ||
+            !Number.isInteger(parseInt(discount)) || parseInt(discount) < 0 ||
+            parseInt(discount) > 100 || startDate > endDate || !Number.isInteger(parseInt(limitPeople)) ||
+            parseInt(limitPeople) < 0 || startDate < currentDate) {
             return false;
         }
         return true;
@@ -212,9 +158,7 @@ class CreateTourTurnComponent extends Component {
     }
 
     hideFailAlert = () => {
-        this.setState({
-            error: false
-        })
+        this.setState({ error: false });
     }
 
     handleChangeSelectCheckBox = (props) => {
@@ -222,9 +166,7 @@ class CreateTourTurnComponent extends Component {
             return item.id === props.id;
         });
         this.state.typePassenger[index].checked = !props.checked;
-        this.setState({
-            typePassenger: [...this.state.typePassenger]
-        })
+        this.setState({ typePassenger: [...this.state.typePassenger] });
     }
 
     onChangePricePercent = (event, props) => {
@@ -248,23 +190,17 @@ class CreateTourTurnComponent extends Component {
                     let index = _.findIndex(this.state.tempRoutes, (item) => {
                         return item.id === props.original.id;
                     });
-                    return (
-                        <div className="checkbox checkbox-modal">
-                            <input
-                                className="input-modal"
-                                type="checkbox"
-                                name="choose"
-                                onChange={() => this.handleChangeSelectCheckBox(props.original)}
-                                checked={props.original.checked ? true : false}
-                            />
-                        </div>
-                    )
+                    return <div className="checkbox checkbox-modal">
+                        <input
+                            className="input-modal"
+                            type="checkbox"
+                            name="choose"
+                            onChange={() => this.handleChangeSelectCheckBox(props.original)}
+                            checked={props.original.checked ? true : false}
+                        />
+                    </div>;
                 },
-                sortable: false,
-                filterable: false,
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
@@ -272,11 +208,7 @@ class CreateTourTurnComponent extends Component {
             {
                 Header: "ID",
                 accessor: "id",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
@@ -284,8 +216,6 @@ class CreateTourTurnComponent extends Component {
             {
                 Header: "Loại Khách",
                 accessor: "name",
-                sortable: true,
-                filterable: true,
                 style: {
                     textAlign: 'center'
                 }
@@ -296,38 +226,28 @@ class CreateTourTurnComponent extends Component {
                 Cell: props => {
                     if (props.original.checked) {
                         if (this.state.idFocus === props.original.id) {
-                            return (
-                                <input type="number"
-                                    onChange={(event) => this.onChangePricePercent(event, props.original)}
-                                    value={props.original.percent}
-                                    name="percent"
-                                    className="form-control"
-                                    ref={this.inputFocus}
-                                />
-                            );
-                        }
-                        return (
-                            <input type="number"
+                            return <input type="number"
                                 onChange={(event) => this.onChangePricePercent(event, props.original)}
                                 value={props.original.percent}
                                 name="percent"
                                 className="form-control"
-                            />
-                        );
-                    }
-                    return (
-                        <input type="number"
+                                ref={this.inputFocus}
+                            />;
+                        }
+                        return <input type="number"
+                            onChange={(event) => this.onChangePricePercent(event, props.original)}
+                            value={props.original.percent}
                             name="percent"
                             className="form-control"
-                            disabled
-                        />
-                    );
+                        />;
+                    }
+                    return <input type="number"
+                        name="percent"
+                        className="form-control"
+                        disabled
+                    />;
                 },
-                sortable: false,
-                filterable: false,
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 150,
                 maxWidth: 150,
                 minWidth: 150
@@ -335,12 +255,14 @@ class CreateTourTurnComponent extends Component {
         ];
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
+
                 {this.state.success && <SweetAlert
                     success
                     title="Lưu Thành Công"
                     onConfirm={this.hideSuccessAlert}>
                     Tiếp Tục...
                 </SweetAlert>}
+
                 {this.state.error && <SweetAlert
                     warning
                     confirmBtnText="Hủy"
@@ -349,10 +271,9 @@ class CreateTourTurnComponent extends Component {
                     onConfirm={this.hideFailAlert}>
                     Vui Lòng Kiểm Tra Lại...
                 </SweetAlert>}
+
                 <section className="content-header">
-                    <h1>
-                        Thêm Mới
-                    </h1>
+                    <h1> Thêm Mới Chuyến Đi</h1>
                 </section>
                 <section className="content">
                     <div className="row">
@@ -367,60 +288,81 @@ class CreateTourTurnComponent extends Component {
                                     <div className="active tab-pane" id="activity">
                                         <div className="post">
                                             <div className="user-block">
-                                                <form onSubmit={this.handleSave} className="form-horizontal">
+                                                <form onSubmit={this.handleCreateTourTurn} className="form-horizontal">
                                                     <div className="box-body">
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">Tour (*)</label>
                                                             <div className="col-sm-8">
-                                                                {this.state.tours.length ? <Select
-                                                                    onChange={this.handleChangeSelect}
-                                                                    options={this.state.tours}
+                                                                <Select
+                                                                    onChange={this.handleChangeTour}
+                                                                    options={this.props.listTour}
                                                                     placeholder=""
-                                                                /> : null}
+                                                                />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">Giá Tiền (*)</label>
                                                             <div className="col-sm-8">
-                                                                <input type="number" onChange={this.handleChange} value={this.state.price} name="price" className="form-control" />
+                                                                <input
+                                                                    type="number"
+                                                                    onChange={this.handleChange}
+                                                                    value={this.state.price}
+                                                                    name="price"
+                                                                    className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">Giảm Giá</label>
                                                             <div className="col-sm-8">
-                                                                <input type="number" onChange={this.handleChange} value={this.state.discount} name="discount" className="form-control" />
+                                                                <input
+                                                                    type="number"
+                                                                    onChange={this.handleChange}
+                                                                    value={this.state.discount}
+                                                                    name="discount"
+                                                                    className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">Ngày Bắt Đầu (*)</label>
                                                             <div className="col-sm-8">
-                                                                <DatePicker
-                                                                    className="form-control"
-                                                                    selected={this.state.startDate}
-                                                                    onChange={this.handleChangeStartDate}
-                                                                />
+                                                                <input
+                                                                    type="date"
+                                                                    onChange={this.handleChange}
+                                                                    value={this.state.startDate}
+                                                                    name="startDate"
+                                                                    className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">Ngày Kết Thúc (*)</label>
                                                             <div className="col-sm-8">
-                                                                <DatePicker
-                                                                    className="form-control"
-                                                                    selected={this.state.endDate}
-                                                                    onChange={this.handleChangeEndDate}
-                                                                />
+                                                                <input
+                                                                    type="date"
+                                                                    onChange={this.handleChange}
+                                                                    value={this.state.endDate}
+                                                                    name="endDate"
+                                                                    className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">SL Tối Đa (*)</label>
                                                             <div className="col-sm-8">
-                                                                <input type="number" onChange={this.handleChange} value={this.state.limitPeople} name="limitPeople" className="form-control" />
+                                                                <input
+                                                                    type="number"
+                                                                    onChange={this.handleChange}
+                                                                    value={this.state.limitPeople}
+                                                                    name="limitPeople"
+                                                                    className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">Trạng Thái (*)</label>
                                                             <div className="col-sm-8">
-                                                                <select value={this.state.status} onChange={this.handleChange} name="status" className="form-control">
+                                                                <select
+                                                                    value={this.state.status}
+                                                                    onChange={this.handleChange}
+                                                                    name="status"
+                                                                    className="form-control">
                                                                     <option value="public">Công Khai</option>
                                                                     <option value="private">Ẩn</option>
                                                                 </select>
@@ -438,7 +380,7 @@ class CreateTourTurnComponent extends Component {
                                     <div className="tab-pane" id="timeline">
                                         <div className="post">
                                             <div className="user-block">
-                                                <form onSubmit={this.handleSave} className="form-horizontal">
+                                                <form onSubmit={this.handleCreateTourTurn} className="form-horizontal">
                                                     <div className="box-body">
                                                         <ReactTable
                                                             columns={columns}
