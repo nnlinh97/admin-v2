@@ -84,10 +84,7 @@ class Map1 extends Component {
                                 this.setState({
                                     center: nextCenter,
                                     markers: nextMarkers,
-                                    markerClick: {
-                                        latitude: lat,
-                                        longitude: lng
-                                    }
+                                    markerClick: { latitude: lat, longitude: lng }
                                 });
                             })
                             // refs.map.fitBounds(bounds);
@@ -99,14 +96,8 @@ class Map1 extends Component {
                             Geocode.fromLatLng(newLat, newLng).then((result) => {
                                 const { lat, lng } = result.results[0].geometry.location;
                                 this.setState({
-                                    mapPosition: {
-                                        latitude: newCenter.lat(),
-                                        longitude: newCenter.lng()
-                                    },
-                                    markerClick: {
-                                        latitude: lat,
-                                        longitude: lng
-                                    },
+                                    mapPosition: { latitude: newCenter.lat(), longitude: newCenter.lng() },
+                                    markerClick: { latitude: lat, longitude: lng },
                                     address: result.results[0].formatted_address,
                                     zoom: refs.map.getZoom()
                                 })
@@ -115,13 +106,8 @@ class Map1 extends Component {
                     })
                 },
             }),
-            withStateHandlers(() => ({
-                isOpen: false,
-                isOpenClickedMarker: false
-            }), {
-                    onToggleOpen: ({ isOpen }) => () => ({
-                        isOpen: !isOpen,
-                    }),
+            withStateHandlers(() => ({ isOpen: false, isOpenClickedMarker: false }), {
+                    onToggleOpen: ({ isOpen }) => () => ({ isOpen: !isOpen, }),
                     onToggleOpenClickedMarker: ({ isOpenClickedMarker }) => () => ({
                         isOpenClickedMarker: !isOpenClickedMarker,
                     })

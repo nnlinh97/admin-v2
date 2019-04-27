@@ -50,9 +50,7 @@ class ListLocationComponent extends Component {
             {
                 Header: "ID",
                 accessor: "id",
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 90,
                 maxWidth: 100,
                 minWidth: 80
@@ -86,9 +84,7 @@ class ListLocationComponent extends Component {
                         </h4>
                     );
                 },
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
@@ -105,9 +101,7 @@ class ListLocationComponent extends Component {
                         </button>
                     )
                 },
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 60,
                 maxWidth: 80,
                 minWidth: 60
@@ -142,7 +136,6 @@ class ListLocationComponent extends Component {
                             <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
                     </div>
-
                     <ReactTable
                         columns={columns}
                         data={this.handleSearchLocation(this.props.listLocation, this.state.keySearch)}

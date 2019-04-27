@@ -13,7 +13,7 @@ import { matchString } from '../../helper';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import './list.css';
 
-class ListTypesComponent extends Component {
+class ListRouteComponent extends Component {
 
     constructor(props) {
         super(props);
@@ -254,29 +254,15 @@ class ListTypesComponent extends Component {
     }
 }
 
-// export default withRouter(ListTypesComponent);
 const mapStateToProps = (state) => {
     return {
-        info: state.infoLocation,
-        allType: state.allType,
-        allLocation: state.allLocation,
-        listTour: state.listTour,
-        listTourTurn: state.listTourTurn,
         listRoute: state.listRoute
     }
 }
 
 const mapDispatchToProps = (dispatch, action) => {
     return {
-        changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
-        getListTypeLocation: (type) => dispatch(actions.getListTypeLocation(type)),
-        getListLocation: (locations) => dispatch(actions.getListLocation(locations)),
-        createType: (type) => dispatch(actions.createType(type)),
-        editType: (type) => dispatch(actions.editType(type)),
-        getListTour: (tour) => dispatch(actions.getListTour(tour)),
-        getListTourTurn: (tourTurn) => dispatch(actions.getListTourTurn(tourTurn)),
         getListRoute: (route) => dispatch(actions.getListRoute(route)),
-        getRouteById: (route) => dispatch(actions.getRouteById(route)),
     }
 }
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListTypesComponent));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListRouteComponent));

@@ -3,10 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-// import Modal from 'react-bootstrap-modal';
 import * as actions from './../../actions/index';
-import { URL } from '../../constants/url';
-import axios from 'axios';
 import { apiGet, apiPost } from '../../services/api';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
@@ -20,7 +17,7 @@ class ListTypesComponent extends Component {
         super(props);
         this.state = {
             listTypes: [],
-            createModal: false,
+            modalCreateIsOpen: false,
             editModal: false,
             type: null,
             name_vn: '',
@@ -33,9 +30,9 @@ class ListTypesComponent extends Component {
 
     async componentDidMount() {
         let listTransport = this.props.listTransport;
-        if (!listTransport) {
+        if (!listTransport.length) {
             listTransport = await apiGet('/transport/getAll');
-            await this.props.getListTransport(listTransport.data.data);
+            this.props.getListTransport(listTransport.data.data);
         }
     }
 
@@ -66,12 +63,12 @@ class ListTypesComponent extends Component {
 
     openCreateModal = () => {
         this.setState({
-            createModal: true
+            modalCreateIsOpen: true
         })
     }
     closeCreateModal = () => {
         this.setState({
-            createModal: false,
+            modalCreateIsOpen: false,
             name_vn: '',
             name_en: ''
         })
@@ -106,7 +103,7 @@ class ListTypesComponent extends Component {
             });
         }
     }
-    
+
     handleEdit = async (name_vn, name_en) => {
         if (this.state.id && this.checkTransport(name_vn, name_en)) {
             try {
@@ -228,12 +225,11 @@ class ListTypesComponent extends Component {
                     Vui Lòng Kiểm Tra Lại...
                 </SweetAlert>}
                 <Modal
-                    open={createModal}
+                    open={this.state.modalCreateIsOpen}
                     onClose={this.closeCreateModal}
                     center
                     styles={{ 'modal': { width: '1280px' } }}
-                    blockScroll={true}
-                >
+                    blockScroll={true} >
                     <CreateComponent handleCreate={this.handleCreate} />
                 </Modal>
 
@@ -242,39 +238,30 @@ class ListTypesComponent extends Component {
                     onClose={this.closeEditModal}
                     center
                     styles={{ 'modal': { width: '1280px' } }}
-                    blockScroll={true}
-                >
+                    blockScroll={true} >
                     <EditComponent handleEdit={this.handleEdit} name_vn={name_vn} name_en={name_en} />
                 </Modal>
 
-                <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content-header">
-                    <h1>
-                        List Transport
-                    </h1>
+                <section className="content-header">
+                    <h1> Danh Sách Phương tiện Di Chuyển </h1>
                 </section>
-                <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content">
+                <section className="content">
                     <div className="row">
                         <button
                             onClick={this.openCreateModal}
-                            style={{
-                                marginBottom: '2px',
-                                marginRight: '15px'
-                            }}
+                            style={{ marginBottom: '2px', marginRight: '15px' }}
                             type="button"
                             className="btn btn-success pull-right">
                             <i className="fa fa-plus" />&nbsp;Create
                         </button>
                     </div>
 
-                    {this.props.listTransport &&
-                        <ReactTable
-                            columns={columns}
-                            data={this.props.listTransport ? this.props.listTransport : []}
-                            defaultPageSize={10}
-                            noDataText={'Please wait...'}
-                        >
-                        </ReactTable>
-                    }
+                    {this.props.listTransport && <ReactTable
+                        columns={columns}
+                        data={this.props.listTransport ? this.props.listTransport : []}
+                        defaultPageSize={10}
+                        noDataText={'Please wait...'} >
+                    </ReactTable>}
 
                 </section>
             </div>
