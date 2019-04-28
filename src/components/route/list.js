@@ -12,6 +12,7 @@ import EditRouteComponent from './edit';
 import { matchString } from '../../helper';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import './list.css';
+import './../../custom.css';
 
 class ListTypesComponent extends Component {
 
@@ -130,9 +131,7 @@ class ListTypesComponent extends Component {
                     <h1>
                         Danh Sách Điểm Lộ Trình
                     </h1>
-                </section>
-                <section className="content">
-                    <div className="row">
+                    <div className="right_header">
                         <div style={{ width: '150px', float: 'left' }}>
                             <input
                                 type="text"
@@ -154,9 +153,11 @@ class ListTypesComponent extends Component {
                                 title="thêm mới"
                                 className="btn btn-success pull-right">
                                 <i className="fa fa-plus" />&nbsp;Thêm
-                        </button>
+                            </button>
                         </div>
                     </div>
+                </section>
+                <section className="content">
                     <ReactTable
                         data={this.handleSearchRoute(this.props.listRoute, this.state.keySearch)}
                         defaultPageSize={10}

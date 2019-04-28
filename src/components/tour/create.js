@@ -15,6 +15,8 @@ import moment from 'moment';
 import DatePicker from "react-datepicker";
 import TimePicker from 'react-time-picker';
 import './create.css';
+import './../../custom.css';
+
 
 import "react-datepicker/dist/react-datepicker.css";
 // Require Font Awesome.
@@ -492,9 +494,7 @@ class ListTypesComponent extends Component {
                     <h1>
                         Create Tour
                     </h1>
-                </section>
-                <section className={`content ${(this.state.openModal || this.state.modalListImages) ? 'opacity-05' : ''}`}>
-                    <div className="row">
+                    <div className="right_header">
                         <button
                             onClick={this.handleSave}
                             style={{
@@ -506,6 +506,8 @@ class ListTypesComponent extends Component {
                             <i className="fa fa-save" />&nbsp;Save
                         </button>
                     </div>
+                </section>
+                <section className={`content ${(this.state.openModal || this.state.modalListImages) ? 'opacity-05' : ''}`}>
                     <div className="row">
                         <div className="col-lg-5 col-xs-5">
                             <div className={`box box-primary ${this.state.errorTour ? 'bd-red' : ''}`}>
@@ -513,7 +515,7 @@ class ListTypesComponent extends Component {
                                     <div className="box-body">
                                         <div className="form-group">
                                             <label htmlFor="exampleInputEmail1">Name (*)</label>
-                                            <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
+                                            <input uonChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
                                         </div>
                                         <div style={{ height: '300px' }} className="form-group">
                                             <label>Feature Image (*)</label>

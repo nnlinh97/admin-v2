@@ -9,6 +9,7 @@ import { URL } from '../../constants/url';
 import axios from 'axios';
 import './modal.css';
 import './list.css';
+import './../../custom.css';
 import { apiGet, apiPost } from './../../services/api';
 
 class ListLocationComponent extends Component {
@@ -152,9 +153,7 @@ class ListLocationComponent extends Component {
                     <h1>
                         Danh Sách Địa Điểm
                     </h1>
-                </section>
-                <section className="content">
-                    <div className="row">
+                    <div className="right_header">
                         <button
                             onClick={this.redirectCreateLocationPage}
                             style={{
@@ -167,7 +166,8 @@ class ListLocationComponent extends Component {
                             <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
                     </div>
-
+                </section>
+                <section className="content">
                     {this.props.allLocation && <ReactTable
                         columns={columns}
                         data={this.props.allLocation}

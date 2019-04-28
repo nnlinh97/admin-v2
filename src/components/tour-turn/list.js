@@ -9,6 +9,7 @@ import { apiGet } from '../../services/api';
 import { formatCurrency } from '../../helper'
 import moment from 'moment';
 import './list.css';
+import './../../custom.css';
 
 class ListTypesComponent extends Component {
 
@@ -57,9 +58,7 @@ class ListTypesComponent extends Component {
                     <h1>
                         Danh Sách Chuyến Đi
                     </h1>
-                </section>
-                <section className="content">
-                    <div className="row">
+                    <div className="right_header">
                         <button
                             onClick={this.handleCreatetour}
                             style={{
@@ -71,6 +70,8 @@ class ListTypesComponent extends Component {
                             <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
                     </div>
+                </section>
+                <section className="content">
                     {this.props.listTourTurn &&
                         <ReactTable
                             data={this.props.listTourTurn ? this.props.listTourTurn : []}

@@ -5,6 +5,7 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import * as actions from './../../actions/index';
 import './list.css';
+import './../../custom.css';
 import { apiGet } from '../../services/api';
 
 class ListTourComponent extends Component {
@@ -87,9 +88,7 @@ class ListTourComponent extends Component {
                     <h1>
                         Danh Sách Tour
                     </h1>
-                </section>
-                <section className="content">
-                    <div className="row">
+                    <div className="right_header">
                         <button
                             onClick={this.handleCreatetour}
                             style={{
@@ -102,6 +101,8 @@ class ListTourComponent extends Component {
                             <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
                     </div>
+                </section>
+                <section className="content">
 
                     <ReactTable
                         columns={columns}

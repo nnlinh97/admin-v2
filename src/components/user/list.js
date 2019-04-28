@@ -9,6 +9,7 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
 import InfoUser from './info';
 import './list.css';
+import './../../custom.css';
 
 class ListTypesComponent extends Component {
 
@@ -170,9 +171,7 @@ class ListTypesComponent extends Component {
                     <h1>
                         List User
                     </h1>
-                </section>
-                <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content">
-                    <div className="row">
+                    <div className="right_header">
                         <button
                             onClick={this.openCreateModal}
                             style={{
@@ -184,7 +183,8 @@ class ListTypesComponent extends Component {
                             <i className="fa fa-plus" />&nbsp;Create
                         </button>
                     </div>
-
+                </section>
+                <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content">
                     <ReactTable
                         columns={columns}
                         data={this.props.listUser ? this.props.listUser : []}
