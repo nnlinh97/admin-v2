@@ -515,7 +515,7 @@ class ListTypesComponent extends Component {
                                     <div className="box-body">
                                         <div className="form-group">
                                             <label htmlFor="exampleInputEmail1">Name (*)</label>
-                                            <input uonChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
+                                            <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
                                         </div>
                                         <div style={{ height: '300px' }} className="form-group">
                                             <label>Feature Image (*)</label>

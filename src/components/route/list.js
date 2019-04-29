@@ -132,16 +132,6 @@ class ListTypesComponent extends Component {
                         Danh Sách Điểm Lộ Trình
                     </h1>
                     <div className="right_header">
-                        <div style={{ width: '150px', float: 'left' }}>
-                            <input
-                                type="text"
-                                onChange={this.handleChange}
-                                value={this.state.keySearch}
-                                name="title"
-                                className="form-control"
-                                placeholder="tìm kiếm..."
-                            />
-                        </div>
                         <div style={{ float: 'right' }}>
                             <button
                                 onClick={this.openModalCreateRoute}
@@ -158,6 +148,22 @@ class ListTypesComponent extends Component {
                     </div>
                 </section>
                 <section className="content">
+                    <div class="search_box">
+                        <div class="search_icon">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <input
+                            type="text"
+                            onChange={this.handleChange}
+                            value={this.state.keySearch}
+                            name="title"
+                            className="search_input"
+                            placeholder="Tìm kiếm..."
+                        />
+                        <div class="search_result_count">
+                            <span>108 </span>results
+                        </div>
+                    </div>
                     <ReactTable
                         data={this.handleSearchRoute(this.props.listRoute, this.state.keySearch)}
                         defaultPageSize={10}

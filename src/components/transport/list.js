@@ -261,7 +261,7 @@ class ListTypesComponent extends Component {
                             }}
                             type="button"
                             className="btn btn-success pull-right">
-                            <i className="fa fa-plus" />&nbsp;Create
+                            <i className="fa fa-plus" />&nbsp;Tạo
                         </button>
                     </div>
                 </section>
