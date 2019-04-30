@@ -13,8 +13,8 @@ class EditRouteComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            arriveTime: null,
-            leaveTime: null,
+            arriveTime: '',
+            leaveTime: '',
             location: null,
             locations: null,
             transports: null,
@@ -105,8 +105,8 @@ class EditRouteComponent extends Component {
             try {
                 const routeEdited = await apiPost('/route/update', {
                     id: id,
-                    arrive_time: arriveTime,
-                    leave_time: leaveTime,
+                    arrive_time: arriveTime ? arriveTime : '',
+                    leave_time: leaveTime ? leaveTime : '',
                     day: parseInt(day),
                     title: title,
                     idLocation: location.id,
@@ -128,7 +128,7 @@ class EditRouteComponent extends Component {
     render() {
         return <div style={{ marginLeft: '0px' }} className="content-wrapper">
             <section style={{ marginBottom: "20px" }} className="content-header">
-                <h1> Chỉnh Sửa Điểm Lộ Trình </h1>
+                <h1> Chỉnh Sửa Điểm Lộ Trình <i>#{this.state.id}</i> </h1>
             </section>
             <section className="content">
                 <div className="row">
@@ -136,7 +136,7 @@ class EditRouteComponent extends Component {
                         <div className="box box-info">
                             <form onSubmit={this.handleEditRoute} className="form-horizontal">
                                 <div className="box-body">
-                                    <div className="form-group">
+                                    {/* <div className="form-group">
                                         <label className="col-sm-3 control-label">ID</label>
                                         <div className="col-sm-8">
                                             <input
@@ -146,7 +146,7 @@ class EditRouteComponent extends Component {
                                                 readOnly
                                             />
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Title</label>
                                         <div className="col-sm-8">
@@ -175,19 +175,31 @@ class EditRouteComponent extends Component {
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Thời Gian Đến</label>
                                         <div className="col-sm-8">
-                                            <TimePicker
+                                            <input
+                                                type="time"
+                                                onChange={this.handleChange}
+                                                value={this.state.arriveTime}
+                                                name="arriveTime"
+                                                className="form-control" />
+                                            {/* <TimePicker
                                                 value={this.state.arriveTime}
                                                 onChange={this.onHandleChangeArriveTime}
-                                            />
+                                            /> */}
                                         </div>
                                     </div>
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Thời Gian Đi</label>
                                         <div className="col-sm-8">
-                                            <TimePicker
+                                            <input
+                                                type="time"
+                                                onChange={this.handleChange}
+                                                value={this.state.leaveTime}
+                                                name="leaveTime"
+                                                className="form-control" />
+                                            {/* <TimePicker
                                                 value={this.state.leaveTime}
                                                 onChange={this.onHandleChangeleaveTime}
-                                            />
+                                            /> */}
                                         </div>
                                     </div>
                                     <div className="form-group">
@@ -250,7 +262,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, action) => {
     return {
         getListTransport: (transport) => dispatch(actions.getListTransport(transport)),
-        updateRoute: (route) => dispatch(actions.editRoute(route))
+        updateRoute: (route) => dispatch(actions.editRoute(route)),
+        getListLocation: (locations) => dispatch(actions.getListLocation(locations))
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditRouteComponent));

@@ -48,6 +48,7 @@ class CreateTourTurnComponent extends Component {
                 const { id } = this.props.match.params;
                 const detail = await apiGet(`/book_tour/getBookTourHistoryByTourTurn/${id}`);
                 bookTourTurnDetail = detail.data.data;
+                console.log(bookTourTurnDetail);
                 await this.props.getBookTourTurnById(bookTourTurnDetail);
             } catch (error) {
                 console.log(error);
@@ -57,7 +58,6 @@ class CreateTourTurnComponent extends Component {
     }
 
     updateState = (bookTourTurnDetail) => {
-        console.log('updateState', bookTourTurnDetail);
         this.setState({
             bookTourHistory: bookTourTurnDetail.book_tour_history,
             tourTurn: bookTourTurnDetail.tour_turn,
@@ -615,9 +615,7 @@ class CreateTourTurnComponent extends Component {
                     />}
                 </Modal>
                 <section className="content-header">
-                    <h1>
-                        Book Tour Turn Detail
-                    </h1>
+                    <h1> Thông Tin & Danh Sách Đặt Tour <i>#{this.props.match.params.id}</i> </h1>
                 </section>
                 <section className="content">
                     <div className="row">

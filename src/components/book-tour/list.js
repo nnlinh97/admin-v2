@@ -40,6 +40,7 @@ class ListTypesComponent extends Component {
 
 
     render() {
+        console.log(this.props.listBookTourTurn);
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
                 <section className="content-header">

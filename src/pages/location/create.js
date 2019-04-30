@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Sidebar from '../../components/Sidebar';
-import CreateLocationComponent from '../../components/location/create'
+import CreateLocationComponent from '../../components/location/create/'
 
 
 class CreateLocationPage extends Component {

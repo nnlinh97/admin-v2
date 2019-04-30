@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Geocode from "react-geocode";
-import * as actions from './../../actions/index';
-import { apiGet, apiPost } from './../../services/api';
-import { newListSelect } from '../../helper'
-import './index.css'
+import * as actions from './../../../actions/index';
+import { apiGet, apiPost } from './../../../services/api';
+import { newListSelect } from '../../../helper';
+import './../index.css';
 
 class InfoEdit extends Component {
     constructor(props) {
@@ -39,10 +39,6 @@ class InfoEdit extends Component {
         try {
             location = await apiGet(`/location/getById/${id}`)
             location = location.data.data;
-            this.props.changeLocationInfo({
-                marker: { lat: location.latitude, lng: location.longitude },
-                address: location.address
-            });
         } catch (error) {
             console.log(error);
         }

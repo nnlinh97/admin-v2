@@ -45,7 +45,7 @@ class EditProvinceComponent extends Component {
         const { name, listCountries, country } = this.state;
         return <div style={{ marginLeft: '0px', height: '295px' }} className="content-wrapper">
             <section style={{ marginBottom: "20px" }} className="content-header">
-                <h1> Chỉnh Sửa Tỉnh Thành </h1>
+                <h1> Chỉnh Sửa Tỉnh Thành <i>#{this.state.id}</i></h1>
             </section>
             <section className="content">
                 <div className="row">
@@ -53,7 +53,7 @@ class EditProvinceComponent extends Component {
                         <div className="box box-info">
                             <form onSubmit={this.handleEditProvince} className="form-horizontal">
                                 <div className="box-body">
-                                    <div className="form-group">
+                                    {/* <div className="form-group">
                                         <label className="col-sm-3 control-label">ID</label>
                                         <div className="col-sm-8">
                                             <input
@@ -63,7 +63,7 @@ class EditProvinceComponent extends Component {
                                                 readOnly
                                                 className="form-control" />
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Tỉnh Thành</label>
                                         <div className="col-sm-8">

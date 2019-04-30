@@ -1,7 +1,7 @@
 import * as Types from './../../constants/index';
 import _ from 'lodash';
 
-const initialState = null;
+const initialState = [];
 const getListTypeLocation = (state = initialState, action) => {
     switch (action.type) {
         case Types.GET_LIST_TYPE_PASSENGER:

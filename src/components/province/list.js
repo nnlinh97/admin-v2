@@ -106,7 +106,7 @@ class ListProvinceComponent extends Component {
         this.setState({ keySearch: target.value });
     }
 
-    handleSearchProvince= (listProvinces, keySearch) => {
+    handleSearchProvince = (listProvinces, keySearch) => {
         if (keySearch !== '' && listProvinces.length > 0) {
             return listProvinces.filter(province => matchString(province.name, keySearch) || matchString(province.id.toString(), keySearch));
         }
@@ -118,11 +118,7 @@ class ListProvinceComponent extends Component {
             {
                 Header: "ID",
                 accessor: "id",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
@@ -130,38 +126,23 @@ class ListProvinceComponent extends Component {
             {
                 Header: "Tỉnh Thành",
                 accessor: "name",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                }
+                style: { textAlign: 'center' }
             },
             {
                 Header: "Quốc Gia",
                 accessor: "country.name",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                }
+                style: { textAlign: 'center' }
             },
             {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
-                    return (
-                        <button className="btn btn-xs btn-success"
-                            onClick={() => this.handleOpenEditModal(props)}
-                            title="chỉnh sửa"
-                        >
-                            <i className="fa fa-pencil" />
-                        </button>
-                    )
+                    return <button className="btn btn-xs btn-success"
+                        onClick={() => this.handleOpenEditModal(props)}
+                        title="chỉnh sửa" >
+                        <i className="fa fa-pencil" />
+                    </button>;
                 },
-                sortable: false,
-                filterable: false,
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
@@ -213,19 +194,7 @@ class ListProvinceComponent extends Component {
 
                 <section className="content-header">
                     <h1> Danh Sách Tỉnh Thành </h1>
-                </section>
-                <section className="content">
-                    <div className="row">
-                        <div style={{ width: '150px', float: 'left' }}>
-                            <input
-                                type="text"
-                                onChange={this.handleChange}
-                                value={this.state.keySearch}
-                                name="title"
-                                className="form-control"
-                                placeholder="tìm kiếm..."
-                            />
-                        </div>
+                    <div className="right_header">
                         <button
                             onClick={this.handleOpenCreateModal}
                             style={{ marginBottom: '2px', marginRight: '15px' }}
@@ -234,6 +203,24 @@ class ListProvinceComponent extends Component {
                             className="btn btn-success pull-right">
                             <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
+                    </div>
+                </section>
+                <section className="content">
+                    <div class="search_box">
+                        <div class="search_icon">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <input
+                            type="text"
+                            onChange={this.handleChange}
+                            value={this.state.keySearch}
+                            name="title"
+                            className="search_input"
+                            placeholder="Tìm kiếm..."
+                        />
+                        {this.state.keySearch !== '' && <div class="search_result_count">
+                            <span>{this.handleSearchProvince(this.props.listProvinces, this.state.keySearch).length} </span>results
+                        </div>}
                     </div>
 
                     <ReactTable

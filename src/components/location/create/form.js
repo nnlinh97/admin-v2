@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Geocode from "react-geocode";
-import * as actions from './../../actions/index';
-import { apiGet, apiPost } from './../../services/api';
-import { newListSelect } from '../../helper';
-import './index.css';
+import * as actions from './../../../actions/index';
+import { apiGet, apiPost } from './../../../services/api';
+import { newListSelect } from '../../../helper';
+import './../index.css';
 
 class info extends Component {
 
@@ -118,16 +118,6 @@ class info extends Component {
                 form.append('fk_province', this.state.province.id);
 
                 const locationCreate = await apiPost('/location/create', form);
-                if (!this.props.listLocation) {
-                    try {
-                        let listLocation = await apiGet('/location/getAllWithoutPagination');
-                        this.props.getListLocation(listLocation.data.data);
-                    } catch (error) {
-                        console.log(error);
-                    }
-                } else {
-                    await this.props.createLocation(locationCreate.data);
-                }
                 this.setState({ success: true });
             } catch (error) {
                 console.log(error);

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import InfoEdit from './info-edit';
-import MyMap from './my-map';
+import Form from './form';
+import MyMap from '../map';
 
-class EditLocationComponent extends Component {
+class CreateLocationComponent extends Component {
+    
     constructor(props) {
         super(props);
         this.state = {
@@ -22,7 +23,7 @@ class EditLocationComponent extends Component {
         return (
             <div className="content-wrapper">
                 <section className="content-header">
-                    <h1> Chỉnh Sửa Địa Điểm </h1>
+                    <h1> Thêm Mới Địa Điểm</h1>
                 </section>
                 <section className="content">
                     <div className="row">
@@ -32,14 +33,13 @@ class EditLocationComponent extends Component {
                     </div>
                     <div className="row">
                         <div className="col-lg-12 col-xs-12">
-                            <InfoEdit locationInfo={this.state.location} handleInputLocation={this.handleInputLocation} />
+                            <Form locationInfo={this.state.location} handleInputLocation={this.handleInputLocation} />
                         </div>
                     </div>
-
                 </section>
             </div>
         );
     }
 }
 
-export default EditLocationComponent;
+export default CreateLocationComponent;
