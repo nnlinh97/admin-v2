@@ -5,17 +5,13 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import _ from 'lodash';
 import moment from 'moment';
-// import DatePicker from "react-datepicker";
-import InputMask from 'react-input-mask';
 import Select from 'react-select';
 import SweetAlert from 'react-bootstrap-sweetalert';
-import { apiGet, apiPost } from '../../services/api';
-import * as actions from './../../actions/index';
-import { formatCurrency } from '../../helper';
-import './create.css';
-// import "react-datepicker/dist/react-datepicker.css";
-import 'font-awesome/css/font-awesome.css';
-import 'react-notifications/lib/notifications.css';
+import { apiGet, apiPost } from '../../../services/api';
+import * as actions from './../../../actions/index';
+import { formatCurrency } from '../../../helper';
+import './index.css';
+// import 'font-awesome/css/font-awesome.css';
 
 class CreateTourTurnComponent extends Component {
 
@@ -105,7 +101,6 @@ class CreateTourTurnComponent extends Component {
                 return false;
             }
         });
-        console.log(typePassenger)
         return typePassenger.length ? true : false;
     }
 

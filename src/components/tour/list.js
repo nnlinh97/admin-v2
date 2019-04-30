@@ -54,8 +54,6 @@ class ListTourComponent extends Component {
             {
                 Header: "ID",
                 accessor: "id",
-                sortable: false,
-                filterable: true,
                 style: { textAlign: 'center' },
                 width: 90,
                 maxWidth: 100,
@@ -64,20 +62,16 @@ class ListTourComponent extends Component {
             {
                 Header: "Tên",
                 accessor: "name",
-                sortable: false,
-                filterable: true,
                 style: { textAlign: 'center' },
             },
             {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
-                    return (
-                        <button className="btn btn-xs btn-success"
-                            title="chỉnh sửa"
-                            onClick={() => this.props.history.push(`/tour/edit/${props.original.id}`)} >
-                            <i className="fa fa-pencil" />
-                        </button>
-                    )
+                    return <button className="btn btn-xs btn-success"
+                        title="chỉnh sửa"
+                        onClick={() => this.props.history.push(`/tour/edit/${props.original.id}`)} >
+                        <i className="fa fa-pencil" />
+                    </button>;
                 },
                 style: { textAlign: 'center' },
                 width: 130,
@@ -89,19 +83,7 @@ class ListTourComponent extends Component {
             <div style={{ height: '100vh' }} className="content-wrapper">
                 <section className="content-header">
                     <h1> Danh Sách Tour </h1>
-                </section>
-                <section className="content">
-                    <div className="row">
-                        <div style={{ width: '150px', float: 'left' }}>
-                            <input
-                                type="text"
-                                onChange={this.handleChange}
-                                value={this.state.keySearch}
-                                name="title"
-                                className="form-control"
-                                placeholder="tìm kiếm..."
-                            />
-                        </div>
+                    <div className="right_header">
                         <button
                             onClick={this.handleCreatetour}
                             style={{ marginBottom: '2px', marginRight: '15px' }}
@@ -110,6 +92,24 @@ class ListTourComponent extends Component {
                             className="btn btn-success pull-right">
                             <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
+                    </div>
+                </section>
+                <section className="content">
+                    <div class="search_box">
+                        <div class="search_icon">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <input
+                            type="text"
+                            onChange={this.handleChange}
+                            value={this.state.keySearch}
+                            name="title"
+                            className="search_input"
+                            placeholder="Tìm kiếm..."
+                        />
+                        {this.state.keySearch !== '' && <div class="search_result_count">
+                            <span>{this.handleSearchTour(this.props.listTour, this.state.keySearch).length} </span>results
+                        </div>}
                     </div>
                     <ReactTable
                         columns={columns}

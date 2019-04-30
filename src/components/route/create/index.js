@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import TimePicker from 'react-time-picker';
+// import TimePicker from 'react-time-picker';
 import Select from 'react-select';
 import * as actions from './../../../actions/index';
 import { apiGet, apiPost } from './../../../services/api';
@@ -12,8 +12,8 @@ class CreateRouteComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            arriveTime: null,
-            leaveTime: null,
+            arriveTime: '',
+            leaveTime: '',
             location: null,
             locations: [],
             transports: [],
@@ -87,6 +87,7 @@ class CreateRouteComponent extends Component {
     handleCreateRoute = async (event) => {
         event.preventDefault();
         const { location, day, arriveTime, leaveTime, title, transport, detail } = this.state;
+        console.log(this.state);
         if (this.checkRoute()) {
             try {
                 const newRoute = await apiPost('/route/create', {
@@ -139,19 +140,31 @@ class CreateRouteComponent extends Component {
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Thời Gian Đến</label>
                                         <div className="col-sm-8">
-                                            <TimePicker
+                                            <input
+                                                type="time"
+                                                onChange={this.handleChange}
+                                                value={this.state.arriveTime}
+                                                name="arriveTime"
+                                                className="form-control" />
+                                            {/* <TimePicker
                                                 value={this.state.arriveTime}
                                                 onChange={this.onHandleChangeArriveTime}
-                                            />
+                                            /> */}
                                         </div>
                                     </div>
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Thời Gian Đi</label>
                                         <div className="col-sm-8">
-                                            <TimePicker
+                                            <input
+                                                type="time"
+                                                onChange={this.handleChange}
+                                                value={this.state.leaveTime}
+                                                name="leaveTime"
+                                                className="form-control" />
+                                            {/* <TimePicker
                                                 value={this.state.leaveTime}
                                                 onChange={this.onHandleChangeleaveTime}
-                                            />
+                                            /> */}
                                         </div>
                                     </div>
                                     <div className="form-group">
@@ -205,7 +218,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, action) => {
     return {
         getListTransport: (transport) => dispatch(actions.getListTransport(transport)),
-        createRoute: (route) => dispatch(actions.createRoute(route))
+        createRoute: (route) => dispatch(actions.createRoute(route)),
+        getListLocation: (locations) => dispatch(actions.getListLocation(locations))
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreateRouteComponent));

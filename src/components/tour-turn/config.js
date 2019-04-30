@@ -20,4 +20,4 @@ export const configEditor = {
          '|', 'fontFamily', 'fontSize',
         'color','align', 'formatOL', 'formatUL'
     ]
-}
+};

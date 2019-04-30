@@ -1,30 +1,28 @@
-import React from 'react'
-import { compose, withProps, withStateHandlers, lifecycle } from "recompose"
-import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps"
-import { SearchBox } from "react-google-maps/lib/components/places/SearchBox"
-import _ from 'lodash'
-import Geocode from "react-geocode"
-import { mapOption } from '../../constants/map-option';
-import MapComponent from './map-component'
-
+import React from 'react';
+import { compose, withProps, withStateHandlers, lifecycle } from "recompose";
+import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
+import { SearchBox } from "react-google-maps/lib/components/places/SearchBox";
+import _ from 'lodash';
+import Geocode from "react-geocode";
+import { mapOption } from '../../../constants/map-option';
+import MapComponent from './map-component';
 const KEY_GOOGLE_MAP = 'AIzaSyDL7sUf9bCXYdpq5RGDBvnxD1VG9C1619Q'
 Geocode.setApiKey(KEY_GOOGLE_MAP);
 
 class MyMap extends React.Component {
-    displayName = 'Google Map'
+    displayName = 'Google Map';
 
     static defaultProps = {
         isMarkerShown: false,
         isSearchBox: false
-    }
+    };
 
     constructor(props) {
         super(props)
-
         this.state = {
             myLocation: '',
             locationInfo: null
-        }
+        };
     }
 
     componentDidMount() {
@@ -39,7 +37,6 @@ class MyMap extends React.Component {
     componentWillReceiveProps = (nextProps) => {
         this.setState({ locationInfo: nextProps.locationInfo });
     }
-
 
     handleChangeLocation = (location) => {
         this.props.handleChangeLocation(location);

@@ -5,7 +5,7 @@ import ReactTable from 'react-table';
 import moment from 'moment';
 import * as actions from './../../actions/index';
 import { apiGet } from '../../services/api';
-import { formatCurrency, matchString } from '../../helper'
+import { formatCurrency, matchString } from '../../helper';
 import 'react-table/react-table.css';
 import './list.css';
 
@@ -43,19 +43,7 @@ class ListTourTurnComponent extends Component {
             <div style={{ height: '100vh' }} className="content-wrapper">
                 <section className="content-header">
                     <h1> Danh Sách Chuyến Đi </h1>
-                </section>
-                <section className="content">
-                    <div className="row">
-                        <div style={{ width: '150px', float: 'left' }}>
-                            <input
-                                type="text"
-                                onChange={this.handleChange}
-                                value={this.state.keySearch}
-                                name="title"
-                                className="form-control"
-                                placeholder="tìm kiếm..."
-                            />
-                        </div>
+                    <div className="right_header">
                         <button
                             onClick={() => this.props.history.push('/tour-turn/create')}
                             style={{ marginBottom: '2px', marginRight: '15px' }}
@@ -63,6 +51,24 @@ class ListTourTurnComponent extends Component {
                             className="btn btn-success pull-right">
                             <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
+                    </div>
+                </section>
+                <section className="content">
+                    <div class="search_box">
+                        <div class="search_icon">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <input
+                            type="text"
+                            onChange={this.handleChange}
+                            value={this.state.keySearch}
+                            name="title"
+                            className="search_input"
+                            placeholder="Tìm kiếm..."
+                        />
+                        {this.state.keySearch !== '' && <div class="search_result_count">
+                            <span>{this.handleSearchTourTurn(this.props.listTourTurn, this.state.keySearch).length} </span>results
+                        </div>}
                     </div>
                     <ReactTable
                         data={this.handleSearchTourTurn(this.props.listTourTurn, this.state.keySearch)}

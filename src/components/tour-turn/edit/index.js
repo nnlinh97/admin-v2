@@ -1,33 +1,19 @@
-import 'froala-editor/js/froala_editor.pkgd.min.js';
-import 'froala-editor/css/froala_style.min.css';
-import 'froala-editor/css/froala_editor.pkgd.min.css';
+
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import * as actions from './../../actions/index';
+import * as actions from './../../../actions/index';
 import _ from 'lodash';
 import moment from 'moment';
 import DatePicker from "react-datepicker";
-import TimePicker from 'react-time-picker';
-import './create.css';
-import "react-datepicker/dist/react-datepicker.css";
-// Require Font Awesome.
-import 'font-awesome/css/font-awesome.css';
-import { NotificationContainer, NotificationManager } from 'react-notifications';
-
-import FroalaEditor from 'react-froala-wysiwyg';
-import SuccessNotify from '../notification/success';
-import 'react-notifications/lib/notifications.css';
-import { useAlert } from "react-alert";
-import { configEditor } from './config';
-import Route from './route';
 import SweetAlert from 'react-bootstrap-sweetalert';
-
-import { helper } from '../../helper';
-import { apiGet, apiPost } from '../../services/api';
+import { apiGet, apiPost } from '../../../services/api';
 import Select from 'react-select';
+import './index.css';
+import "react-datepicker/dist/react-datepicker.css";
+import 'font-awesome/css/font-awesome.css';
 
 class CreateTourTurnComponent extends Component {
 
@@ -40,32 +26,32 @@ class CreateTourTurnComponent extends Component {
             price: '',
             limitPeople: '',
             currentPeople: '',
-            startDate: null,
-            endDate: null,
-            tours: null,
+            startDate: '',
+            endDate: '',
+            tours: [],
             tourTurnDetail: null,
             status: '',
             typePassenger: [],
+            id: '',
+            discount: ''
         }
         this.inputFocus = React.createRef();
     }
 
     async componentDidMount() {
         const { id } = this.props.match.params;
-        let tourTurnDetail = this.props.tourTurnDetail;
+        let tourTurnDetail = null;
         let listTour = this.props.listTour;
         let listTypePassenger = this.props.listTypePassenger;
-        if (!tourTurnDetail) {
-            try {
-                tourTurnDetail = await apiGet(`/tour_turn/getById_admin/${id}`);
-                tourTurnDetail = tourTurnDetail.data.data;
-                await this.props.getTourTurnDetail(tourTurnDetail);
-            } catch (error) {
-                console.log(error)
-            }
+        try {
+            tourTurnDetail = await apiGet(`/tour_turn/getById_admin/${id}`);
+            tourTurnDetail = tourTurnDetail.data.data;
+            await this.props.getTourTurnDetail(tourTurnDetail);
+        } catch (error) {
+            console.log(error)
         }
 
-        if (!listTour) {
+        if (!listTour.length) {
             try {
                 listTour = await apiGet('/tour/getAllWithoutPagination');
                 listTour = listTour.data.data;
@@ -75,7 +61,7 @@ class CreateTourTurnComponent extends Component {
             }
         }
 
-        if (!listTypePassenger) {
+        if (!listTypePassenger.length) {
             try {
                 listTypePassenger = await apiGet('/type_passenger/getAll');
                 listTypePassenger = listTypePassenger.data.data;
@@ -111,8 +97,8 @@ class CreateTourTurnComponent extends Component {
             this.setState({
                 id: tourTurnDetail.id,
                 tours: listTour,
-                startDate: new Date(tourTurnDetail.start_date),
-                endDate: new Date(tourTurnDetail.end_date),
+                startDate: tourTurnDetail.start_date,
+                endDate: tourTurnDetail.end_date,
                 discount: tourTurnDetail.discount,
                 price: tourTurnDetail.price,
                 limitPeople: tourTurnDetail.num_max_people,
@@ -121,36 +107,26 @@ class CreateTourTurnComponent extends Component {
                 status: tourTurnDetail.status,
                 typePassenger: [...listTypePassenger],
                 currentPeople: tourTurnDetail.num_current_people
-            })
+            });
         }
-
     }
 
-
     handleChangeEndDate = (time) => {
-        this.setState({
-            endDate: time
-        })
+        this.setState({ endDate: time });
     }
 
     handleChangeStartDate = (time) => {
-        this.setState({
-            startDate: time
-        })
+        this.setState({ startDate: time });
     }
 
-    handleChangeSelect = (selected) => {
-        this.setState({
-            tour: selected
-        })
+    handleChangeTour = (selected) => {
+        this.setState({ tour: selected });
     }
 
     handleChange = (event) => {
         const value = event.target.value;
         const name = event.target.name;
-        this.setState({
-            [name]: value
-        })
+        this.setState({ [name]: value });
     }
 
     getListTypePassenger = () => {
@@ -158,23 +134,20 @@ class CreateTourTurnComponent extends Component {
     }
 
     checkListTypePassenger = (typePassenger) => {
-        let flag = 1;
+        typePassenger.filter(type => type.checked);
         typePassenger.forEach(item => {
             const percent = parseInt(item.percent);
             if (item.percent === '' || !Number.isInteger(percent) || percent < 0 || percent > 100) {
-                flag = -1;
+                return false;
             }
         });
-        if(!typePassenger.length){
-            flag = -1;
-        }
-        return flag === 1;
+        return typePassenger.length ? true : false;
     }
 
     handleSave = async (event) => {
         event.preventDefault();
-        console.log(this.state);
         const typePassenger = this.getListTypePassenger();
+        console.log(typePassenger);
         if (this.checkTourTurn() && this.checkListTypePassenger(typePassenger)) {
             try {
                 const { id, startDate, endDate, limitPeople, price, discount, tour, status } = this.state;
@@ -209,20 +182,13 @@ class CreateTourTurnComponent extends Component {
                         num_current_people: this.state.tourTurnDetail.num_current_people
                     });
                 }
-                this.setState({
-                    success: true
-                });
+                this.setState({ success: true });
             } catch (error) {
-                this.setState({
-                    error: true
-                });
+                this.setState({ error: true });
             }
         } else {
-            this.setState({
-                error: true
-            });
+            this.setState({ error: true });
         }
-
     }
 
     handleCancel = (event) => {
@@ -250,9 +216,7 @@ class CreateTourTurnComponent extends Component {
     }
 
     hideFailAlert = () => {
-        this.setState({
-            error: false
-        })
+        this.setState({ error: false });
     }
 
     handleChangeSelectCheckBox = (props) => {
@@ -260,9 +224,7 @@ class CreateTourTurnComponent extends Component {
             return item.id === props.id;
         });
         this.state.typePassenger[index].checked = !props.checked;
-        this.setState({
-            typePassenger: [...this.state.typePassenger]
-        })
+        this.setState({ typePassenger: [...this.state.typePassenger] });
     }
 
     onChangePricePercent = (event, props) => {
@@ -371,6 +333,7 @@ class CreateTourTurnComponent extends Component {
                 minWidth: 150
             }
         ];
+        console.log(this.state.tours)
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
                 {this.state.success && <SweetAlert
@@ -388,17 +351,15 @@ class CreateTourTurnComponent extends Component {
                     Vui Lòng Kiểm Tra Lại...
                 </SweetAlert>}
                 <section className="content-header">
-                    <h1>
-                        Update Tour Turn
-                    </h1>
+                    <h1> Chỉnh Sửa Chuyến Đi <i>#{this.state.id}</i> </h1>
                 </section>
                 <section className="content">
                     <div className="row">
                         <div className="col-lg-8 col-lg-offset-2 col-xs-8 col-xs-offset-2">
                             <div className="nav-tabs-custom">
                                 <ul className="nav nav-tabs">
-                                    <li className="active"><a href="#activity" data-toggle="tab">Information</a></li>
-                                    <li><a href="#timeline" data-toggle="tab">Type Passenger</a></li>
+                                    <li className="active"><a href="#activity" data-toggle="tab">Thông Tin Chuyến Đi</a></li>
+                                    <li><a href="#timeline" data-toggle="tab">Hành Khách và Giá Tiền</a></li>
                                     {/* <li><a href="#settings" data-toggle="tab">Settings</a></li> */}
                                 </ul>
                                 <div className="tab-content">
@@ -410,72 +371,117 @@ class CreateTourTurnComponent extends Component {
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">Tour (*)</label>
                                                             <div className="col-sm-8">
-                                                                {this.state.tours && <Select
+                                                                {this.state.tours.length > 0 && <Select
                                                                     // value={selected}
-                                                                    onChange={this.handleChangeSelect}
+                                                                    onChange={this.handleChangeTour}
                                                                     options={this.state.tours}
                                                                     defaultValue={{ label: this.state.tour ? this.state.tour.name : 'linh', value: this.state.tour ? this.state.tour.id : '0' }}
                                                                 />}
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Price (*)</label>
+                                                            <label className="col-sm-4 control-label">Giá Tiền (*)</label>
                                                             <div className="col-sm-8">
-                                                                <input type="number" onChange={this.handleChange} value={this.state.price} name="price" className="form-control" />
+                                                                <input
+                                                                    type="number"
+                                                                    onChange={this.handleChange}
+                                                                    value={this.state.price}
+                                                                    name="price"
+                                                                    className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Discount</label>
+                                                            <label className="col-sm-4 control-label">Giảm Giá</label>
                                                             <div className="col-sm-8">
-                                                                <input type="number" onChange={this.handleChange} value={this.state.discount} name="discount" className="form-control" />
+                                                                <input
+                                                                    type="number"
+                                                                    onChange={this.handleChange}
+                                                                    value={this.state.discount}
+                                                                    name="discount"
+                                                                    className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Start Date (*)</label>
+                                                            <label className="col-sm-4 control-label">Ngày Bắt Đầu (*)</label>
                                                             <div className="col-sm-8">
-                                                                <DatePicker
+                                                                <input
+                                                                    type="date"
+                                                                    onChange={this.handleChange}
+                                                                    value={this.state.startDate}
+                                                                    name="startDate"
+                                                                    className="form-control" />
+                                                                {/* <DatePicker
                                                                     className="form-control"
                                                                     selected={this.state.startDate}
                                                                     onChange={this.handleChangeStartDate}
-                                                                />
+                                                                /> */}
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
-                                                            <label className="col-sm-4 control-label">End Date (*)</label>
+                                                            <label className="col-sm-4 control-label">Ngày Kết Thúc (*)</label>
                                                             <div className="col-sm-8">
-                                                                <DatePicker
+                                                                <input
+                                                                    type="date"
+                                                                    onChange={this.handleChange}
+                                                                    value={this.state.endDate}
+                                                                    name="endDate"
+                                                                    className="form-control" />
+                                                                {/* <DatePicker
                                                                     className="form-control"
                                                                     selected={this.state.endDate}
                                                                     onChange={this.handleChangeEndDate}
-                                                                />
+                                                                /> */}
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
-                                                            <label className="col-sm-4 control-label">People Limit (*)</label>
+                                                            <label className="col-sm-4 control-label">SL Tối Đa (*)</label>
                                                             <div className="col-sm-8">
-                                                                <input type="number" onChange={this.handleChange} value={this.state.limitPeople} name="limitPeople" className="form-control" />
+                                                                <input
+                                                                    type="number"
+                                                                    onChange={this.handleChange}
+                                                                    value={this.state.limitPeople}
+                                                                    name="limitPeople"
+                                                                    className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Public (*)</label>
+                                                            <label className="col-sm-4 control-label">Trạng Thái (*)</label>
                                                             <div className="col-sm-8">
-                                                                <select value={this.state.status} onChange={this.handleChange} name="status" className="form-control">
-                                                                    <option value="public">Yes</option>
-                                                                    <option value="private">No</option>
+                                                                <select
+                                                                    value={this.state.status}
+                                                                    onChange={this.handleChange}
+                                                                    name="status"
+                                                                    className="form-control">
+                                                                    <option value="public">Công Khai</option>
+                                                                    <option value="private">Ẩn</option>
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Current People</label>
+                                                            <label className="col-sm-4 control-label">SL Hiện tại</label>
                                                             <div className="col-sm-8">
-                                                                <input type="number" disabled value={this.state.currentPeople} name="limitPeople" className="form-control" />
+                                                                <input
+                                                                    type="number"
+                                                                    disabled
+                                                                    value={this.state.currentPeople}
+                                                                    name="limitPeople"
+                                                                    className="form-control" />
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className="box-footer">
-                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                        <button type="submit" className="btn btn-info pull-right">Save</button>
+                                                        <button
+                                                            onClick={this.handleCancel}
+                                                            type="button"
+                                                            className="btn btn-default">
+                                                            Hủy
+                                                        </button>
+                                                        <button
+                                                            type="submit"
+                                                            className="btn btn-info pull-right">
+                                                            Lưu Thay Đổi
+                                                        </button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -495,8 +501,17 @@ class CreateTourTurnComponent extends Component {
                                                         </ReactTable>
                                                     </div>
                                                     <div className="box-footer">
-                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                        <button type="submit" className="btn btn-info pull-right">Save</button>
+                                                        <button
+                                                            onClick={this.handleCancel}
+                                                            type="button"
+                                                            className="btn btn-default">
+                                                            Hủy
+                                                        </button>
+                                                        <button
+                                                            type="submit"
+                                                            className="btn btn-info pull-right">
+                                                            Lưu Thay Đổi
+                                                        </button>
                                                     </div>
                                                 </form>
                                             </div>

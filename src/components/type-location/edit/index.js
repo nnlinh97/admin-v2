@@ -35,7 +35,7 @@ class EditTypeLocationComponent extends Component {
         const { name, marker, id } = this.state;
         return <div style={{ marginLeft: '0px', height: '285px' }} className="content-wrapper">
             <section style={{ marginBottom: "20px" }} className="content-header">
-                <h1> Chỉnh Sửa Loại Địa Điểm</h1>
+                <h1> Chỉnh Sửa Loại Địa Điểm <i>#{this.state.id}</i></h1>
             </section>
             <section className="content">
                 <div className="row">
@@ -43,7 +43,7 @@ class EditTypeLocationComponent extends Component {
                         <div className="box box-info">
                             <form onSubmit={this.handleEditTypeLocation} className="form-horizontal">
                                 <div className="box-body">
-                                    <div className="form-group">
+                                    {/* <div className="form-group">
                                         <label className="col-sm-3 control-label">ID</label>
                                         <div className="col-sm-8">
                                             <input
@@ -53,7 +53,7 @@ class EditTypeLocationComponent extends Component {
                                                 readOnly
                                                 className="form-control" />
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Tên Tiếng Việt</label>
                                         <div className="col-sm-8">

@@ -4,12 +4,12 @@ import { withRouter } from 'react-router-dom';
 import { withScriptjs, withGoogleMap, GoogleMap, InfoWindow, Marker, DirectionsRenderer } from "react-google-maps";
 import { SearchBox } from "react-google-maps/lib/components/places/SearchBox";
 import { InfoBox } from "react-google-maps/lib/components/addons/InfoBox";
+import { connect } from 'react-redux';
 import _ from 'lodash';
 import Geocode from "react-geocode";
-import { mapOption } from '../../constants/map-option';
-import { connect } from 'react-redux';
-import * as actions from './../../actions/index';
-import { apiGet, apiPost } from './../../services/api';
+import { mapOption } from '../../../constants/map-option';
+import * as actions from './../../../actions/index';
+import { apiGet } from './../../../services/api';
 
 class MapComponent extends React.Component {
 
