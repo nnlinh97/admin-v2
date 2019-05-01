@@ -1,24 +1,20 @@
-import 'froala-editor/js/froala_editor.pkgd.min.js';
-import 'froala-editor/css/froala_style.min.css';
-import 'froala-editor/css/froala_editor.pkgd.min.css';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
-import * as actions from './../../actions/index';
 import _ from 'lodash';
 import moment from 'moment';
-import DatePicker from "react-datepicker";
-import TimePicker from 'react-time-picker';
-import 'font-awesome/css/font-awesome.css';
 import SweetAlert from 'react-bootstrap-sweetalert';
-import { apiGet, apiPost } from '../../services/api';
-import Select from 'react-select';
-import { mergeBookHistory, filterBookHistory, formatCurrency } from './../../helper';
 import Modal from 'react-responsive-modal';
-import Payment from './payment';
-import PassengerUpdate from './passenger-update';
-import ContactInfoUpdate from './contact-info';
+import Select from 'react-select';
+import * as actions from './../../../actions/index';
+import { apiGet, apiPost } from '../../../services/api';
+import { mergeBookHistory, filterBookHistory, formatCurrency } from './../../../helper';
+import Payment from './../payment';
+import PassengerUpdate from './../passenger-update';
+import ContactInfoUpdate from './../contact-info';
+import 'font-awesome/css/font-awesome.css';
+import './index.css';
 
 class CreateTourTurnComponent extends Component {
 
@@ -42,17 +38,15 @@ class CreateTourTurnComponent extends Component {
     }
 
     async componentDidMount() {
-        let { bookTourTurnDetail } = this.props;
-        if (!bookTourTurnDetail) {
-            try {
-                const { id } = this.props.match.params;
-                const detail = await apiGet(`/book_tour/getBookTourHistoryByTourTurn/${id}`);
-                bookTourTurnDetail = detail.data.data;
-                console.log(bookTourTurnDetail);
-                await this.props.getBookTourTurnById(bookTourTurnDetail);
-            } catch (error) {
-                console.log(error);
-            }
+        let bookTourTurnDetail = null;
+        try {
+            const { id } = this.props.match.params;
+            const detail = await apiGet(`/book_tour/getBookTourHistoryByTourTurn/${id}`);
+            bookTourTurnDetail = detail.data.data;
+            // console.log(bookTourTurnDetail);
+            await this.props.getBookTourTurnById(bookTourTurnDetail);
+        } catch (error) {
+            console.log(error);
         }
         this.updateState(bookTourTurnDetail);
     }
@@ -66,15 +60,11 @@ class CreateTourTurnComponent extends Component {
     }
 
     handleChangeSelect = (selected) => {
-        this.setState({
-            location: selected
-        })
+        this.setState({ location: selected });
     }
 
     handleChangeSelectTransport = (selected) => {
-        this.setState({
-            transport: selected
-        })
+        this.setState({ transport: selected });
     }
 
     handleChange = (event) => {
@@ -259,8 +249,9 @@ class CreateTourTurnComponent extends Component {
 
     render() {
         const { bookTourHistory, tourTurn, tour } = this.state;
-        console.log(tourTurn);
+        console.log(bookTourHistory);
         const bookHistory = mergeBookHistory(bookTourHistory);
+        console.log(bookHistory)
         const columnHistory = [
             {
                 Header: "ID",
@@ -632,7 +623,7 @@ class CreateTourTurnComponent extends Component {
                             title="print"
                         />
                     </div>
-                    <div className="row">
+                    {/* <div className="row">
                         <div className="col-lg-12 col-xs-12">
                             <div className="nav-tabs-custom">
                                 <ul className="nav nav-tabs">
@@ -655,31 +646,36 @@ class CreateTourTurnComponent extends Component {
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">Start Date</label>
                                                             <div className="col-sm-5">
-                                                                <input type="text" readOnly value={tourTurn ? moment(tourTurn.start_date).format('DD/MM/YYYY') : ''} name="discount" className="form-control" />
+                                                                <input type="text" readOnly
+                                                                    value={tourTurn ? moment(tourTurn.start_date).format('DD/MM/YYYY') : ''} name="discount" className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">End Date</label>
                                                             <div className="col-sm-5">
-                                                                <input type="text" readOnly value={tourTurn ? moment(tourTurn.end_date).format('DD/MM/YYYY') : ''} name="limitPeople" className="form-control" />
+                                                                <input type="text" readOnly
+                                                                    value={tourTurn ? moment(tourTurn.end_date).format('DD/MM/YYYY') : ''} name="limitPeople" className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">Price</label>
                                                             <div className="col-sm-5">
-                                                                <input type="text" readOnly value={tourTurn ? formatCurrency(tourTurn.price.toString()) + ' VND' : ''} name="limitPeople" className="form-control" />
+                                                                <input type="text" readOnly
+                                                                    value={tourTurn ? formatCurrency(tourTurn.price.toString()) + ' VND' : ''} name="limitPeople" className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">Limit People</label>
                                                             <div className="col-sm-5">
-                                                                <input type="number" readOnly value={tourTurn ? tourTurn.num_max_people : ''} name="limitPeople" className="form-control" />
+                                                                <input type="number" readOnly
+                                                                    value={tourTurn ? tourTurn.num_max_people : ''} name="limitPeople" className="form-control" />
                                                             </div>
                                                         </div>
                                                         <div className="form-group">
                                                             <label className="col-sm-4 control-label">Current People</label>
                                                             <div className="col-sm-5">
-                                                                <input type="number" readOnly value={tourTurn ? tourTurn.num_current_people : ''} name="limitPeople" className="form-control" />
+                                                                <input type="number" readOnly
+                                                                    value={tourTurn ? tourTurn.num_current_people : ''} name="limitPeople" className="form-control" />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -706,7 +702,6 @@ class CreateTourTurnComponent extends Component {
                                                     </div>
                                                     <div className="box-footer">
                                                         <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                        {/* <button type="submit" className="btn btn-info pull-right">Confirm</button> */}
                                                     </div>
                                                 </form>
                                             </div>
@@ -727,7 +722,6 @@ class CreateTourTurnComponent extends Component {
                                                     </div>
                                                     <div className="box-footer">
                                                         <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                        {/* <button type="submit" className="btn btn-info pull-right">Confirm</button> */}
                                                     </div>
                                                 </form>
                                             </div>
@@ -735,6 +729,136 @@ class CreateTourTurnComponent extends Component {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div> */}
+                    <div className="row">
+                        <div className="col-lg-12 col-xs-12">
+                            <form onSubmit={this.handleSave} className="form-horizontal">
+                                <div className="box-body book_tour_detail-information">
+                                    <h2>Thông Tin Chuyến Đi</h2>
+                                    <div class="box-body-main">
+                                        <div class="box-body-left">
+                                            <div class="">Tour</div>
+                                            <div class="">Giá</div>
+                                            <div class="">Ngày bắt đầu</div>
+                                            <div class="">Ngày kết thúc</div>
+                                            <div class="">SL tối đa</div>
+                                            <div class="">SL hiện tại</div>
+                                        </div>
+                                        <div class="box-body-right">
+                                            <div class="">{tour ? tour.name : ''}</div>
+                                            <div class="">{tourTurn ? formatCurrency(tourTurn.price.toString()) + ' VND' : ''}</div>
+                                            <div class="">{tourTurn ? moment(tourTurn.start_date).format('DD/MM/YYYY') : ''}</div>
+                                            <div class="">{tourTurn ? moment(tourTurn.end_date).format('DD/MM/YYYY') : ''}</div>
+                                            <div class="">{tourTurn ? tourTurn.num_max_people : ''}</div>
+                                            <div class="">{tourTurn ? tourTurn.num_current_people : ''}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <form onSubmit={this.handleSave} className="form-horizontal">
+                                <div className="box-body book_tour_detail-book_tour_history">
+                                    <h2>Danh Sách Đặt Tour</h2>
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-xs-12 book_tour_history">
+                                                <table class="table table-bordered table-hover dt-responsive">
+                                                    <caption class="text-center"></caption>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID</th>
+                                                            <th>Người liên hệ</th>
+                                                            <th>Email</th>
+                                                            <th>Số Điện Thoại</th>
+                                                            <th>Số Lượng</th>
+                                                            <th>Tổng Tiền</th>
+                                                            <th>Thời Gian Book</th>
+                                                            <th>Trạng Thái</th>
+                                                            <th> <i className="fa fa-money" /> </th>
+                                                            <th> <i className="fa fa-credit-card" /> </th>
+                                                            <th> <i className="fa fa-pencil" /> </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td>Nguyen Van A</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>100</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <button className="btn btn-xs btn-success" disabled>
+                                                                    <i className="fa fa-pencil" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>2</td>
+                                                            <td>Nguyen Van B</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>100</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <button className="btn btn-xs btn-success" disabled>
+                                                                    <i className="fa fa-pencil" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>3</td>
+                                                            <td>Nguyen Van C</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>100</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <button className="btn btn-xs btn-success" disabled>
+                                                                    <i className="fa fa-pencil" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>4</td>
+                                                            <td>Nguyen Van D</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>100</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <button className="btn btn-xs btn-success" disabled>
+                                                                    <i className="fa fa-pencil" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>5</td>
+                                                            <td>Nguyen Van E</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>100</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <button className="btn btn-xs btn-success" disabled>
+                                                                    <i className="fa fa-pencil" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tfoot>
+
+                                                    </tfoot>
+                                                </table>
+                                                <tr>
+                                                    <td colspan="5" class="text-center"></td>
+                                                </tr>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </section>

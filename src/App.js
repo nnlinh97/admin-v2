@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-import LoginPage from './pages/Login';
+import LoginPage from './pages/login/';
 import NotFound from './pages/NotFound';
 import ListLocationPage from './pages/location/list';
 import CreateLocationPage from './pages/location/create';
@@ -13,10 +13,7 @@ import EditTourPage from './pages/tour/edit';
 import CreateTourPage from './pages/tour/create';
 import CreateTourTurnPage from './pages/tour-turn/create';
 import EditTourTurnPage from './pages/tour-turn/edit';
-import PrivateRoute from './components/private-route';
 import ListRoutePage from './pages/route/list';
-// import CreateRoutePage from './pages/route/create';
-// import EditRoutePage from './pages/route/edit';
 import ListTransportPage from './pages/transport/list';
 import ListTypePassengerPage from './pages/type-passenger/list';
 import ListUserPage from './pages/user/list';
@@ -26,6 +23,7 @@ import BookTourTurnDetail from './pages/book-tour/detail';
 import ListCountryPage from './pages/country/list';
 import ListProvincePage from './pages/province/list';
 import PrintListPassenger from './components/book-tour/print';
+import PrivateRoute from './components/private-route/';
 import './App.css';
 
 class App extends Component {
@@ -33,46 +31,62 @@ class App extends Component {
     return (
       <BrowserRouter>
         <Switch>
+
+          {/* dashboard */}
           <PrivateRoute exact path='/' component={DashboardPage} />
+
+          {/* login */}
           <Route exact path='/login' component={LoginPage} />
 
+          {/* location */}
           <PrivateRoute exact path='/location/list' component={ListLocationPage} />
           <PrivateRoute exact path='/location/create' component={CreateLocationPage} />
           <PrivateRoute exact path='/location/edit/:id' component={EditLocationPage} />
 
+          {/* type location */}
           <PrivateRoute exact path='/type-location/list' component={ListTypesPage} />
 
+          {/* tour turn  */}
           <PrivateRoute exact path='/tour-turn/list' component={ListTourTurnPage} />
           <PrivateRoute exact path='/tour-turn/create' component={CreateTourTurnPage} />
           <PrivateRoute exact path='/tour-turn/edit/:id' component={EditTourTurnPage} />
 
+          {/* tour  */}
           <PrivateRoute exact path='/tour/create' component={CreateTourPage} />
           <PrivateRoute exact path='/tour/list' component={ListTourPage} />
           <PrivateRoute exact path='/tour/edit/:id' component={EditTourPage} />
 
-          {/* <PrivateRoute exact path='/route/create' component={CreateRoutePage} /> */}
+          {/* route */}
           <PrivateRoute exact path='/route/list' component={ListRoutePage} />
-          {/* <PrivateRoute exact path='/route/edit/:id' component={EditRoutePage} /> */}
 
+          {/* transport */}
           <PrivateRoute exact path='/transport/list' component={ListTransportPage} />
 
+          {/* type passenger */}
           <PrivateRoute exact path='/type-passenger/list' component={ListTypePassengerPage} />
 
+          {/* user */}
           <PrivateRoute exact path='/user/list' component={ListUserPage} />
 
+          {/* change password */}
           <PrivateRoute exact path='/admin/change-password' component={ChangePasswordPage} />
 
+          {/* book tour */}
           <PrivateRoute exact path='/book-tour/list' component={ListBookTourPage} />
-
           <PrivateRoute exact path='/book-tour/detail/:id' component={BookTourTurnDetail} />
 
+          {/* country */}
           <PrivateRoute exact path='/country/list' component={ListCountryPage} />
 
+          {/* province */}
           <PrivateRoute exact path='/province/list' component={ListProvincePage} />
 
+          {/* print */}
           <PrivateRoute exact path='/print-passengers/:id' component={PrintListPassenger} />
 
+          {/* not found */}
           <PrivateRoute exact path='' component={NotFound} />
+
         </Switch>
       </BrowserRouter>
     );

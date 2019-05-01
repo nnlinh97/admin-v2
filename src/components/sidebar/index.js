@@ -1,34 +1,31 @@
 import React, { Component } from 'react';
-import { withRouter, Link } from 'react-router-dom';
-import {menus} from './../constants/menu';
+import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
+import { menus } from './../../constants/menu';
 
 class Sidebar extends Component {
     constructor(props) {
         super(props);
         this.state = {
             indexActive: ''
-        }
+        };
     }
 
     componentDidMount = () => {
-      const path = window.location.pathname;
-      let index = _.findIndex(menus, (menu) => {
-          return menu.path === path;
-      });
-      if(index !== -1) {
-          this.setState({
-              indexActive: index
-          })
-      }
+        const path = window.location.pathname;
+        let index = _.findIndex(menus, (menu) => {
+            return menu.path === path;
+        });
+        if (index !== -1) {
+            this.setState({ indexActive: index });
+        }
     }
-    
 
     redirectPath = (event, path) => {
         event.preventDefault();
         this.props.history.push(path);
     }
-    
+
     render() {
         return (
             <aside className="main-sidebar">

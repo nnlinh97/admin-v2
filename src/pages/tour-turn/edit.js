@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import Sidebar from '../../components/Sidebar';
+import Header from '../../components/header/';
+import Footer from '../../components/footer/';
+import Sidebar from '../../components/sidebar/';
 import EditTourTurnComponent from '../../components/tour-turn/edit/';
 
 
