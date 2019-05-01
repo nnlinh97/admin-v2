@@ -223,6 +223,18 @@ section.content
 }
 
 /* Book tour history */
+thead
+{
+    color: #fff;
+    background: #292929;
+    cursor: pointer;
+}
+thead:hover
+{
+    color: #fff;
+    background: #292929;
+    cursor: pointer;
+}
 .book_tour_detail-information
 {
     
@@ -268,6 +280,40 @@ section.content
 .book_tour_history
 {
     padding: 0 !important;
+}
+.book_tour_detail-book_tour_history-title
+{
+    display: table;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+.book_tour_detail-book_tour_history h2
+{
+    width: 35%;
+    display: table-cell;
+}
+.book_tour_detail-book_tour_history .search_box
+{
+    width: 65%;
+    display: table-cell;
+}
+.book_tour_detail-book_tour_history .search_box .search_icon i
+{
+    width: 20px;
+    height: 20px;
+    color: #ccc;
+    font-size: 20px;
+}
+.book_tour_detail-book_tour_history .search_box .search_input
+{
+    padding: 10px 110px 10px 75px;
+    width: 100%;
+    font-size: 18px;
+    border-radius: 3px;
+    height: 40px;
+    color: #555;
+    border: 1px solid rgba(0,0,0,0.1);
 }
 .book_tour_detail-book_tour_history .container
 {

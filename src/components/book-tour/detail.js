@@ -617,15 +617,14 @@ class CreateTourTurnComponent extends Component {
                 </Modal>
                 <section className="content-header">
                     <h1> Thông Tin & Danh Sách Đặt Tour <i>#{this.props.match.params.id}</i> </h1>
-                </section>
-                <section className="content">
-                    <div className="row">
+                    <div className="right_header">
                         <i
                             onClick={() => window.open(`/print-passengers/${this.props.match.params.id}`, '_blank')}
                             style={{
                                 fontSize: '35px',
                                 marginBottom: '2px',
                                 marginRight: '15px',
+                                marginTop: '10px',
                                 color: '#3c8dbc',
                                 cursor: 'pointer'
                             }}
@@ -633,6 +632,8 @@ class CreateTourTurnComponent extends Component {
                             title="print"
                         />
                     </div>
+                </section>
+                <section className="content">
                     <div className="row">
                         <div className="col-lg-12 col-xs-12">
                                     <form onSubmit={this.handleSave} className="form-horizontal">
@@ -664,13 +665,8 @@ class CreateTourTurnComponent extends Component {
 
                                     <form onSubmit={this.handleSave} className="form-horizontal">
                                         <div className="box-body book_tour_detail-book_tour_history">
-
-                                            <h2>Book Tour History</h2>
-
-                                            <div className="container">
-
-                                            <div className="row">
-                                                <div className="col-xs-12 book_tour_history">
+                                            <div class="book_tour_detail-book_tour_history-title">
+                                                <h2>Book Tour History</h2>
                                                 <div class="search_box">
                                                     <div class="search_icon">
                                                         <i class="fa fa-search"></i>
@@ -687,142 +683,148 @@ class CreateTourTurnComponent extends Component {
                                                         <span></span>results
                                                     </div>
                                                 </div>
-                                                <table className="table table-bordered table-hover dt-responsive">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>ID</th>
-                                                            <th>Name</th>
-                                                            <th>Start Date</th>
-                                                            <th>End Date</th>
-                                                            <th>Max People</th>
-                                                            <th>Current</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>1</td>
-                                                            <td>Nguyen Van A</td>
-                                                            <td>12/12/2012</td>
-                                                            <td>12/12/2012</td>
-                                                            <td>100</td>
-                                                            <td>1</td>
-                                                            <td>
-                                                                <button className="btn btn-xs btn-success" disabled>
-                                                                    <i className="fa fa-pencil" />
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td colspan="7" class="td_mini_table">
-                                                                <table className="table table-bordered table-hover dt-responsive mini_table">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>ID</th>
-                                                                            <th>Name</th>
-                                                                            <th>Type</th>
-                                                                            <th>Contact Name</th>
-                                                                            <th>Contact Phone</th>
-                                                                            <th>Action</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td>1</td>
-                                                                            <td>Nguyen Van A</td>
-                                                                            <td>AAA</td>
-                                                                            <td>Thomas Wilson</td>
-                                                                            <td>(+111) 111 111 111</td>
-                                                                            <td>
-                                                                                <button className="btn btn-xs btn-success" disabled>
-                                                                                    <i className="fa fa-pencil" />
-                                                                                </button>
-                                                                                <button className="btn btn-xs btn-danger" disabled>
-                                                                                    <i className="fa fa-trash" />
-                                                                                </button>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>1</td>
-                                                                            <td>Nguyen Van B</td>
-                                                                            <td>BBB</td>
-                                                                            <td>Adam Roman</td>
-                                                                            <td>(+111) 111 111 111</td>
-                                                                            <td>
-                                                                                <button className="btn btn-xs btn-success" disabled>
-                                                                                    <i className="fa fa-pencil" />
-                                                                                </button>
-                                                                                <button className="btn btn-xs btn-danger" disabled>
-                                                                                    <i className="fa fa-trash" />
-                                                                                </button>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table> 
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>2</td>
-                                                            <td>Nguyen Van B</td>
-                                                            <td>12/12/2012</td>
-                                                            <td>12/12/2012</td>
-                                                            <td>100</td>
-                                                            <td>1</td>
-                                                            <td>
-                                                                <button className="btn btn-xs btn-success" disabled>
-                                                                    <i className="fa fa-pencil" />
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3</td>
-                                                            <td>Nguyen Van C</td>
-                                                            <td>12/12/2012</td>
-                                                            <td>12/12/2012</td>
-                                                            <td>100</td>
-                                                            <td>1</td>
-                                                            <td>
-                                                                <button className="btn btn-xs btn-success" disabled>
-                                                                    <i className="fa fa-pencil" />
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>4</td>
-                                                            <td>Nguyen Van D</td>
-                                                            <td>12/12/2012</td>
-                                                            <td>12/12/2012</td>
-                                                            <td>100</td>
-                                                            <td>1</td>
-                                                            <td>
-                                                                <button className="btn btn-xs btn-success" disabled>
-                                                                    <i className="fa fa-pencil" />
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>5</td>
-                                                            <td>Nguyen Van E</td>
-                                                            <td>12/12/2012</td>
-                                                            <td>12/12/2012</td>
-                                                            <td>100</td>
-                                                            <td>1</td>
-                                                            <td>
-                                                                <button className="btn btn-xs btn-success" disabled>
-                                                                    <i className="fa fa-pencil" />
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                    <tfoot>
-
-                                                    </tfoot>
-                                                </table>
-                                                    <tr>
-                                                        
-                                                    </tr>
-                                                </div>
                                             </div>
+
+                                            <div className="container">
+
+                                                <div className="row">
+                                                    <div className="col-xs-12 book_tour_history">
+                                                    <table className="table table-bordered table-hover dt-responsive">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ID</th>
+                                                                <th>Name</th>
+                                                                <th>Start Date</th>
+                                                                <th>End Date</th>
+                                                                <th>Max People</th>
+                                                                <th>Current</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>1</td>
+                                                                <td>Nguyen Van A</td>
+                                                                <td>12/12/2012</td>
+                                                                <td>12/12/2012</td>
+                                                                <td>100</td>
+                                                                <td>1</td>
+                                                                <td>
+                                                                    <button className="btn btn-xs btn-success" disabled>
+                                                                        <i className="fa fa-pencil" />
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="7" class="td_mini_table">
+                                                                    <table className="table table-bordered table-hover dt-responsive mini_table">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>ID</th>
+                                                                                <th>Name</th>
+                                                                                <th>Type</th>
+                                                                                <th>Contact Name</th>
+                                                                                <th>Contact Phone</th>
+                                                                                <th>Action</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td>1</td>
+                                                                                <td>Nguyen Van A</td>
+                                                                                <td>AAA</td>
+                                                                                <td>Thomas Wilson</td>
+                                                                                <td>(+111) 111 111 111</td>
+                                                                                <td>
+                                                                                    <button className="btn btn-xs btn-success" disabled>
+                                                                                        <i className="fa fa-pencil" />
+                                                                                    </button>
+                                                                                    <button className="btn btn-xs btn-danger" disabled>
+                                                                                        <i className="fa fa-trash" />
+                                                                                    </button>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>1</td>
+                                                                                <td>Nguyen Van B</td>
+                                                                                <td>BBB</td>
+                                                                                <td>Adam Roman</td>
+                                                                                <td>(+111) 111 111 111</td>
+                                                                                <td>
+                                                                                    <button className="btn btn-xs btn-success" disabled>
+                                                                                        <i className="fa fa-pencil" />
+                                                                                    </button>
+                                                                                    <button className="btn btn-xs btn-danger" disabled>
+                                                                                        <i className="fa fa-trash" />
+                                                                                    </button>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table> 
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>2</td>
+                                                                <td>Nguyen Van B</td>
+                                                                <td>12/12/2012</td>
+                                                                <td>12/12/2012</td>
+                                                                <td>100</td>
+                                                                <td>1</td>
+                                                                <td>
+                                                                    <button className="btn btn-xs btn-success" disabled>
+                                                                        <i className="fa fa-pencil" />
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>3</td>
+                                                                <td>Nguyen Van C</td>
+                                                                <td>12/12/2012</td>
+                                                                <td>12/12/2012</td>
+                                                                <td>100</td>
+                                                                <td>1</td>
+                                                                <td>
+                                                                    <button className="btn btn-xs btn-success" disabled>
+                                                                        <i className="fa fa-pencil" />
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>4</td>
+                                                                <td>Nguyen Van D</td>
+                                                                <td>12/12/2012</td>
+                                                                <td>12/12/2012</td>
+                                                                <td>100</td>
+                                                                <td>1</td>
+                                                                <td>
+                                                                    <button className="btn btn-xs btn-success" disabled>
+                                                                        <i className="fa fa-pencil" />
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>5</td>
+                                                                <td>Nguyen Van E</td>
+                                                                <td>12/12/2012</td>
+                                                                <td>12/12/2012</td>
+                                                                <td>100</td>
+                                                                <td>1</td>
+                                                                <td>
+                                                                    <button className="btn btn-xs btn-success" disabled>
+                                                                        <i className="fa fa-pencil" />
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                        <tfoot>
+
+                                                        </tfoot>
+                                                    </table>
+                                                        <tr>
+                                                            
+                                                        </tr>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                         </div>
