@@ -668,10 +668,26 @@ class CreateTourTurnComponent extends Component {
                                             <h2>Book Tour History</h2>
 
                                             <div className="container">
+
                                             <div className="row">
                                                 <div className="col-xs-12 book_tour_history">
+                                                <div class="search_box">
+                                                    <div class="search_icon">
+                                                        <i class="fa fa-search"></i>
+                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        onChange={this.handleChange}
+                                                        value={this.state.keySearch}
+                                                        name="keySearch"
+                                                        className="search_input"
+                                                        placeholder="Tìm kiếm..."
+                                                    />
+                                                    <div class="search_result_count">
+                                                        <span></span>results
+                                                    </div>
+                                                </div>
                                                 <table className="table table-bordered table-hover dt-responsive">
-                                                    <caption className="text-center"></caption>
                                                     <thead>
                                                         <tr>
                                                             <th>ID</th>
