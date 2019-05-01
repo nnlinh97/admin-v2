@@ -638,22 +638,22 @@ class CreateTourTurnComponent extends Component {
                                     <form onSubmit={this.handleSave} className="form-horizontal">
                                         <div className="box-body book_tour_detail-information">
                                             <h2>Information</h2>
-                                            <div class="box-body-main">
-                                                <div class="box-body-left">
-                                                    <div class="">Name</div>
-                                                    <div class="">Start Date</div>
-                                                    <div class="">End Date</div>
-                                                    <div class="">Price</div>
-                                                    <div class="">Limit People</div>
-                                                    <div class="">Current People</div>
+                                            <div className="box-body-main">
+                                                <div className="box-body-left">
+                                                    <div className="">Name</div>
+                                                    <div className="">Start Date</div>
+                                                    <div className="">End Date</div>
+                                                    <div className="">Price</div>
+                                                    <div className="">Limit People</div>
+                                                    <div className="">Current People</div>
                                                 </div>
-                                                <div class="box-body-right">
-                                                    <div class="">Tham quan ABC, P.A, Q.A, TP ABC.</div>
-                                                    <div class="">12/12/2012</div>
-                                                    <div class="">12/12/2012</div>
-                                                    <div class="">200.000 VND</div>
-                                                    <div class="">10</div>
-                                                    <div class="">10</div>
+                                                <div className="box-body-right">
+                                                    <div className="">Tham quan ABC, P.A, Q.A, TP ABC.</div>
+                                                    <div className="">12/12/2012</div>
+                                                    <div className="">12/12/2012</div>
+                                                    <div className="">200.000 VND</div>
+                                                    <div className="">10</div>
+                                                    <div className="">10</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -667,11 +667,11 @@ class CreateTourTurnComponent extends Component {
 
                                             <h2>Book Tour History</h2>
 
-                                            <div class="container">
-                                            <div class="row">
-                                                <div class="col-xs-12 book_tour_history">
-                                                <table class="table table-bordered table-hover dt-responsive">
-                                                    <caption class="text-center"></caption>
+                                            <div className="container">
+                                            <div className="row">
+                                                <div className="col-xs-12 book_tour_history">
+                                                <table className="table table-bordered table-hover dt-responsive">
+                                                    <caption className="text-center"></caption>
                                                     <thead>
                                                         <tr>
                                                             <th>ID</th>
@@ -695,6 +695,54 @@ class CreateTourTurnComponent extends Component {
                                                                 <button className="btn btn-xs btn-success" disabled>
                                                                     <i className="fa fa-pencil" />
                                                                 </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="7" class="td_mini_table">
+                                                                <table className="table table-bordered table-hover dt-responsive mini_table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>ID</th>
+                                                                            <th>Name</th>
+                                                                            <th>Type</th>
+                                                                            <th>Contact Name</th>
+                                                                            <th>Contact Phone</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>1</td>
+                                                                            <td>Nguyen Van A</td>
+                                                                            <td>AAA</td>
+                                                                            <td>Thomas Wilson</td>
+                                                                            <td>(+111) 111 111 111</td>
+                                                                            <td>
+                                                                                <button className="btn btn-xs btn-success" disabled>
+                                                                                    <i className="fa fa-pencil" />
+                                                                                </button>
+                                                                                <button className="btn btn-xs btn-danger" disabled>
+                                                                                    <i className="fa fa-trash" />
+                                                                                </button>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>1</td>
+                                                                            <td>Nguyen Van B</td>
+                                                                            <td>BBB</td>
+                                                                            <td>Adam Roman</td>
+                                                                            <td>(+111) 111 111 111</td>
+                                                                            <td>
+                                                                                <button className="btn btn-xs btn-success" disabled>
+                                                                                    <i className="fa fa-pencil" />
+                                                                                </button>
+                                                                                <button className="btn btn-xs btn-danger" disabled>
+                                                                                    <i className="fa fa-trash" />
+                                                                                </button>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table> 
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -755,7 +803,7 @@ class CreateTourTurnComponent extends Component {
                                                     </tfoot>
                                                 </table>
                                                     <tr>
-                                                        <td colspan="5" class="text-center"></td>
+                                                        
                                                     </tr>
                                                 </div>
                                             </div>
