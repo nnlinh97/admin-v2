@@ -19,6 +19,7 @@ import Modal from 'react-responsive-modal';
 import Payment from './payment';
 import PassengerUpdate from './passenger-update';
 import ContactInfoUpdate from './contact-info';
+import './../../custom.css';
 
 class CreateTourTurnComponent extends Component {
 
@@ -634,108 +635,140 @@ class CreateTourTurnComponent extends Component {
                     </div>
                     <div className="row">
                         <div className="col-lg-12 col-xs-12">
-                            <div className="nav-tabs-custom">
-                                <ul className="nav nav-tabs">
-                                    <li className="active"><a href="#activity" data-toggle="tab">Information</a></li>
-                                    <li><a href="#settings" data-toggle="tab">Book Tour History</a></li>
-                                    <li><a href="#timeline" data-toggle="tab">List Passengers</a></li>
-                                </ul>
-                                <div className="tab-content">
-                                    <div className="active tab-pane" id="activity">
-                                        <div className="post">
-                                            <div className="user-block">
-                                                <form onSubmit={this.handleSave} className="form-horizontal">
-                                                    <div className="box-body">
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Name</label>
-                                                            <div className="col-sm-5">
-                                                                <input type="text" readOnly value={tour ? tour.name : ''} name="price" className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Start Date</label>
-                                                            <div className="col-sm-5">
-                                                                <input type="text" readOnly value={tourTurn ? moment(tourTurn.start_date).format('DD/MM/YYYY') : ''} name="discount" className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">End Date</label>
-                                                            <div className="col-sm-5">
-                                                                <input type="text" readOnly value={tourTurn ? moment(tourTurn.end_date).format('DD/MM/YYYY') : ''} name="limitPeople" className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Price</label>
-                                                            <div className="col-sm-5">
-                                                                <input type="text" readOnly value={tourTurn ? formatCurrency(tourTurn.price.toString()) + ' VND' : ''} name="limitPeople" className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Limit People</label>
-                                                            <div className="col-sm-5">
-                                                                <input type="number" readOnly value={tourTurn ? tourTurn.num_max_people : ''} name="limitPeople" className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Current People</label>
-                                                            <div className="col-sm-5">
-                                                                <input type="number" readOnly value={tourTurn ? tourTurn.num_current_people : ''} name="limitPeople" className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="box-footer">
-                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                    </div>
-                                                </form>
+                                    <form onSubmit={this.handleSave} className="form-horizontal">
+                                        <div className="box-body book_tour_detail-information">
+                                            <h2>Information</h2>
+                                            <div class="box-body-main">
+                                                <div class="box-body-left">
+                                                    <div class="">Name</div>
+                                                    <div class="">Start Date</div>
+                                                    <div class="">End Date</div>
+                                                    <div class="">Price</div>
+                                                    <div class="">Limit People</div>
+                                                    <div class="">Current People</div>
+                                                </div>
+                                                <div class="box-body-right">
+                                                    <div class="">Tham quan ABC, P.A, Q.A, TP ABC.</div>
+                                                    <div class="">12/12/2012</div>
+                                                    <div class="">12/12/2012</div>
+                                                    <div class="">200.000 VND</div>
+                                                    <div class="">10</div>
+                                                    <div class="">10</div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        <div className="box-footer">
+                                            <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
+                                        </div>
+                                    </form>
 
-                                    <div className="tab-pane" id="settings">
-                                        <div className="post">
-                                            <div className="user-block">
-                                                <form onSubmit={this.handleSave} className="form-horizontal">
-                                                    <div className="box-body">
-                                                        <ReactTable
-                                                            columns={columnHistory}
-                                                            data={bookTourHistory ? bookTourHistory : []}
-                                                            defaultPageSize={10}
-                                                            noDataText={'Please wait...'}
-                                                        >
-                                                        </ReactTable>
-                                                    </div>
-                                                    <div className="box-footer">
-                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                        {/* <button type="submit" className="btn btn-info pull-right">Confirm</button> */}
-                                                    </div>
-                                                </form>
+                                    <form onSubmit={this.handleSave} className="form-horizontal">
+                                        <div className="box-body book_tour_detail-book_tour_history">
+
+                                            <h2>Book Tour History</h2>
+
+                                            <div class="container">
+                                            <div class="row">
+                                                <div class="col-xs-12 book_tour_history">
+                                                <table class="table table-bordered table-hover dt-responsive">
+                                                    <caption class="text-center"></caption>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID</th>
+                                                            <th>Name</th>
+                                                            <th>Start Date</th>
+                                                            <th>End Date</th>
+                                                            <th>Max People</th>
+                                                            <th>Current</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td>Nguyen Van A</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>100</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <button className="btn btn-xs btn-success" disabled>
+                                                                    <i className="fa fa-pencil" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>2</td>
+                                                            <td>Nguyen Van B</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>100</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <button className="btn btn-xs btn-success" disabled>
+                                                                    <i className="fa fa-pencil" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>3</td>
+                                                            <td>Nguyen Van C</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>100</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <button className="btn btn-xs btn-success" disabled>
+                                                                    <i className="fa fa-pencil" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>4</td>
+                                                            <td>Nguyen Van D</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>100</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <button className="btn btn-xs btn-success" disabled>
+                                                                    <i className="fa fa-pencil" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>5</td>
+                                                            <td>Nguyen Van E</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>12/12/2012</td>
+                                                            <td>100</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <button className="btn btn-xs btn-success" disabled>
+                                                                    <i className="fa fa-pencil" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tfoot>
+
+                                                    </tfoot>
+                                                </table>
+                                                    <tr>
+                                                        <td colspan="5" class="text-center"></td>
+                                                    </tr>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div className="tab-pane" id="timeline">
-                                        <div className="post">
-                                            <div className="user-block">
-                                                <form onSubmit={this.handleSave} className="form-horizontal">
-                                                    <div className="box-body">
-                                                        <ReactTable
-                                                            columns={columns}
-                                                            data={bookHistory ? bookHistory : []}
-                                                            defaultPageSize={10}
-                                                            noDataText={'Please wait...'}
-                                                        >
-                                                        </ReactTable>
-                                                    </div>
-                                                    <div className="box-footer">
-                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                        {/* <button type="submit" className="btn btn-info pull-right">Confirm</button> */}
-                                                    </div>
-                                                </form>
                                             </div>
+
                                         </div>
-                                    </div>
+                                        <div className="box-footer">
+                                            <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
+                                            {/* <button type="submit" className="btn btn-info pull-right">Confirm</button> */}
+                                        </div>
+                                    </form>
+
                                 </div>
-                            </div>
-                        </div>
                     </div>
                 </section>
             </div>
