@@ -1,15 +1,8 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import ReactTable from 'react-table';
-import 'react-table/react-table.css';
-import DatePicker from "react-datepicker";
 import * as actions from './../../../actions/index';
 import { apiGet, apiPost } from '../../../services/api';
-import moment from 'moment';
-import './../list.css';
 
-class ListTypesComponent extends Component {
+class UpdateContactInfo extends Component {
 
     constructor(props) {
         super(props);
@@ -76,32 +69,20 @@ class ListTypesComponent extends Component {
         return (
             <div className="">
                 <section className="content-header">
-                    <h1>
-                        Update Contact Info
-                    </h1>
+                    <h1>Chỉnh Sửa Thông Tin Người Liên Hệ <i>#{this.state.id}</i> </h1>
                 </section>
                 <section className="content">
                     <div className="row invoice-info">
                         <form onSubmit={this.handleSave} className="form-horizontal">
                             <div className="box-body">
                                 <div className="form-group">
-                                    <label className="col-sm-3 control-label">ID</label>
-                                    <div className="col-sm-8">
-                                        <input
-                                            readOnly
-                                            type="text"
-                                            value={id}
-                                            className="form-control" />
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-sm-3 control-label">Name</label>
+                                    <label className="col-sm-3 control-label">Tên</label>
                                     <div className="col-sm-8">
                                         <input type="text" onChange={this.handleChange} value={fullname} name="fullname" className="form-control" />
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <label className="col-sm-3 control-label">Phone</label>
+                                    <label className="col-sm-3 control-label">SĐT</label>
                                     <div className="col-sm-8">
                                         <input type="text" onChange={this.handleChange} value={phone} name="phone" className="form-control" />
                                     </div>
@@ -113,14 +94,14 @@ class ListTypesComponent extends Component {
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <label className="col-sm-3 control-label">Address</label>
+                                    <label className="col-sm-3 control-label">Địa Chỉ</label>
                                     <div className="col-sm-8">
                                         <textarea type="text" onChange={this.handleChange} value={address} name="address" row={3} className="form-control" />
                                     </div>
                                 </div>
                             </div>
-                            <div className="box-footer">
-                                <button type="submit" className="btn btn-info pull-right">Save</button>
+                            <div className="box-footer col-sm-11">
+                                <button type="submit" className="btn btn-info pull-right">Lưu Thay Đổi</button>
                             </div>
                         </form>
                     </div>
@@ -130,29 +111,14 @@ class ListTypesComponent extends Component {
     }
 }
 
-// export default withRouter(ListTypesComponent);
-const mapStateToProps = (state) => {
-    return {
-        info: state.infoLocation,
-        allType: state.allType,
-        allLocation: state.allLocation,
-        listTour: state.listTour,
-        listTourTurn: state.listTourTurn,
-        listBookTourTurn: state.listBookTourTurn
-    }
-}
+export default UpdateContactInfo;
+// const mapStateToProps = (state) => {
+//     return {
+//     }
+// }
 
-const mapDispatchToProps = (dispatch, action) => {
-    return {
-        changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
-        getListTypeLocation: (type) => dispatch(actions.getListTypeLocation(type)),
-        createType: (type) => dispatch(actions.createType(type)),
-        editType: (type) => dispatch(actions.editType(type)),
-        getListTour: (tour) => dispatch(actions.getListTour(tour)),
-        getListTourTurn: (tourTurn) => dispatch(actions.getListTourTurn(tourTurn)),
-        getTourTurnDetail: (tourTurn) => dispatch(actions.getTourTurnById(tourTurn)),
-        getListBookTourTurn: (listBook) => dispatch(actions.getListBookTourTurn(listBook)),
-        getBookTourTurnById: (book) => dispatch(actions.getBookTourTurnById(book))
-    }
-}
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListTypesComponent));
+// const mapDispatchToProps = (dispatch, action) => {
+//     return {
+//     }
+// }
+// export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UpdateContactInfo));

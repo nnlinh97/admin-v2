@@ -17,7 +17,7 @@ class ListTypesComponent extends Component {
         this.state = {
             fullname: '',
             phone: '',
-            birthdate: null,
+            birthdate: '',
             sex: '',
             passport: '',
             type_passenger: '',
@@ -47,13 +47,13 @@ class ListTypesComponent extends Component {
     validatePassenger = (passenger) => {
         const { fullname, phone, id } = passenger;
         const phoneRegex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
-        if (!fullname || fullname === '') {
+        if (fullname === '') {
             return false;
         }
-        if (!phone || !phoneRegex.test(phone)) {
+        if (phone !== '' && !phoneRegex.test(phone)) {
             return false;
         }
-        if(!id || id === '') {
+        if (id === '') {
             return false;
         }
         return true;
@@ -68,77 +68,78 @@ class ListTypesComponent extends Component {
         }
     }
 
-    handleChangeBirthDate = (time) => {
-        this.setState({ birthdate: time });
-    }
-
     render() {
         const { fullname, phone, sex, birthdate, passport, type_passenger } = this.state;
         return (
             <div className="">
                 <section className="content-header">
-                    <h1>
-                        Update Passenger
-                    </h1>
+                    <h1> Chỉnh Sửa Thông Tin Hành Khách <i>#{this.state.id}</i> </h1>
                 </section>
                 <section className="content">
                     <div className="row invoice-info">
                         <form onSubmit={this.handleSave} className="form-horizontal">
                             <div className="box-body">
                                 <div className="form-group">
-                                    <label className="col-sm-3 control-label">Name</label>
+                                    <label className="col-sm-3 control-label">Tên</label>
                                     <div className="col-sm-8">
                                         <input
                                             type="text"
                                             onChange={this.handleChange}
                                             value={fullname}
                                             name="fullname"
-                                            className="form-control" />
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-sm-3 control-label">Phone</label>
-                                    <div className="col-sm-8">
-                                        <input type="text" onChange={this.handleChange} value={phone} name="phone" className="form-control" />
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-sm-3 control-label">BirthDate</label>
-                                    <div className="col-sm-8">
-                                        <DatePicker
                                             className="form-control"
-                                            selected={new Date(birthdate)}
-                                            onChange={this.handleChangeBirthDate}
                                         />
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <label className="col-sm-3 control-label">Sex</label>
+                                    <label className="col-sm-3 control-label">Số điện thoại</label>
+                                    <div className="col-sm-8">
+                                        <input
+                                            type="text"
+                                            onChange={this.handleChange}
+                                            value={phone}
+                                            name="phone"
+                                            className="form-control"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="col-sm-3 control-label">Ngày sinh</label>
+                                    <div className="col-sm-8">
+                                        <input
+                                            type="date"
+                                            onChange={this.handleChange}
+                                            value={this.state.birthdate}
+                                            name="birthdate"
+                                            className="form-control"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="col-sm-3 control-label">Giới tính</label>
                                     <div className="col-sm-8">
                                         <select onChange={this.handleChange} value={sex} name="sex" className="form-control">
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
+                                            <option value="male">Nam</option>
+                                            <option value="female">Nữ</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <label className="col-sm-3 control-label">Passport</label>
+                                    <label className="col-sm-3 control-label">Loại hành khách</label>
                                     <div className="col-sm-8">
-                                        <input type="text" onChange={this.handleChange} value={passport} name="passport" className="form-control" />
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-sm-3 control-label">Type</label>
-                                    <div className="col-sm-8">
-                                        <select onChange={this.handleChange} value={type_passenger ? type_passenger : ''} name="type_passenger" className="form-control">
-                                            <option value="1">Adult</option>
-                                            <option value="2">Children</option>
+                                        <select
+                                            onChange={this.handleChange}
+                                            value={type_passenger ? type_passenger : ''}
+                                            name="type_passenger"
+                                            className="form-control">
+                                            <option value="1">Người lớn</option>
+                                            <option value="2">Trẻ em</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
-                            <div className="box-footer">
-                                <button type="submit" className="btn btn-info pull-right">Save</button>
+                            <div className="box-footer col-sm-11">
+                                <button type="submit" className="btn btn-info pull-right">Lưu Thay Đổi</button>
                             </div>
                         </form>
                     </div>

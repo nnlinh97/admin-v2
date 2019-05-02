@@ -273,3 +273,25 @@ section.content
 {
     width: 100%;
 }
+
+.td_mini_table
+{
+    background: #f4f4f4;
+}
+.mini_table
+{
+    margin-bottom: 0;
+    width: 80%;
+    margin-left: 10%;
+}
+
+.content .pagination {
+    align-items: center;
+    text-align: center;
+}
+
+#pagination {
+    align-content: center;
+    align-items: center;
+    text-align: center;
+}

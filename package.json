@@ -58,6 +58,7 @@
     "react-google-maps": "9.4.5",
     "react-input-mask": "^2.0.4",
     "react-notifications": "1.4.3",
+    "react-paginate": "^6.3.0",
     "react-redux": "6.0.1",
     "react-responsive-modal": "3.6.0",
     "react-router-dom": "4.3.1",

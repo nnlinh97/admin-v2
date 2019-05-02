@@ -147,7 +147,6 @@ class CreateTourTurnComponent extends Component {
     handleSave = async (event) => {
         event.preventDefault();
         const typePassenger = this.getListTypePassenger();
-        console.log(typePassenger);
         if (this.checkTourTurn() && this.checkListTypePassenger(typePassenger)) {
             try {
                 const { id, startDate, endDate, limitPeople, price, discount, tour, status } = this.state;
@@ -162,26 +161,26 @@ class CreateTourTurnComponent extends Component {
                     price_passenger: typePassenger,
                     status
                 });
-                if (!this.props.listTourTurn) {
-                    try {
-                        let listTourTurn = await apiGet('/tour_turn/getAllWithoutPagination');
-                        this.props.getListTourTurn(listTourTurn.data.data);
-                    } catch (error) {
-                        console.log(error);
-                    }
-                } else {
-                    await this.props.updateTourTurn({
-                        id: id,
-                        price: price,
-                        num_max_people: limitPeople,
-                        discount,
-                        start_date: moment(startDate).format('YYYY-MM-DD'),
-                        end_date: moment(endDate).format('YYYY-MM-DD'),
-                        tour,
-                        status: this.state.status,
-                        num_current_people: this.state.tourTurnDetail.num_current_people
-                    });
-                }
+                // if (!this.props.listTourTurn) {
+                //     try {
+                //         let listTourTurn = await apiGet('/tour_turn/getAllWithoutPagination');
+                //         this.props.getListTourTurn(listTourTurn.data.data);
+                //     } catch (error) {
+                //         console.log(error);
+                //     }
+                // } else {
+                //     await this.props.updateTourTurn({
+                //         id: id,
+                //         price: price,
+                //         num_max_people: limitPeople,
+                //         discount,
+                //         start_date: moment(startDate).format('YYYY-MM-DD'),
+                //         end_date: moment(endDate).format('YYYY-MM-DD'),
+                //         tour,
+                //         status: this.state.status,
+                //         num_current_people: this.state.tourTurnDetail.num_current_people
+                //     });
+                // }
                 this.setState({ success: true });
             } catch (error) {
                 this.setState({ error: true });

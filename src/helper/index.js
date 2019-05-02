@@ -91,3 +91,18 @@ function changeAlias(alias) {
 export function matchString(str, key) {
     return changeAlias(str.toLowerCase()).indexOf(changeAlias(key.toLowerCase())) !== -1;
 }
+
+export function pagination(list, page, limit) {
+    const offset = (page - 1) * limit;
+    let result = [];
+    if (offset + limit > list.length) {
+        for (let i = offset; i < list.length; i++) {
+            result.push(list[i]);
+        }
+    } else {
+        for (let i = offset; i < offset + limit; i++) {
+            result.push(list[i]);
+        }
+    }
+    return result;
+}
