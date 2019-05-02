@@ -638,10 +638,10 @@ class CreateTourTurnComponent extends Component {
                         <div className="col-lg-12 col-xs-12">
                                     <form onSubmit={this.handleSave} className="form-horizontal">
                                         <div className="box-body book_tour_detail-information">
-                                            <h2>Information</h2>
+                                            <h2>Information Tour &ensp;: &ensp;<a>Tham quan ABC, P.A, Q.A, TP ABC.</a></h2>
                                             <div className="box-body-main">
                                                 <div className="box-body-left">
-                                                    <div className="">Name</div>
+                                                    {/* <div className="">Name</div> */}
                                                     <div className="">Start Date</div>
                                                     <div className="">End Date</div>
                                                     <div className="">Price</div>
@@ -649,7 +649,7 @@ class CreateTourTurnComponent extends Component {
                                                     <div className="">Current People</div>
                                                 </div>
                                                 <div className="box-body-right">
-                                                    <div className="">Tham quan ABC, P.A, Q.A, TP ABC.</div>
+                                                    {/* <div className="">Tham quan ABC, P.A, Q.A, TP ABC.</div> */}
                                                     <div className="">12/12/2012</div>
                                                     <div className="">12/12/2012</div>
                                                     <div className="">200.000 VND</div>
@@ -657,9 +657,6 @@ class CreateTourTurnComponent extends Component {
                                                     <div className="">10</div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="box-footer">
-                                            <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
                                         </div>
                                     </form>
 

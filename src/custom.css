@@ -235,9 +235,21 @@ thead:hover
     background: #292929;
     cursor: pointer;
 }
-.book_tour_detail-information
+.form-horizontal
 {
-    
+    margin-top: 20px;
+}
+/* .form-horizontal:hover
+{
+    box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+} */
+.book_tour_detail-information h2
+{
+    margin-top: 0;
+}
+.book_tour_detail-information h2 a
+{
+    color: #555;
 }
 .box-body-main
 {
@@ -285,7 +297,6 @@ thead:hover
 {
     display: table;
     width: 100%;
-    margin-top: 20px;
     margin-bottom: 15px;
 }
 .book_tour_detail-book_tour_history h2
