@@ -632,15 +632,14 @@ class CreateTourTurnComponent extends Component {
                 </Modal>
                 <section className="content-header">
                     <h1> Thông Tin & Danh Sách Đặt Tour <i>#{this.props.match.params.id}</i> </h1>
-                </section>
-                <section className="content">
-                    <div className="row">
+                    <div className="right_header">
                         <i
                             onClick={() => window.open(`/print-passengers/${this.props.match.params.id}`, '_blank')}
                             style={{
                                 fontSize: '35px',
                                 marginBottom: '2px',
                                 marginRight: '15px',
+                                marginTop: '10px',
                                 color: '#3c8dbc',
                                 cursor: 'pointer'
                             }}
@@ -648,6 +647,8 @@ class CreateTourTurnComponent extends Component {
                             title="print"
                         />
                     </div>
+                </section>
+                <section className="content">
                     {/* <div className="row">
                         <div className="col-lg-12 col-xs-12">
                             <div className="nav-tabs-custom">
@@ -783,26 +784,25 @@ class CreateTourTurnComponent extends Component {
                             </form>
                             <form className="form-horizontal">
                                 <div className="box-body book_tour_detail-book_tour_history">
-                                    <h2>Danh Sách Đặt Tour</h2>
+                                    <div class="book_tour_detail-book_tour_history-title">
+                                        <h2>Danh Sách Đặt Tour</h2>
+                                        <div className="search_box">
+                                            <div class="search_icon">
+                                                <i class="fa fa-search"></i>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                onChange={this.handleChange}
+                                                value={this.state.keySearch}
+                                                name="keySearch"
+                                                className="search_input"
+                                                placeholder="Tìm kiếm..."
+                                            />
+                                        </div>
+                                    </div>
                                     <div className="container">
                                         <div className="row">
                                             <div className="col-xs-12 book_tour_history">
-                                                <div className="search_box">
-                                                    <div class="search_icon">
-                                                        <i class="fa fa-search"></i>
-                                                    </div>
-                                                    <input
-                                                        type="text"
-                                                        onChange={this.handleChange}
-                                                        value={this.state.keySearch}
-                                                        name="keySearch"
-                                                        className="search_input"
-                                                        placeholder="Tìm kiếm..."
-                                                    />
-                                                    <div class="search_result_count">
-                                                        <span></span>results
-                                                    </div>
-                                                </div>
                                                 <table className="table table-bordered table-hover dt-responsive">
                                                     <caption className="text-center"></caption>
                                                     <thead>

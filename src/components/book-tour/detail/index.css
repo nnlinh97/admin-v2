@@ -223,34 +223,74 @@ section.content
 }
 
 /* Book tour history */
-.book_tour_detail-information
+/* .book_tour_detail-information
 {
-    
+    padding: 0 !important;
+} */
+.book_tour_detail-book_tour_history-title
+{
+    display: table;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+.book_tour_detail-book_tour_history-title h2
+{
+    width: 60%;
+    display: table-cell;
+}
+.book_tour_detail-book_tour_history-title .search_box
+{
+    width: 40%;
+    display: table-cell;
+}
+.book_tour_detail-book_tour_history .search_box
+{
+    width: 65%;
+    display: table-cell;
+}
+.book_tour_detail-book_tour_history .search_box .search_icon i
+{
+    width: 20px;
+    height: 20px;
+    color: #ccc;
+    font-size: 20px;
+}
+.book_tour_detail-book_tour_history .search_box .search_input
+{
+    padding: 10px 110px 10px 75px;
+    width: 100%;
+    font-size: 18px;
+    border-radius: 3px;
+    height: 40px;
+    color: #555;
+    border: 1px solid rgba(0,0,0,0.1);
 }
 .box-body-main
 {
     width: 100%;
     display: table;
-    margin-bottom: 15px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding-left: 10px;
 }
 .box-body-left
 {
     display: table-cell;
-    width: 35%;
+    width: 15%;
     height: 100px;
     /* background: #292929; */
-    text-align: right;
+    text-align: left;
     padding-right: 26px;
-    /* font-weight: bold; */
-    font-weight: 600;
+    font-weight: 700;
     font-size: 18px;
-    border-right: 1px solid #999;
+    /* border-right: 1px solid #999; */
     /* text-transform: uppercase; */
 }
 .box-body-right
 {
     display: table-cell;
-    width: 65%;
+    width: 85%;
     height: 100px;
     /* background: #000; */
     text-align: left;
