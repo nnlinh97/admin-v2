@@ -793,7 +793,7 @@ class CreateTourTurnComponent extends Component {
                                             <input
                                                 type="text"
                                                 onChange={this.handleChange}
-                                                value={this.state.keySearch}
+                                                value="78acc210-5059-11e9-aa13-03259040952a1235325"
                                                 name="keySearch"
                                                 className="search_input"
                                                 placeholder="Tìm kiếm..."

@@ -244,21 +244,21 @@ section.content
     width: 40%;
     display: table-cell;
 }
-.book_tour_detail-book_tour_history .search_box
+.book_tour_detail-book_tour_history-title .search_box .search_icon
 {
-    width: 65%;
-    display: table-cell;
+    width: 40px;
+    height: 40px;
 }
-.book_tour_detail-book_tour_history .search_box .search_icon i
+.book_tour_detail-book_tour_history-title .search_box .search_icon i
 {
     width: 20px;
     height: 20px;
     color: #ccc;
     font-size: 20px;
 }
-.book_tour_detail-book_tour_history .search_box .search_input
+.book_tour_detail-book_tour_history-title .search_box .search_input
 {
-    padding: 10px 110px 10px 75px;
+    padding: 10px 20px 10px 55px;
     width: 100%;
     font-size: 18px;
     border-radius: 3px;
