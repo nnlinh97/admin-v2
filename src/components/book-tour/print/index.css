@@ -1,0 +1,29 @@
+.info_tour
+{
+
+}
+table
+{
+    padding: 0 !important;
+}
+.table-responsive
+{
+    padding: 0;
+}
+.table_info_passengers tbody td
+{
+    padding: 0;
+}
+.table_info_passengers tbody td:nth-child(5)
+{
+    text-overflow:ellipsis;
+}
+.mini_table
+{
+    margin: 0 !important;
+    width: 100% !important;
+}
+td
+{
+    padding: 8px !important;
+}
