@@ -32,7 +32,7 @@ class ListTypesComponent extends Component {
             const { id } = props.original;
             const detail = await apiGet(`/book_tour/getBookTourHistoryByTourTurn/${id}`);
             await this.props.getBookTourTurnById(detail.data.data);
-            this.props.history.push(`/book-tour/detail/${id}`);
+            this.props.history.push(`/book-tour/${id}`);
         } catch (error) {
             console.log(error);
         }
@@ -40,7 +40,6 @@ class ListTypesComponent extends Component {
 
 
     render() {
-        console.log(this.props.listBookTourTurn);
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
                 <section className="content-header">
@@ -133,13 +132,10 @@ class ListTypesComponent extends Component {
                                 {
                                     Header: props => <i className="fa fa-pencil" />,
                                     Cell: props => {
-                                        return (
-                                            <button className='btn btn-xs btn-success'
-                                                onClick={() => this.getBookTourTurnDetail(props)}
-                                            >
-                                                <i className="fa fa-pencil" />
-                                            </button>
-                                        )
+                                        return <button className='btn btn-xs btn-success'
+                                            onClick={() => this.props.history.push(`/book-tour/${props.original.id}`)} >
+                                            <i className="fa fa-pencil" />
+                                        </button>
                                     },
                                     sortable: false,
                                     filterable: false,

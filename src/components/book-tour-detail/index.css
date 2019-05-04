@@ -244,10 +244,10 @@ section.content
     width: 40%;
     display: table-cell;
 }
-.book_tour_detail-book_tour_history .search_box .search_icon
+.book_tour_detail-book_tour_history .search_box
 {
-    width: 40px;
-    height: 40px;
+    width: 30%;
+    display: table-cell;
 }
 .book_tour_detail-book_tour_history .search_box .search_icon i
 {
@@ -256,7 +256,7 @@ section.content
     color: #ccc;
     font-size: 20px;
 }
-.book_tour_detail-book_tour_history-title .search_box .search_input
+.book_tour_detail-book_tour_history .search_box .search_input
 {
     padding: 10px 15px 10px 50px;
     width: 100%;

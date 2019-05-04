@@ -21,6 +21,7 @@ class ListTypesComponent extends Component {
         try {
             const { id } = this.props.match.params;
             const detail = await apiGet(`/book_tour/getBookTourHistoryByTourTurn/${id}`);
+            console.log(detail);
             this.setState({ bookTour: detail.data.data });
         } catch (error) {
             console.log(error);

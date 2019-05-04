@@ -106,3 +106,26 @@ export function pagination(list, page, limit) {
     }
     return result;
 }
+
+export function getStatusItem(status) {
+    let colorStatus = 'danger';
+    let textStatus = 'yêu cầu hủy';
+    switch (status) {
+        case 'paid':
+            colorStatus = 'success';
+            textStatus = 'đã thanh toán';
+            break;
+        case 'booked':
+            colorStatus = 'warning';
+            textStatus = 'chưa thanh toán';
+            break;
+        case 'cancelled':
+            colorStatus = 'default';
+            textStatus = 'đã hủy';
+            break;
+    }
+    return {
+        colorStatus,
+        textStatus
+    };
+}

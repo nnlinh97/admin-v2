@@ -66,6 +66,15 @@ class UpdateContactInfo extends Component {
         this.props.openUpdatePassenger(item);
     }
 
+    handleOpenModalPay = (event, item) => {
+        event.preventDefault();
+        this.props.handleOpenModalPay(item);
+    }
+
+    handleCancelRequest = (code) => {
+        this.props.handleCancelRequest(code);
+    }
+
     render() {
         const { item, index, passengers } = this.props;
         const status = this.getStatusItem(item.status);
@@ -83,22 +92,47 @@ class UpdateContactInfo extends Component {
                 <td>{formatCurrency(item.total_pay)}</td>
                 <td>{moment(item.book_time).format('DD/MM/YYYY HH:mm')}</td>
                 <td>
-                    <label className={`label label-${status.colorStatus} disabled`} >
+                    {status.colorStatus !== 'danger' && <label className={`label label-${status.colorStatus} disabled`} >
                         {status.textStatus}
-                    </label>
+                    </label>}
+                    {status.colorStatus === 'danger' && <label
+                        onClick={() => this.handleCancelRequest(item.code)}
+                        style={{ cursor: 'pointer' }}
+                        className={`label label-${status.colorStatus}`}>
+                        {status.textStatus}
+                    </label>}
                 </td>
                 <td>
-                    <button className="btn btn-xs btn-success">
+                    {status.colorStatus === 'warning' ? <button
+                        onClick={(event) => this.handleOpenModalPay(event, item)}
+                        title="thanh toán"
+                        className="btn btn-xs btn-success">
                         <i className="fa fa-money" />
-                    </button>
+                    </button> : <button
+                        className="btn btn-xs btn-success"
+                        disabled>
+                            <i className="fa fa-money" />
+                    </button>}
                 </td>
                 <td>
-                    <button type="button" className="btn btn-xs btn-success" >
+                    {status.colorStatus == 'success' ? <button
+                        type="button"
+                        title="hoàn tiền"
+                        className="btn btn-xs btn-success" >
                         <i className="fa fa-credit-card" />
-                    </button>
+                    </button> : <button
+                        type="button"
+                        disabled
+                        className="btn btn-xs btn-success" >
+                        <i className="fa fa-credit-card" />
+                    </button>}
                 </td>
                 <td>
-                    <button onClick={(event) => this.openUpdateContactInfo(event, item.book_tour_contact_info)} type="button" className="btn btn-xs btn-success" >
+                    <button
+                        onClick={(event) => this.openUpdateContactInfo(event, item.book_tour_contact_info)}
+                        type="button"
+                        title="chỉnh sửa"
+                        className="btn btn-xs btn-success" >
                         <i className="fa fa-pencil" />
                     </button>
                 </td>

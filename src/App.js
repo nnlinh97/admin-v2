@@ -23,6 +23,7 @@ import BookTourTurnDetail from './pages/book-tour/detail';
 import ListCountryPage from './pages/country/list';
 import ListProvincePage from './pages/province/list';
 import PrintListPassenger from './components/book-tour/print';
+import BookTourDetail from './pages/book-tour-detail';
 import PrivateRoute from './components/private-route/';
 import './App.css';
 
@@ -73,7 +74,8 @@ class App extends Component {
 
           {/* book tour */}
           <PrivateRoute exact path='/book-tour/list' component={ListBookTourPage} />
-          <PrivateRoute exact path='/book-tour/detail/:id' component={BookTourTurnDetail} />
+          <PrivateRoute exact path='/book-tour/:id' component={BookTourTurnDetail} />
+          <PrivateRoute exact path='/book-tour-detail/:code' component={BookTourDetail} />
 
           {/* country */}
           <PrivateRoute exact path='/country/list' component={ListCountryPage} />
