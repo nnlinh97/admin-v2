@@ -462,12 +462,14 @@ class CreateTourTurnComponent extends Component {
                         <div className="col-lg-12 col-xs-12">
                             <form className="form-horizontal">
                                 <div className="box-body book_tour_detail-information">
-                                    <h2>Thông Tin Người Đặt và Đặt Tour</h2>
-                                    <i
-                                        title="chỉnh sửa thông tin người đặt"
-                                        onClick={() => this.openUpdateContactInfo(this.state.contactInfo)}
-                                        style={{ cursor: 'pointer' }}
-                                        className="fa fa-pencil" />
+                                    <div className="book_tour_detail-information-title">
+                                        <h2>Thông Tin Người Đặt và Đặt Tour</h2>
+                                        <i
+                                            title="chỉnh sửa thông tin người đặt"
+                                            onClick={() => this.openUpdateContactInfo(this.state.contactInfo)}
+                                            style={{ cursor: 'pointer' }}
+                                            className="fa fa-pencil" />
+                                    </div>
                                     <div className="box-body-main">
                                         <div className="box-body-left">
                                             <div className="">Tên</div>
@@ -498,12 +500,14 @@ class CreateTourTurnComponent extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    {getCancelChecked(this.state.status) && <button className="btn btn-xs btn-danger" >
-                                        Hủy
-                                    </button>}
-                                    {getPaymentChecked(this.state.status) && <button className="btn btn-xs btn-info" >
-                                        Thanh Toán
-                                    </button>}
+                                    <div class="manager_btn">
+                                        {getCancelChecked(this.state.status) && <button className="btn btn-xs btn-danger custom-btn-danger" >
+                                            Hủy
+                                        </button>}
+                                        {getPaymentChecked(this.state.status) && <button className="btn btn-xs btn-info custom-btn-infor" >
+                                            Thanh Toán
+                                        </button>}
+                                    </div>
                                 </div>
                             </form>
                             <form className="form-horizontal">
