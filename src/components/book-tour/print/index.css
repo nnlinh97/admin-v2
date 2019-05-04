@@ -1,6 +1,14 @@
-.info_tour
+.title_tour
 {
-
+    font-weight: bold;
+    font-size: 40px;
+    text-align: center;
+    margin-top: 10px;
+}
+.row_title_h2
+{
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
 table
 {
@@ -25,5 +33,59 @@ table
 }
 td
 {
-    padding: 8px !important;
+    padding: 2px !important;
+}
+.box-body-main
+{
+    margin: 0 !important;
+}
+.box-body-main-left
+{
+    display: table-cell;
+    width: 50%;
+}
+.box-body-main-right
+{
+    display: table-cell;
+    width: 50%;
+}
+.box-body-left
+{
+    display: table-cell;
+    width: 50% !important;
+}
+.box-body-right 
+{
+    display: table-cell;
+    width: 50% !important;
+}
+.row_title_h2
+{
+    display: table;
+    width: 100%;
+}
+.row_title_h2 h2
+{
+    display: table-cell;
+    width: 95%;
+}
+.row_title_h2 button
+{
+    display: table-cell;
+    width: 5%;
+    background: #fff;
+    height: 25px;
+    width: 25px;
+    border: 0;
+}
+.row_title_h2 button:hover
+{
+    border: 1px solid #000;
+}
+.row_title_h2 button i
+{
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    color: #3c8dbc;
 }

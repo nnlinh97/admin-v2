@@ -41,27 +41,36 @@ class ListTypesComponent extends Component {
                     </h1>
                 </section> */}
                 <section className="content">
+                    <div className="title_tour">Tour: Tour From A To B.</div>
                     <div className="row invoice-info">
-                        <h2>Thông tin chuyến đi</h2>
+                        <div className="row_title_h2">
+                            <h2>Thông tin chuyến đi</h2>
+                            <button><i class="fa fa-print" aria-hidden="true"></i></button>
+                        </div>
                         <div className="box-body-main">
-                            <div className="box-body-left">
-                                <div className="">Tour</div>
-                                <div className="">Start Date</div>
-                                <div className="">End Date</div>
-                                <div className="">Price/People</div>
-                                <div className="">Total People</div>
-                                <div className="">Sale</div>
-                                <div className="">Total Pay</div>
+                            <div className="box-body-main-left">
+                                <div className="box-body-left">
+                                    <div className="">Ngày Bắt Đầu</div>
+                                    <div className="">Giá/ Người</div>
+                                    <div className="">Giảm Giá</div>
+                                </div>
+                                <div className="box-body-right">
+                                    <div className="">12/12/2012</div>
+                                    <div className="">10000 VND</div>
+                                    <div className="">10%</div>
+                                </div>
                             </div>
-                            <div className="box-body-right">
-                                <div className="">Tour From A To B.</div>
-                                <div className="">12/12/2012</div>
-                                <div className="">12/12/2012</div>
-                                <div className="">10000 VND</div>
-                                <div className="">10 People</div>
-                                <div className="">10%</div>
-                                <div className="">90000 VND</div>
-
+                            <div className="box-body-main-right">
+                                <div className="box-body-left">
+                                    <div className="">Ngày Kết Thúc</div>
+                                    <div className="">Tổng Người</div>
+                                    <div className="">Tổng tiền</div>
+                                </div>
+                                <div className="box-body-right">
+                                    <div className="">12/12/2012</div>
+                                    <div className="">10 People</div>
+                                    <div className="">90000 VND</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -72,10 +81,9 @@ class ListTypesComponent extends Component {
                                     <thead>
                                         <tr>
                                             {/* <th>STT</th> */}
-                                            <th width="10%">Contact Name</th>
-                                            <th width="10%">Phone</th>
-                                            <th width="15%">Email</th>
-                                            <th width="30%">List Passengers</th>
+                                            <th width="20%">Contact Name</th>
+                                            <th width="20%">Phone</th>
+                                            <th width="45%">List Passengers</th>
                                             <th>Note</th>
                                         </tr>
                                     </thead>
@@ -92,18 +100,10 @@ class ListTypesComponent extends Component {
                                             }
                                             return null;
                                         })} */}
-                                        <td>Lorem Ipsum</td>
-                                        <td>(+111) 111 111 111</td>
-                                        <td>abc_xyz@gmail.com</td>
+                                        <td>Lorem Ipsum Summ</td>
+                                        <td>(+11) 1111 1111</td>
                                         <td>
                                             <table class="table table-striped mini_table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>Type</th>
-                                                        <th>Gender</th>
-                                                    </tr>
-                                                </thead>
                                                 <tbody>
                                                     <tr>
                                                         <td>Nguyan Van A</td>
@@ -123,7 +123,7 @@ class ListTypesComponent extends Component {
                                                 </tbody>
                                             </table>
                                         </td>
-                                        <td>Lorem ipsum dolor sit amet, te eum sumo option expetenda, quo te cibo ubique ignota. Per volumus forensibus mediocritatem eu. Eu aeque nemore vim. Nobis eirmod expetendis sit ei, repudiare maiestatis cum et. Eos hinc recteque cu, sed eu virtute indoctum.</td>
+                                        <td></td>
                                     </tbody>
                                 </table>
                             </div>
