@@ -61,7 +61,8 @@ class CreateTourTurnComponent extends Component {
             tourTurn: null,
             passenger: null,
             cancelChecked: false,
-            paymentChecked: false
+            paymentChecked: false,
+            message: null
         }
     }
 
@@ -91,6 +92,7 @@ class CreateTourTurnComponent extends Component {
             passengers: bookTourDetail.passengers,
             numPassengers: bookTourDetail.num_passenger,
             tourTurn: bookTourDetail.tour_turn,
+            message: bookTourDetail.request_cancel_bookings.length > 0 ? bookTourDetail.request_cancel_bookings[0] : null
         });
     }
 
@@ -480,6 +482,10 @@ class CreateTourTurnComponent extends Component {
                                             <div className="">Số người đi</div>
                                             <div className="">Tổng tiền</div>
                                             <div className="">Trạng thái</div>
+                                            {this.state.message && <>
+                                                <div className="">Tin nhắn</div>
+                                                <div className="">Gửi lúc</div>
+                                                </>}
                                         </div>
                                         <div className="box-body-right">
                                             <div className="">{this.state.contactInfo ? this.state.contactInfo.fullname : ''}</div>
@@ -496,6 +502,10 @@ class CreateTourTurnComponent extends Component {
                                                     {getStatusItem(this.state.status).textStatus}
                                                 </label>
                                             </div>
+                                            {this.state.message && <>
+                                                <div className=""> {this.state.message.message} </div>
+                                                <div className=""> {moment(this.state.message.request_time).format('DD/MM/YYYY HH:MM')} </div>
+                                            </>}
                                         </div>
                                     </div>
                                     {getCancelChecked(this.state.status) && <button className="btn btn-xs btn-danger" >
