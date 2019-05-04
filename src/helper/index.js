@@ -108,8 +108,8 @@ export function pagination(list, page, limit) {
 }
 
 export function getStatusItem(status) {
-    let colorStatus = 'danger';
-    let textStatus = 'yêu cầu hủy';
+    let colorStatus = '';
+    let textStatus = '';
     switch (status) {
         case 'paid':
             colorStatus = 'success';
@@ -123,9 +123,53 @@ export function getStatusItem(status) {
             colorStatus = 'default';
             textStatus = 'đã hủy';
             break;
+        case 'pending_cancel':
+            colorStatus = 'danger';
+            textStatus = 'yêu cầu hủy';
+            break;
     }
     return {
         colorStatus,
         textStatus
     };
+}
+
+export function getSex(sex) {
+    let name = '';
+    switch (sex) {
+        case 'male':
+            name = 'Nam';
+            break;
+        case 'female':
+            name = 'Nữ';
+            break;
+        case 'other':
+            name = 'Khác';
+            break;
+    }
+    return name;
+}
+
+export function getCancelChecked(status) {
+    switch (status) {
+        case 'paid':
+        case 'pending_cancel':
+        case 'booked':
+            return true;
+        case 'cancelled':
+        case '':
+            return false;
+    }
+}
+
+export function getPaymentChecked(status) {
+    switch (status) {
+        case 'booked':
+            return true;
+        case 'paid':
+        case 'cancelled':
+        case 'pending_cancel':
+        case '':
+            return false;
+    }
 }

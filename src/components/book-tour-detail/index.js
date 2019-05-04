@@ -7,7 +7,9 @@ import moment from 'moment';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
 import Select from 'react-select';
-import ReactPaginate from 'react-paginate';
+// import ReactPaginate from 'react-paginate';
+import PassengerUpdate from './passenger-update';
+import ContactInfoUpdate from './contact-info';
 import * as actions from './../../actions/index';
 import { apiGet, apiPost } from '../../services/api';
 import {
@@ -16,7 +18,10 @@ import {
     formatCurrency,
     pagination,
     matchString,
-    getStatusItem
+    getStatusItem,
+    getSex,
+    getCancelChecked,
+    getPaymentChecked
 } from './../../helper';
 import 'font-awesome/css/font-awesome.css';
 import './index.css';
@@ -53,7 +58,10 @@ class CreateTourTurnComponent extends Component {
             typePassenger: null,
             passengers: [],
             numPassengers: '',
-            tourTurn: null
+            tourTurn: null,
+            passenger: null,
+            cancelChecked: false,
+            paymentChecked: false
         }
     }
 
@@ -82,7 +90,7 @@ class CreateTourTurnComponent extends Component {
             typePassenger: bookTourDetail.type_passenger_detail,
             passengers: bookTourDetail.passengers,
             numPassengers: bookTourDetail.num_passenger,
-            tourTurn: bookTourDetail.tour_turn
+            tourTurn: bookTourDetail.tour_turn,
         });
     }
 
@@ -137,38 +145,8 @@ class CreateTourTurnComponent extends Component {
                 console.log(error);
             }
         } else {
-            this.setState({
-                error: true
-            })
+            this.setState({ error: true })
         }
-    }
-
-    handleCancel = (event) => {
-        event.preventDefault();
-        this.props.history.push('/book-tour/list');
-    }
-
-    checkRoute = () => {
-        const { location, day, arriveTime, leaveTime, transport } = this.state;
-        if (!location || !Number.isInteger(parseInt(day)) || parseInt(day) < 1 || !transport) {
-            return false;
-        }
-        return true;
-
-    }
-
-    onHandleChangeArriveTime = (time) => {
-        this.setState({
-            arrive_time: time + ":00",
-            save: false
-        });
-    }
-
-    onHandleChangeleaveTime = (time) => {
-        this.setState({
-            leave_time: time + ":00",
-            save: false
-        });
     }
 
     handleOpenModalPay = (props) => {
@@ -224,11 +202,10 @@ class CreateTourTurnComponent extends Component {
 
     reRender = async () => {
         try {
-            const { id } = this.props.match.params;
-            const detail = await apiGet(`/book_tour/getBookTourHistoryByTourTurn/${id}`);
-            const bookTourTurnDetail = detail.data.data;
-            await this.props.getBookTourTurnById(bookTourTurnDetail);
-            this.updateState(bookTourTurnDetail);
+            const { code } = this.props.match.params;
+            const detail = await apiGet(`/book_tour/getHistoryBookTourByCode/${code}?tour=true`);
+            let bookTourDetail = detail.data.data;
+            this.updateState(bookTourDetail);
         } catch (error) {
             console.log(error);
         }
@@ -309,21 +286,27 @@ class CreateTourTurnComponent extends Component {
 
     handleSearchPassenger = (listPassenger, keySearch) => {
         if (keySearch !== '' && listPassenger.length > 0) {
-            return listPassenger.filter(item => matchString(item.fullname, keySearch) || matchString(item.id.toString(), keySearch));
+            return listPassenger.filter(item => matchString(item.phone, keySearch) || matchString(item.fullname, keySearch) || matchString(item.id.toString(), keySearch));
         }
         return listPassenger;
     }
 
+    handleChangeCancelChecked = (event) => {
+        this.setState({ cancelChecked: !this.state.cancelChecked, paymentChecked: false });
+    }
+
+    handleChangePaymentChecked = (event) => {
+        this.setState({ paymentChecked: !this.state.paymentChecked, cancelChecked: false });
+    }
+
     render() {
         const { bookTourHistory, tourTurn, tour } = this.state;
-        console.log(bookTourHistory)
-        const bookHistory = mergeBookHistory(bookTourHistory);
         const columnHistory = [
             {
                 Header: "ID",
                 accessor: "id",
                 Cell: props => {
-                    return (<p>#{props.original.id}</p>)
+                    return <p>#{props.original.id}</p>
                 },
                 style: { textAlign: 'center' },
                 width: 90,
@@ -333,34 +316,37 @@ class CreateTourTurnComponent extends Component {
             {
                 Header: "Tên",
                 accessor: "fullname",
-                // style: { textAlign: 'center' }
+                style: { textAlign: 'center' }
             },
             {
                 Header: "Số điện thoại",
                 accessor: "phone",
                 style: { textAlign: 'center' },
-                width: 130,
-                maxWidth: 130,
-                minWidth: 130
+                // width: 130,
+                // maxWidth: 130,
+                // minWidth: 130
             },
             {
                 Header: "Giới tính",
-                accessor: "book_tour_contact_info.email",
-                // style: { textAlign: 'center' }
+                accessor: "sex",
+                Cell: props => {
+                    return <p>{getSex(props.original.sex)}</p>
+                },
+                style: { textAlign: 'center' }
             },
             {
                 Header: "Loại hành khách",
-                accessor: "num_passenger",
+                accessor: "type_passenger.name",
                 style: { textAlign: 'center' },
-                width: 80,
-                maxWidth: 90,
-                minWidth: 70
+                // width: 80,
+                // maxWidth: 90,
+                // minWidth: 70
             },
             {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
                     return <button className="btn btn-xs btn-success"
-                        onClick={() => this.openUpdateContactInfo(props.original.book_tour_contact_info)} >
+                        onClick={() => this.openUpdatePassenger(props.original)} >
                         <i className="fa fa-pencil" />
                     </button>
                 },
@@ -423,7 +409,7 @@ class CreateTourTurnComponent extends Component {
                         tourTurn={this.state.tourTurn}
                         tour={this.state.tour}
                     />}
-                </Modal>
+                </Modal> */}
                 <Modal
                     open={this.state.modalUpdatePassengerIsOpen}
                     onClose={this.handleCloseModalUpdatePassenger}
@@ -445,21 +431,28 @@ class CreateTourTurnComponent extends Component {
                         handleUpdateContactInfo={this.handleUpdateContactInfo}
                         contactInfo={this.state.contactInfoUpdate}
                     />}
-                </Modal> */}
+                </Modal>
                 <section className="content-header">
-                    <div className="right_header">
+                    <div style={{
+                        position: 'absolute',
+                        top: '0',
+                        left: '0',
+                        marginTop: '6vh',
+                        marginLeft: '5%'
+                    }}
+                        className="right_header">
                         <i
-                            onClick={() => window.open(`/print-passengers/${this.props.match.params.id}`, '_blank')}
+                            onClick={() => this.props.history.push(`/book-tour/${this.state.idTourTurn}`)}
+                            title="quay về trang trước"
                             style={{
                                 fontSize: '35px',
                                 marginBottom: '2px',
                                 marginRight: '15px',
                                 marginTop: '10px',
-                                color: '#3c8dbc',
+                                color: '#6c757d',
                                 cursor: 'pointer'
                             }}
-                            className="fa fa-print pull-left"
-                            title="print"
+                            className="fa fa-arrow-left pull-left"
                         />
                     </div>
                     <h1> Thông Tin Chi Tiết Đặt Tour <i>#{this.state.id}</i> </h1>
@@ -470,6 +463,11 @@ class CreateTourTurnComponent extends Component {
                             <form className="form-horizontal">
                                 <div className="box-body book_tour_detail-information">
                                     <h2>Thông Tin Người Đặt và Đặt Tour</h2>
+                                    <i
+                                        title="chỉnh sửa thông tin người đặt"
+                                        onClick={() => this.openUpdateContactInfo(this.state.contactInfo)}
+                                        style={{ cursor: 'pointer' }}
+                                        className="fa fa-pencil" />
                                     <div className="box-body-main">
                                         <div className="box-body-left">
                                             <div className="">Tên</div>
@@ -496,16 +494,23 @@ class CreateTourTurnComponent extends Component {
                                             <div className="">
                                                 <label className={`label label-${getStatusItem(this.state.status).colorStatus} disabled`} >
                                                     {getStatusItem(this.state.status).textStatus}
-                                                </label></div>
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
+                                    {getCancelChecked(this.state.status) && <button className="btn btn-xs btn-danger" >
+                                        Hủy
+                                    </button>}
+                                    {getPaymentChecked(this.state.status) && <button className="btn btn-xs btn-info" >
+                                        Thanh Toán
+                                    </button>}
                                 </div>
                             </form>
                             <form className="form-horizontal">
                                 <div className="box-body book_tour_detail-book_tour_history">
                                     <div className="book_tour_detail-book_tour_history-title">
                                         <h2>Danh Sách Hành Khách</h2>
-                                        <div className="search_box">
+                                        <div style={{ top: '10px' }} className="search_box">
                                             <div className="search_icon">
                                                 <i className="fa fa-search"></i>
                                             </div>

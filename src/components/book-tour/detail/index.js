@@ -7,7 +7,7 @@ import moment from 'moment';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
 import Select from 'react-select';
-import ReactPaginate from 'react-paginate';
+// import ReactPaginate from 'react-paginate';
 import * as actions from './../../../actions/index';
 import { apiGet, apiPost } from '../../../services/api';
 import {
@@ -24,6 +24,11 @@ import ContactInfoUpdate from './../contact-info';
 import ItemBookHistory from './../item-book-history';
 import 'font-awesome/css/font-awesome.css';
 import './index.css';
+
+const checkBox = [
+    { id: '1', name: 'Hủy', color: 'danger' },
+    { id: '2', name: 'Thanh Toán', color: 'info' }
+];
 
 class CreateTourTurnComponent extends Component {
 
@@ -382,7 +387,9 @@ class CreateTourTurnComponent extends Component {
             {
                 Header: props => <i className="fa fa-eye" />,
                 Cell: props => {
-                    return <button className="btn btn-xs btn-info"
+                    return <button
+                        title="chi tiết"
+                        className="btn btn-xs btn-info"
                         onClick={() => this.props.history.push(`/book-tour-detail/${props.original.code}`)} >
                         <i className="fa fa-eye" />
                     </button>
@@ -392,19 +399,19 @@ class CreateTourTurnComponent extends Component {
                 maxWidth: 60,
                 minWidth: 60
             },
-            {
-                Header: props => <i className="fa fa-pencil" />,
-                Cell: props => {
-                    return <button className="btn btn-xs btn-success"
-                        onClick={() => this.openUpdateContactInfo(props.original.book_tour_contact_info)} >
-                        <i className="fa fa-pencil" />
-                    </button>
-                },
-                style: { textAlign: 'center' },
-                width: 60,
-                maxWidth: 60,
-                minWidth: 60
-            },
+            // {
+            //     Header: props => <i className="fa fa-pencil" />,
+            //     Cell: props => {
+            //         return <button className="btn btn-xs btn-success"
+            //             onClick={() => this.openUpdateContactInfo(props.original.book_tour_contact_info)} >
+            //             <i className="fa fa-pencil" />
+            //         </button>
+            //     },
+            //     style: { textAlign: 'center' },
+            //     width: 60,
+            //     maxWidth: 60,
+            //     minWidth: 60
+            // },
         ];
         const columns = [
             {
