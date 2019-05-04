@@ -40,7 +40,7 @@ class ListTypesComponent extends Component {
                         Payment
                     </h1>
                 </section> */}
-                <section className="content">
+                <section className="content print_infor_tour">
                     <div className="title_tour">Tour: Tour From A To B.</div>
                     <div className="row invoice-info">
                         <div className="row_title_h2">
@@ -76,7 +76,7 @@ class ListTypesComponent extends Component {
                     </div>
                     <div className="row">
                         <h2>Thông tin hành khách</h2>
-                            <div className="col-xs-12 table-responsive">
+                            <div className="col-xs-12 table-responsive custom-table-responsive">
                                 <table className="table table-striped table_info_passengers">
                                     <thead>
                                         <tr>
