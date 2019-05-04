@@ -1,75 +1,71 @@
-.title_tour
+.print_infor_tour .title_tour
 {
     font-weight: bold;
     font-size: 40px;
     text-align: center;
     margin-top: 10px;
 }
-.row_title_h2
+.print_infor_tour .row_title_h2
 {
     margin-top: 20px;
     margin-bottom: 10px;
 }
-table
-{
-    padding: 0 !important;
-}
-.table-responsive
+.print_infor_tour .custom-table-responsive
 {
     padding: 0;
 }
-.table_info_passengers tbody td
+.print_infor_tour .table_info_passengers tbody td
 {
     padding: 0;
 }
-.table_info_passengers tbody td:nth-child(5)
+.print_infor_tour .table_info_passengers tbody td:nth-child(5)
 {
     text-overflow:ellipsis;
 }
-.mini_table
+.print_infor_tour .table_info_passengers .mini_table
 {
     margin: 0 !important;
     width: 100% !important;
 }
-td
+.print_infor_tour .table_info_passengers td
 {
     padding: 2px !important;
 }
-.box-body-main
+.print_infor_tour .box-body-main
 {
     margin: 0 !important;
 }
-.box-body-main-left
+.print_infor_tour .box-body-main-left
 {
     display: table-cell;
     width: 50%;
 }
-.box-body-main-right
+.print_infor_tour .box-body-main-right
 {
     display: table-cell;
     width: 50%;
 }
-.box-body-left
+.print_infor_tour .box-body-left
 {
     display: table-cell;
     width: 50% !important;
 }
-.box-body-right 
+.print_infor_tour .box-body-right 
 {
     display: table-cell;
     width: 50% !important;
 }
-.row_title_h2
+.print_infor_tour .row_title_h2
 {
     display: table;
     width: 100%;
 }
-.row_title_h2 h2
+.print_infor_tour .row_title_h2 h2
 {
     display: table-cell;
     width: 95%;
 }
-.row_title_h2 button
+.print_infor_tour .row_title_h2 button
 {
     display: table-cell;
     width: 5%;
@@ -78,11 +74,11 @@ td
     width: 25px;
     border: 0;
 }
-.row_title_h2 button:hover
+.print_infor_tour .row_title_h2 button:hover
 {
     border: 1px solid #000;
 }
-.row_title_h2 button i
+.print_infor_tour .row_title_h2 button i
 {
     text-align: center;
     font-weight: bold;
