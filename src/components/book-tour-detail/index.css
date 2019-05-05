@@ -335,22 +335,12 @@ section.content
     align-items: center;
     text-align: center;
 }
-.book_tour_detail-information-title
+.book_tour_detail-information i
 {
-    display: table;
-    width: 100%;
-}
-.book_tour_detail-information-title h2
-{
-    display: table-cell;
-    width: 95%;
-}
-.book_tour_detail-information-title i
-{
-    display: table-cell;
-    width: 5%;
-    font-size: 25px;
-    color: #0a79df;
+    left: 50%;
+    margin-top: 15px;
+    position: absolute;
+    font-size: 20px;
 }
 .manager_btn
 {
@@ -362,14 +352,14 @@ section.content
 .custom-btn-danger
 {
     position: absolute;
-    right: 110px;
+    right: 0px;
     padding: 5px;
     font-size: 18px;
 }
 .custom-btn-infor
 {
     position: absolute;
-    right: 0;
+    right: 50px;
     padding: 5px;
     font-size: 18px;
 }
