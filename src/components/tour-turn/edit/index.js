@@ -7,7 +7,7 @@ import 'react-table/react-table.css';
 import * as actions from './../../../actions/index';
 import _ from 'lodash';
 import moment from 'moment';
-import DatePicker from "react-datepicker";
+// import DatePicker from "react-datepicker";
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { apiGet, apiPost } from '../../../services/api';
 import Select from 'react-select';
@@ -150,7 +150,7 @@ class CreateTourTurnComponent extends Component {
         if (this.checkTourTurn() && this.checkListTypePassenger(typePassenger)) {
             try {
                 const { id, startDate, endDate, limitPeople, price, discount, tour, status } = this.state;
-                const updateTourTurn = await apiPost('/tour_turn/updateWithPricePassenger', {
+                await apiPost('/tour_turn/updateWithPricePassenger', {
                     id,
                     num_max_people: limitPeople,
                     discount: discount,
@@ -161,26 +161,6 @@ class CreateTourTurnComponent extends Component {
                     price_passenger: typePassenger,
                     status
                 });
-                // if (!this.props.listTourTurn) {
-                //     try {
-                //         let listTourTurn = await apiGet('/tour_turn/getAllWithoutPagination');
-                //         this.props.getListTourTurn(listTourTurn.data.data);
-                //     } catch (error) {
-                //         console.log(error);
-                //     }
-                // } else {
-                //     await this.props.updateTourTurn({
-                //         id: id,
-                //         price: price,
-                //         num_max_people: limitPeople,
-                //         discount,
-                //         start_date: moment(startDate).format('YYYY-MM-DD'),
-                //         end_date: moment(endDate).format('YYYY-MM-DD'),
-                //         tour,
-                //         status: this.state.status,
-                //         num_current_people: this.state.tourTurnDetail.num_current_people
-                //     });
-                // }
                 this.setState({ success: true });
             } catch (error) {
                 this.setState({ error: true });
@@ -222,17 +202,19 @@ class CreateTourTurnComponent extends Component {
         const index = _.findIndex(this.state.typePassenger, (item) => {
             return item.id === props.id;
         });
-        this.state.typePassenger[index].checked = !props.checked;
-        this.setState({ typePassenger: [...this.state.typePassenger] });
+        let types = [...this.state.typePassenger];
+        types[index].checked = !props.checked;
+        this.setState({ typePassenger: types });
     }
 
     onChangePricePercent = (event, props) => {
         const index = _.findIndex(this.state.typePassenger, (item) => {
             return item.id === props.id;
         });
-        this.state.typePassenger[index].percent = event.target.value;
+        let types = [...this.state.typePassenger];
+        types[index].percent = event.target.value;
         this.setState({
-            typePassenger: [...this.state.typePassenger],
+            typePassenger: types,
             idFocus: props.id
         }, () => {
             this.inputFocus.current.focus();
@@ -244,9 +226,9 @@ class CreateTourTurnComponent extends Component {
             {
                 Header: props => <i className="fa fa-check-square" />,
                 Cell: props => {
-                    let index = _.findIndex(this.state.tempRoutes, (item) => {
-                        return item.id === props.original.id;
-                    });
+                    // let index = _.findIndex(this.state.tempRoutes, (item) => {
+                    //     return item.id === props.original.id;
+                    // });
                     return (
                         <div className="checkbox checkbox-modal">
                             <input

@@ -59,4 +59,9 @@ export const menus = [
         title: 'LỊCH SỬ ĐẶT TOUR',
         icon: 'fa fa-bookmark-o'
     },
+    {
+        path: '/phone-call',
+        title: 'PHONE CALL',
+        icon: 'fa fa-phone'
+    },
 ];

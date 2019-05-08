@@ -18,17 +18,12 @@ import {
     matchString,
     getStatusItem
 } from './../../../helper';
-import ViewDetail from './../view-detail';
-import PassengerUpdate from './../passenger-update';
-import ContactInfoUpdate from './../contact-info';
-import ItemBookHistory from './../item-book-history';
+// import ViewDetail from './../view-detail';
+// import PassengerUpdate from './../passenger-update';
+// import ContactInfoUpdate from './../contact-info';
+// import ItemBookHistory from './../item-book-history';
 import 'font-awesome/css/font-awesome.css';
 import './index.css';
-
-const checkBox = [
-    { id: '1', name: 'Hủy', color: 'danger' },
-    { id: '2', name: 'Thanh Toán', color: 'info' }
-];
 
 class CreateTourTurnComponent extends Component {
 
@@ -60,12 +55,11 @@ class CreateTourTurnComponent extends Component {
             const { id } = this.props.match.params;
             const detail = await apiGet(`/book_tour/getBookTourHistoryByTourTurn/${id}`);
             bookTourTurnDetail = detail.data.data;
-            // console.log(bookTourTurnDetail);
-            await this.props.getBookTourTurnById(bookTourTurnDetail);
         } catch (error) {
             console.log(error);
         }
         const code = this.getCode(window.location.search);
+        console.log(bookTourTurnDetail)
         this.updateState(bookTourTurnDetail, code);
     }
 
@@ -313,14 +307,14 @@ class CreateTourTurnComponent extends Component {
         const columnHistory = [
             {
                 Header: "Mã đặt tour",
-                accessor: "id",
+                accessor: "code",
                 Cell: props => {
-                    return (<p>#{props.original.id}</p>)
+                    return <i>#{props.original.code}</i>
                 },
                 style: { textAlign: 'center' },
-                width: 90,
-                maxWidth: 95,
-                minWidth: 85
+                width: 100,
+                maxWidth: 105,
+                minWidth: 95
             },
             {
                 Header: "Người liên hệ",
@@ -398,30 +392,13 @@ class CreateTourTurnComponent extends Component {
                 width: 60,
                 maxWidth: 60,
                 minWidth: 60
-            },
-            // {
-            //     Header: props => <i className="fa fa-pencil" />,
-            //     Cell: props => {
-            //         return <button className="btn btn-xs btn-success"
-            //             onClick={() => this.openUpdateContactInfo(props.original.book_tour_contact_info)} >
-            //             <i className="fa fa-pencil" />
-            //         </button>
-            //     },
-            //     style: { textAlign: 'center' },
-            //     width: 60,
-            //     maxWidth: 60,
-            //     minWidth: 60
-            // },
+            }
         ];
         const columns = [
             {
                 Header: "ID",
                 accessor: "id",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 60,
                 maxWidth: 60,
                 minWidth: 60
@@ -429,20 +406,12 @@ class CreateTourTurnComponent extends Component {
             {
                 Header: "NAME",
                 accessor: "passenger.fullname",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                }
+                style: { textAlign: 'center' }
             },
             {
                 Header: "TYPE",
                 accessor: "passenger.type_passenger.name",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
@@ -450,42 +419,27 @@ class CreateTourTurnComponent extends Component {
             {
                 Header: "CONTACT NAME",
                 accessor: "book_tour_contact_info.fullname",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                }
+                style: { textAlign: 'center' }
             },
             {
                 Header: "CONTACT PHONE",
                 accessor: "book_tour_contact_info.phone",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                }
+                style: { textAlign: 'center' }
             },
             {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
                     if (props.original.status === 'cancelled') {
-                        return (
-                            <button className="btn btn-xs btn-success" disabled>
-                                <i className="fa fa-pencil" />
-                            </button>
-                        );
-                    }
-                    return (
-                        <button className="btn btn-xs btn-success"
-                            onClick={() => this.openUpdatePassenger(props.original)}
-                        >
+                        return <button className="btn btn-xs btn-success" disabled>
                             <i className="fa fa-pencil" />
                         </button>
-                    )
+                    }
+                    return <button className="btn btn-xs btn-success"
+                        onClick={() => this.openUpdatePassenger(props.original)} >
+                        <i className="fa fa-pencil" />
+                    </button>
                 },
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 60,
                 maxWidth: 60,
                 minWidth: 60
@@ -494,23 +448,16 @@ class CreateTourTurnComponent extends Component {
                 Header: props => <i className="fa fa-trash" />,
                 Cell: props => {
                     if (props.original.status === 'cancelled') {
-                        return (
-                            <button className="btn btn-xs btn-danger" disabled>
-                                <i className="fa fa-trash" />
-                            </button>
-                        );
-                    }
-                    return (
-                        <button className="btn btn-xs btn-danger"
-                            onClick={() => this.handleEditRoute(props)}
-                        >
+                        return <button className="btn btn-xs btn-danger" disabled>
                             <i className="fa fa-trash" />
                         </button>
-                    );
+                    }
+                    return <button className="btn btn-xs btn-danger"
+                        onClick={() => this.handleEditRoute(props)} >
+                        <i className="fa fa-trash" />
+                    </button>
                 },
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 60,
                 maxWidth: 60,
                 minWidth: 60
@@ -556,42 +503,6 @@ class CreateTourTurnComponent extends Component {
                     onCancel={this.handleCancelReq} >
                     Vui lòng kiểm tra cẩn thận!!!
                 </SweetAlert>}
-
-                <Modal
-                    open={this.state.modalPayIsOpen}
-                    onClose={this.handleOncloseModalPay}
-                    center
-                    styles={{ 'modal': { width: '1280px' } }}
-                    blockScroll={true} >
-                    {this.state.bookPay && <ViewDetail
-                        handlePayment={this.handlePayment}
-                        data={this.state.bookPay}
-                        tourTurn={this.state.tourTurn}
-                        tour={this.state.tour}
-                    />}
-                </Modal>
-                <Modal
-                    open={this.state.modalUpdatePassengerIsOpen}
-                    onClose={this.handleCloseModalUpdatePassenger}
-                    center
-                    styles={{ 'modal': { width: '1280px' } }}
-                    blockScroll={true} >
-                    {this.state.passengerUpdate && <PassengerUpdate
-                        handleUpdatePassenger={this.handleUpdatePassenger}
-                        passenger={this.state.passengerUpdate}
-                    />}
-                </Modal>
-                <Modal
-                    open={this.state.modalUpdateContactInfoIsOpen}
-                    onClose={this.handleCloseModalUpdateContactInfo}
-                    center
-                    styles={{ 'modal': { width: '1280px' } }}
-                    blockScroll={true} >
-                    {this.state.contactInfoUpdate && <ContactInfoUpdate
-                        handleUpdateContactInfo={this.handleUpdateContactInfo}
-                        contactInfo={this.state.contactInfoUpdate}
-                    />}
-                </Modal>
                 <section className="content-header">
                     <h1> Thông Tin & Danh Sách Đặt Tour <i>#{this.props.match.params.id}</i> </h1>
                     <div className="right_header">
@@ -611,123 +522,16 @@ class CreateTourTurnComponent extends Component {
                     </div>
                 </section>
                 <section className="content">
-                    {/* <div className="row">
-                        <div className="col-lg-12 col-xs-12">
-                            <div className="nav-tabs-custom">
-                                <ul className="nav nav-tabs">
-                                    <li className="active"><a href="#activity" data-toggle="tab">Information</a></li>
-                                    <li><a href="#settings" data-toggle="tab">Book Tour History</a></li>
-                                    <li><a href="#timeline" data-toggle="tab">List Passengers</a></li>
-                                </ul>
-                                <div className="tab-content">
-                                    <div className="active tab-pane" id="activity">
-                                        <div className="post">
-                                            <div className="user-block">
-                                                <form onSubmit={this.handleSave} className="form-horizontal">
-                                                    <div className="box-body">
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Name</label>
-                                                            <div className="col-sm-5">
-                                                                <input type="text" readOnly value={tour ? tour.name : ''} name="price" className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Start Date</label>
-                                                            <div className="col-sm-5">
-                                                                <input type="text" readOnly
-                                                                    value={tourTurn ? moment(tourTurn.start_date).format('DD/MM/YYYY') : ''} name="discount" className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">End Date</label>
-                                                            <div className="col-sm-5">
-                                                                <input type="text" readOnly
-                                                                    value={tourTurn ? moment(tourTurn.end_date).format('DD/MM/YYYY') : ''} name="limitPeople" className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Price</label>
-                                                            <div className="col-sm-5">
-                                                                <input type="text" readOnly
-                                                                    value={tourTurn ? formatCurrency(tourTurn.price.toString()) + ' VND' : ''} name="limitPeople" className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Limit People</label>
-                                                            <div className="col-sm-5">
-                                                                <input type="number" readOnly
-                                                                    value={tourTurn ? tourTurn.num_max_people : ''} name="limitPeople" className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Current People</label>
-                                                            <div className="col-sm-5">
-                                                                <input type="number" readOnly
-                                                                    value={tourTurn ? tourTurn.num_current_people : ''} name="limitPeople" className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="box-footer">
-                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="tab-pane" id="settings">
-                                        <div className="post">
-                                            <div className="user-block">
-                                                <form onSubmit={this.handleSave} className="form-horizontal">
-                                                    <div className="box-body">
-                                                        <ReactTable
-                                                            columns={columnHistory}
-                                                            data={bookTourHistory ? bookTourHistory : []}
-                                                            defaultPageSize={10}
-                                                            noDataText={'Please wait...'}
-                                                        >
-                                                        </ReactTable>
-                                                    </div>
-                                                    <div className="box-footer">
-                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="tab-pane" id="timeline">
-                                        <div className="post">
-                                            <div className="user-block">
-                                                <form onSubmit={this.handleSave} className="form-horizontal">
-                                                    <div className="box-body">
-                                                        <ReactTable
-                                                            columns={columns}
-                                                            data={bookHistory ? bookHistory : []}
-                                                            defaultPageSize={10}
-                                                            noDataText={'Please wait...'}
-                                                        >
-                                                        </ReactTable>
-                                                    </div>
-                                                    <div className="box-footer">
-                                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
                     <div className="row">
                         <div className="col-lg-12 col-xs-12">
                             <form className="form-horizontal">
                                 <div className="box-body book_tour_detail-information">
-                                    <h2>Thông Tin Chuyến Đi</h2>
+                                    <h2>Thông Tin Chuyến Đi #{tourTurn ? tourTurn.code : ''}</h2>
                                     <div className="box-body-main">
                                         <div className="box-body-left">
                                             <div className="">Tour</div>
                                             <div className="">Giá</div>
+                                            <div className="">Giảm</div>
                                             <div className="">Ngày bắt đầu</div>
                                             <div className="">Ngày kết thúc</div>
                                             <div className="">SL tối đa</div>
@@ -736,6 +540,7 @@ class CreateTourTurnComponent extends Component {
                                         <div className="box-body-right">
                                             <div className="">{tour ? tour.name : ''}</div>
                                             <div className="">{tourTurn ? formatCurrency(tourTurn.price.toString()) + ' VND' : ''}</div>
+                                            <div className="">{tourTurn ? tourTurn.discount : ''} %</div>
                                             <div className="">{tourTurn ? moment(tourTurn.start_date).format('DD/MM/YYYY') : ''}</div>
                                             <div className="">{tourTurn ? moment(tourTurn.end_date).format('DD/MM/YYYY') : ''}</div>
                                             <div className="">{tourTurn ? tourTurn.num_max_people : ''}</div>
@@ -772,39 +577,6 @@ class CreateTourTurnComponent extends Component {
                                                     noDataText={'Vui lòng đợi...'}
                                                 >
                                                 </ReactTable>
-                                                {/* <table className="table table-bordered table-hover dt-responsive">
-                                                    <caption className="text-center"></caption>
-                                                    <thead>
-                                                        <tr>
-                                                            <th>STT</th>
-                                                            <th>Mã đặt tour</th>
-                                                            <th>Người liên hệ</th>
-                                                            <th>Số điện thoại</th>
-                                                            <th>Email</th>
-                                                            <th>Số lượng</th>
-                                                            <th>Tổng tiền</th>
-                                                            <th>Thời gian đặt</th>
-                                                            <th>Trạng thái</th>
-                                                            <th><i className="fa fa-money" /></th>
-                                                            <th><i className="fa fa-credit-card" /></th>
-                                                            <th><i className="fa fa-pencil" /></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {this.state.bookTourHistory.length > 0 && this.state.bookTourHistory.map((item, index) => {
-                                                            return <ItemBookHistory
-                                                                key={index}
-                                                                item={item}
-                                                                passengers={item.passengers}
-                                                                openUpdateContactInfo={this.openUpdateContactInfo}
-                                                                openUpdatePassenger={this.openUpdatePassenger}
-                                                                handleOpenModalPay={this.handleOpenModalPay}
-                                                                handleCancelRequest={this.handleCancelRequest}
-                                                                index={index}
-                                                            />
-                                                        })}
-                                                    </tbody>
-                                                </table> */}
                                             </div>
                                         </div>
                                     </div>

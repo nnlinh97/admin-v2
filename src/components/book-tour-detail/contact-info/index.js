@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import * as actions from './../../../actions/index';
-import { apiGet, apiPost } from '../../../services/api';
+// import * as actions from './../../../actions/index';
+// import { apiGet, apiPost } from '../../../services/api';
 
 class UpdateContactInfo extends Component {
 
@@ -65,7 +65,7 @@ class UpdateContactInfo extends Component {
     }
 
     render() {
-        const { fullname, phone, email, id, address } = this.state;
+        const { fullname, phone, email, address } = this.state;
         return (
             <div className="">
                 <section className="content-header">

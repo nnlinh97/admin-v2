@@ -89,8 +89,105 @@ class ListRouteComponent extends Component {
     }
 
     render() {
+        const columns = [
+            {
+                Header: "STT",
+                Cell: props => <p>{props.index + 1}</p>,
+                style: { textAlign: 'center' },
+                style: { textAlign: 'center' },
+                width: 80,
+                maxWidth: 80,
+                minWidth: 80
+            },
+            {
+                Header: "ID",
+                accessor: "id",
+                Cell: props => <i>#{props.original.id}</i>,
+                style: { textAlign: 'center' },
+                width: 90,
+                maxWidth: 100,
+                minWidth: 80
+            },
+            // {
+            //     Header: "Title",
+            //     accessor: "title",
+            //     style: {
+            //         textAlign: 'left'
+            //     }
+            // },
+            {
+                Header: "Tên",
+                accessor: "location.name",
+                // Cell: props => <p title={props.original.location.name}>
+                //     {props.original.location.name.length > 25 ? `${props.original.location.name.substring(0, 25)}...` : props.original.location.name}
+                // </p>,
+                style: {
+                    textAlign: 'left'
+                }
+            },
+            {
+                Header: "Thời Gian Đến",
+                accessor: "arrive_time",
+                style: {
+                    textAlign: 'center'
+                },
+                width: 140,
+                maxWidth: 140,
+                minWidth: 140
+            },
+            {
+                Header: "Thời Gian Đi",
+                accessor: "leave_time",
+                style: {
+                    textAlign: 'center'
+                },
+                width: 140,
+                maxWidth: 140,
+                minWidth: 140
+            },
+            {
+                Header: "Ngày",
+                accessor: "day",
+                style: {
+                    textAlign: 'center'
+                },
+                width: 100,
+                maxWidth: 100,
+                minWidth: 100
+            },
+            {
+                Header: "Phương Tiện",
+                accessor: "transport.name_vn",
+                style: {
+                    textAlign: 'center'
+                },
+                width: 140,
+                maxWidth: 140,
+                minWidth: 140
+            },
+            {
+                Header: props => <i className="fa fa-pencil" />,
+                Cell: props => {
+                    return (
+                        <button className="btn btn-xs btn-success"
+                            title="chỉnh sửa"
+                            onClick={() => this.openModalEditRoute(props.original)}
+                        >
+                            <i className="fa fa-pencil" />
+                        </button>
+                    )
+                },
+                style: {
+                    textAlign: 'center'
+                },
+                width: 100,
+                maxWidth: 100,
+                minWidth: 100
+            }
+
+        ];
         return (
-            <div style={{ height: '90vh' }} className="content-wrapper">
+            <div style={{ minHeight: '90vh' }} className="content-wrapper">
                 {this.state.success && <SweetAlert
                     success
                     title="Lưu Thành Công"
@@ -139,115 +236,42 @@ class ListRouteComponent extends Component {
                     </div>
                 </section>
                 <section className="content">
-                    <div class="search_box">
-                        <div class="search_icon">
-                            <i class="fa fa-search"></i>
+                    <div className="row">
+                        <div className="col-lg-12 col-xs-12">
+                            <form className="form-horizontal">
+                                <div className="box-body book_tour_detail-book_tour_history">
+                                    <div className="book_tour_detail-book_tour_history-title">
+                                        <h2>&nbsp;</h2>
+                                        <div style={{ top: '10px' }} className="search_box">
+                                            <div className="search_icon">
+                                                <i className="fa fa-search"></i>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                onChange={this.handleChange}
+                                                value={this.state.keySearch}
+                                                name="keySearch"
+                                                className="search_input"
+                                                placeholder="Tìm kiếm..."
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-xs-12 book_tour_history">
+                                                <ReactTable
+                                                    data={this.handleSearchRoute(this.props.listRoute, this.state.keySearch)}
+                                                    defaultPageSize={10}
+                                                    noDataText={'vui lòng chờ...'}
+                                                    columns={columns} >
+                                                </ReactTable>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <input
-                            type="text"
-                            onChange={this.handleChange}
-                            value={this.state.keySearch}
-                            name="title"
-                            className="search_input"
-                            placeholder="Tìm kiếm..."
-                        />
-                        {this.state.keySearch !== '' && <div class="search_result_count">
-                            <span>{this.handleSearchRoute(this.props.listRoute, this.state.keySearch).length} </span>results
-                        </div>}
                     </div>
-
-                    <ReactTable
-                        data={this.handleSearchRoute(this.props.listRoute, this.state.keySearch)}
-                        defaultPageSize={10}
-                        noDataText={'Please wait...'}
-                        columns={[
-                            {
-                                Header: "ID",
-                                accessor: "id",
-                                style: {
-                                    textAlign: 'center'
-                                },
-                                width: 90,
-                                maxWidth: 100,
-                                minWidth: 80
-                            },
-                            {
-                                Header: "Title",
-                                accessor: "title",
-                                style: {
-                                    textAlign: 'left'
-                                }
-                            },
-                            {
-                                Header: "Tên",
-                                accessor: "location.name",
-                                style: {
-                                    textAlign: 'left'
-                                }
-                            },
-                            {
-                                Header: "Thời Gian Đến",
-                                accessor: "arrive_time",
-                                style: {
-                                    textAlign: 'center'
-                                },
-                                width: 140,
-                                maxWidth: 140,
-                                minWidth: 140
-                            },
-                            {
-                                Header: "Thời Gian Đi",
-                                accessor: "leave_time",
-                                style: {
-                                    textAlign: 'center'
-                                },
-                                width: 140,
-                                maxWidth: 140,
-                                minWidth: 140
-                            },
-                            {
-                                Header: "Ngày",
-                                accessor: "day",
-                                style: {
-                                    textAlign: 'center'
-                                },
-                                width: 100,
-                                maxWidth: 100,
-                                minWidth: 100
-                            },
-                            {
-                                Header: "Phương Tiện",
-                                accessor: "transport.name_vn",
-                                style: {
-                                    textAlign: 'center'
-                                },
-                                width: 140,
-                                maxWidth: 140,
-                                minWidth: 140
-                            },
-                            {
-                                Header: props => <i className="fa fa-pencil" />,
-                                Cell: props => {
-                                    return (
-                                        <button className="btn btn-xs btn-success"
-                                            title="chỉnh sửa"
-                                            onClick={() => this.openModalEditRoute(props.original)}
-                                        >
-                                            <i className="fa fa-pencil" />
-                                        </button>
-                                    )
-                                },
-                                style: {
-                                    textAlign: 'center'
-                                },
-                                width: 100,
-                                maxWidth: 100,
-                                minWidth: 100
-                            }
-
-                        ]}
-                    >
-                    </ReactTable>
                 </section>
             </div>
         );

@@ -9,9 +9,8 @@ import Select from 'react-select';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { apiGet, apiPost } from '../../../services/api';
 import * as actions from './../../../actions/index';
-import { formatCurrency } from '../../../helper';
+// import { formatCurrency } from '../../../helper';
 import './index.css';
-// import 'font-awesome/css/font-awesome.css';
 
 class CreateTourTurnComponent extends Component {
 
@@ -45,7 +44,7 @@ class CreateTourTurnComponent extends Component {
                 console.log(error);
             }
         }
-        if (!listTypePassenger) {
+        if (!listTypePassenger.length) {
             try {
                 listTypePassenger = await apiGet('/type_passenger/getAll');
                 listTypePassenger = listTypePassenger.data.data;
@@ -110,7 +109,7 @@ class CreateTourTurnComponent extends Component {
         if (this.checkTourTurn() && this.checkListTypePassenger(typePassenger)) {
             const { discount, price, limitPeople, tour, startDate, endDate, status } = this.state;
             try {
-                const newTourTurn = await apiPost('/tour_turn/createWithPricePassenger', {
+                await apiPost('/tour_turn/createWithPricePassenger', {
                     idTour: tour.id,
                     start_date: moment(startDate).format('YYYY-MM-DD'),
                     end_date: moment(endDate).format('YYYY-MM-DD'),
@@ -160,17 +159,19 @@ class CreateTourTurnComponent extends Component {
         const index = _.findIndex(this.state.typePassenger, (item) => {
             return item.id === props.id;
         });
-        this.state.typePassenger[index].checked = !props.checked;
-        this.setState({ typePassenger: [...this.state.typePassenger] });
+        let types = [...this.state.typePassenger];
+        types[index].checked = !props.checked;
+        this.setState({ typePassenger: types });
     }
 
-    onChangePricePercent = (event, props) => {
+    onChangePricePercent = ({ target }, props) => {
         const index = _.findIndex(this.state.typePassenger, (item) => {
             return item.id === props.id;
         });
-        this.state.typePassenger[index].percent = event.target.value;
+        let types = [...this.state.typePassenger];
+        types[index].percent = target.value;
         this.setState({
-            typePassenger: [...this.state.typePassenger],
+            typePassenger: types,
             idFocus: props.id
         }, () => {
             this.inputFocus.current.focus();
@@ -182,9 +183,9 @@ class CreateTourTurnComponent extends Component {
             {
                 Header: props => <i className="fa fa-check-square" />,
                 Cell: props => {
-                    let index = _.findIndex(this.state.tempRoutes, (item) => {
-                        return item.id === props.original.id;
-                    });
+                    // let index = _.findIndex(this.state.tempRoutes, (item) => {
+                    //     return item.id === props.original.id;
+                    // });
                     return <div className="checkbox checkbox-modal">
                         <input
                             className="input-modal"

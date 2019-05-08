@@ -1,4 +1,6 @@
 
+import moment from 'moment';
+
 export const sortRoute = async (routes) => {
     //true nếu arrive nhỏ hơn leave
     const sync_check_time = (arrive, leave) => {
@@ -127,11 +129,33 @@ export function getStatusItem(status) {
             colorStatus = 'danger';
             textStatus = 'yêu cầu hủy';
             break;
+        case 'finished':
+            colorStatus = 'info';
+            textStatus = 'đã tham gia';
+            break;
     }
     return {
         colorStatus,
         textStatus
     };
+}
+
+export function getStatusTourTurn(startDate, endDate) {
+    const currentDate = moment(new Date()).format('YYYY-MM-DD');
+
+    let status = "";
+    let css = '';
+    if (startDate <= currentDate && currentDate <= endDate) {
+        status = "đang đi";
+        css = 'warning'
+    } else if (startDate > currentDate) {
+        status = "chưa đi";
+        css = 'success';
+    } else {
+        status = "đã đi";
+        css = 'default';
+    }
+    return { status, css };
 }
 
 export function getSex(sex) {
@@ -172,4 +196,54 @@ export function getPaymentChecked(status) {
         case '':
             return false;
     }
+}
+
+export function getPercentRefund(numDate) {
+    if (numDate >= 15) {
+        return 100;
+    } else if (8 <= numDate && numDate <= 14) {
+        return 50;
+    } else if (5 <= numDate && numDate <= 7) {
+        return 30;
+    } else if (2 <= numDate && numDate <= 4) {
+        return 10;
+    } else {
+        return 0;
+    }
+}
+
+export function getNumberDays(date1, date2) {
+    date1 = date1.split('-');
+    date2 = date2.split('-');
+
+    date1 = new Date(date1[0], date1[1], date1[2]);
+    date2 = new Date(date2[0], date2[1], date2[2]);
+
+    const date1_unixtime = parseInt(date1.getTime() / 1000);
+    const date2_unixtime = parseInt(date2.getTime() / 1000);
+
+    const timeDifference = date2_unixtime - date1_unixtime;
+
+    const timeDifferenceInHours = timeDifference / 60 / 60;
+
+    const timeDifferenceInDays = timeDifferenceInHours / 24;
+
+    return timeDifferenceInDays;
+}
+
+export function getPaymentType(type) {
+    console.log(type)
+    let result = '';
+    switch (type) {
+        case 'incash':
+            result = 'Tiền mặt';
+            break;
+        case 'transfer':
+            result = 'Chuyển khoản';
+            break;
+        case 'online':
+            result = 'Trực tuyến';
+            break;
+    }
+    return result;
 }

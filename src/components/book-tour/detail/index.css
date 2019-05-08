@@ -197,8 +197,8 @@ section.content
 }
 .box.box-primary form div div.form-group img
 {
-    width: 100% !important;
-    height: 300px !important;
+    width: 100%;
+    height: 300px;
     object-fit:cover;
 }
 .col-lg-5.col-xs-5 div.box.box-primary form div div.form-group:nth-child(4)

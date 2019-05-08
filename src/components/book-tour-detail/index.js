@@ -6,10 +6,10 @@ import _ from 'lodash';
 import moment from 'moment';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
-import Select from 'react-select';
-// import ReactPaginate from 'react-paginate';
 import PassengerUpdate from './passenger-update';
 import ContactInfoUpdate from './contact-info';
+import Payment from './payment';
+import CancelRequest from './cancel-request';
 import * as actions from './../../actions/index';
 import { apiGet, apiPost } from '../../services/api';
 import {
@@ -21,7 +21,8 @@ import {
     getStatusItem,
     getSex,
     getCancelChecked,
-    getPaymentChecked
+    getPaymentChecked,
+    getPaymentType
 } from './../../helper';
 import 'font-awesome/css/font-awesome.css';
 import './index.css';
@@ -34,11 +35,12 @@ class CreateTourTurnComponent extends Component {
             success: false,
             error: false,
             bookTourHistory: [],
-            tourTurn: null,
+            // tourTurn: null,
             tour: null,
             modalPayIsOpen: false,
             modalUpdatePassengerIsOpen: false,
             modalUpdateContactInfoIsOpen: false,
+            modalCancelRequestIsOpen: false,
             bookPay: null,
             passengerUpdate: null,
             contactInfoUpdate: null,
@@ -62,7 +64,9 @@ class CreateTourTurnComponent extends Component {
             passenger: null,
             cancelChecked: false,
             paymentChecked: false,
-            message: null
+            message: null,
+            bookTourDetail: null,
+            code: ''
         }
     }
 
@@ -70,7 +74,7 @@ class CreateTourTurnComponent extends Component {
         let bookTourDetail = null;
         try {
             const { code } = this.props.match.params;
-            const detail = await apiGet(`/book_tour/getHistoryBookTourByCode/${code}?tour=true`);
+            const detail = await apiGet(`/book_tour/getHistoryBookTourByCode/${code}?tour=true&isAdmin=true`);
             bookTourDetail = detail.data.data;
             this.updateState(bookTourDetail);
             console.log(bookTourDetail)
@@ -92,7 +96,9 @@ class CreateTourTurnComponent extends Component {
             passengers: bookTourDetail.passengers,
             numPassengers: bookTourDetail.num_passenger,
             tourTurn: bookTourDetail.tour_turn,
-            message: bookTourDetail.request_cancel_bookings.length > 0 ? bookTourDetail.request_cancel_bookings[0] : null
+            message: bookTourDetail.request_cancel_bookings.length > 0 ? bookTourDetail.request_cancel_bookings[0] : null,
+            bookTourDetail: bookTourDetail,
+            code: bookTourDetail.code
         });
     }
 
@@ -113,6 +119,13 @@ class CreateTourTurnComponent extends Component {
         const value = event.target.value;
         const name = event.target.name;
         this.setState({ [name]: value });
+    }
+
+    checkStatus = (status) => {
+        if (status === 'finished' || status === 'cancelled' || status === '') {
+            return true;
+        }
+        return false;
     }
 
     handleSave = async (event) => {
@@ -151,11 +164,14 @@ class CreateTourTurnComponent extends Component {
         }
     }
 
-    handleOpenModalPay = (props) => {
-        this.setState({
-            modalPayIsOpen: true,
-            bookPay: props
-        });
+    handleOpenModalPay = (event) => {
+        event.preventDefault();
+        this.setState({ modalPayIsOpen: true });
+    }
+
+    handleOpenModalCancelRequest = (event) => {
+        event.preventDefault();
+        this.setState({ modalCancelRequestIsOpen: true });
     }
 
     handleCancelRequest = (code) => {
@@ -166,10 +182,12 @@ class CreateTourTurnComponent extends Component {
     }
 
     handleOncloseModalPay = () => {
-        this.setState({
-            modalPayIsOpen: false,
-            bookPay: null
-        });
+        this.setState({ modalPayIsOpen: false });
+    }
+
+    handleCloseModalCancelRequest = (event) => {
+        event.preventDefault();
+        this.setState({ modalCancelRequestIsOpen: false });
     }
 
     handleCloseModalUpdatePassenger = () => {
@@ -347,10 +365,15 @@ class CreateTourTurnComponent extends Component {
             {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
+                    if (this.checkStatus(this.state.status)) {
+                        return <button className="btn btn-xs btn-success disabled" >
+                            <i className="fa fa-pencil" />
+                        </button>;
+                    }
                     return <button className="btn btn-xs btn-success"
                         onClick={() => this.openUpdatePassenger(props.original)} >
                         <i className="fa fa-pencil" />
-                    </button>
+                    </button>;
                 },
                 style: { textAlign: 'center' },
                 width: 60,
@@ -399,19 +422,35 @@ class CreateTourTurnComponent extends Component {
                     Vui lòng kiểm tra cẩn thận!!!
                 </SweetAlert>}
 
-                {/* <Modal
+                <Modal
                     open={this.state.modalPayIsOpen}
                     onClose={this.handleOncloseModalPay}
                     center
                     styles={{ 'modal': { width: '1280px' } }}
                     blockScroll={true} >
-                    {this.state.bookPay && <ViewDetail
+                    {this.state.bookTourDetail && <Payment
                         handlePayment={this.handlePayment}
-                        data={this.state.bookPay}
-                        tourTurn={this.state.tourTurn}
-                        tour={this.state.tour}
+                        code={this.state.code}
+                        totalPay={this.state.totalPay}
                     />}
-                </Modal> */}
+                </Modal>
+
+                <Modal
+                    open={this.state.modalCancelRequestIsOpen}
+                    onClose={this.handleCloseModalCancelRequest}
+                    center
+                    styles={{ 'modal': { width: '1280px' } }}
+                    blockScroll={true} >
+                    {this.state.bookTourDetail && <CancelRequest
+                        handlePayment={this.handlePayment}
+                        code={this.state.code}
+                        message={this.state.message}
+                        status={this.state.status}
+                        startDate={this.state.tourTurn.start_date}
+                        totalPay={this.state.totalPay}
+                    />}
+                </Modal>
+
                 <Modal
                     open={this.state.modalUpdatePassengerIsOpen}
                     onClose={this.handleCloseModalUpdatePassenger}
@@ -423,6 +462,7 @@ class CreateTourTurnComponent extends Component {
                         passenger={this.state.passengerUpdate}
                     />}
                 </Modal>
+
                 <Modal
                     open={this.state.modalUpdateContactInfoIsOpen}
                     onClose={this.handleCloseModalUpdateContactInfo}
@@ -434,6 +474,7 @@ class CreateTourTurnComponent extends Component {
                         contactInfo={this.state.contactInfoUpdate}
                     />}
                 </Modal>
+
                 <section className="content-header">
                     <div style={{
                         position: 'absolute',
@@ -464,23 +505,28 @@ class CreateTourTurnComponent extends Component {
                         <div className="col-lg-12 col-xs-12">
                             <form className="form-horizontal">
                                 <div className="box-body book_tour_detail-information">
-                                    <h2>Thông Tin Người Đặt và Đặt Tour</h2>
-                                    <i
-                                        title="chỉnh sửa thông tin người đặt"
-                                        onClick={() => this.openUpdateContactInfo(this.state.contactInfo)}
-                                        style={{ cursor: 'pointer' }}
-                                        className="fa fa-pencil" />
+                                    <div className="book_tour_detail-information-title">
+                                        <h2>Thông Tin Người Đặt và Đặt Tour #{this.state.code}</h2>
+                                        {!this.checkStatus(this.state.status) && <i
+                                            title="chỉnh sửa thông tin người đặt"
+                                            onClick={() => this.openUpdateContactInfo(this.state.contactInfo)}
+                                            style={{ cursor: 'pointer' }}
+                                            className="fa fa-pencil" />}
+                                    </div>
                                     <div className="box-body-main">
                                         <div className="box-body-left">
                                             <div className="">Tên</div>
                                             <div className="">Số điện thoại</div>
                                             <div className="">Email</div>
                                             <div className="">Tour</div>
+                                            <div className="">Mã chuyến đi</div>
                                             <div className="">Ngày bắt đầu</div>
                                             <div className="">Ngày kết thúc</div>
                                             <div className="">Giá/người</div>
+                                            <div className="">Giảm</div>
                                             <div className="">Số người đi</div>
                                             <div className="">Tổng tiền</div>
+                                            {this.state.paymentMethod && <div className="">Thanh toán</div>}
                                             <div className="">Trạng thái</div>
                                             {this.state.message && <>
                                                 <div className="">Tin nhắn</div>
@@ -492,11 +538,14 @@ class CreateTourTurnComponent extends Component {
                                             <div className="">{this.state.contactInfo ? this.state.contactInfo.phone : ''}</div>
                                             <div className="">{this.state.contactInfo ? this.state.contactInfo.email : ''}</div>
                                             <div className="">{this.state.tourTurn ? this.state.tourTurn.tour.name : ''}</div>
+                                            <div className="">#{this.state.tourTurn ? this.state.tourTurn.code : ''}</div>
                                             <div className="">{this.state.tourTurn ? moment(this.state.tourTurn.start_date).format('DD/MM/YYYY') : ''}</div>
                                             <div className="">{this.state.tourTurn ? moment(this.state.tourTurn.end_date).format('DD/MM/YYYY') : ''}</div>
                                             <div className="">{this.state.tourTurn ? formatCurrency(this.state.tourTurn.price) : ''} VND</div>
+                                            <div className="">{this.state.tourTurn ? this.state.tourTurn.discount : ''} %</div>
                                             <div className="">{this.state.numPassengers}</div>
                                             <div className="">{formatCurrency(this.state.totalPay)} VND</div>
+                                            {this.state.paymentMethod && <div className="">{getPaymentType(this.state.paymentMethod.name)}</div>}
                                             <div className="">
                                                 <label className={`label label-${getStatusItem(this.state.status).colorStatus} disabled`} >
                                                     {getStatusItem(this.state.status).textStatus}
@@ -505,15 +554,21 @@ class CreateTourTurnComponent extends Component {
                                             {this.state.message && <>
                                                 <div className=""> {this.state.message.message} </div>
                                                 <div className=""> {moment(this.state.message.request_time).format('DD/MM/YYYY HH:MM')} </div>
-                                            </>}
+                                                </>}
                                         </div>
                                     </div>
-                                    {getCancelChecked(this.state.status) && <button className="btn btn-xs btn-danger" >
-                                        Hủy
-                                    </button>}
-                                    {getPaymentChecked(this.state.status) && <button className="btn btn-xs btn-info" >
-                                        Thanh Toán
-                                    </button>}
+                                    <div className="manager_btn">
+                                        {getPaymentChecked(this.state.status) && <button
+                                            onClick={this.handleOpenModalPay}
+                                            className="btn btn-xs btn-info custom-btn-infor" >
+                                            Thanh Toán
+                                        </button>}
+                                        {getCancelChecked(this.state.status) && <button
+                                            onClick={this.handleOpenModalCancelRequest}
+                                            className="btn btn-xs btn-danger custom-btn-danger" >
+                                            Hủy Đặt Tour
+                                        </button>}
+                                    </div>
                                 </div>
                             </form>
                             <form className="form-horizontal">

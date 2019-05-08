@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import LoginPage from './pages/login/';
 import NotFound from './pages/NotFound';
 import ListLocationPage from './pages/location/list';
@@ -24,6 +24,7 @@ import ListCountryPage from './pages/country/list';
 import ListProvincePage from './pages/province/list';
 import PrintListPassenger from './components/book-tour/print';
 import BookTourDetail from './pages/book-tour-detail';
+import PhoneCall from './pages/phone-call';
 import PrivateRoute from './components/private-route/';
 import './App.css';
 
@@ -85,6 +86,9 @@ class App extends Component {
 
           {/* print */}
           <PrivateRoute exact path='/print-passengers/:id' component={PrintListPassenger} />
+
+          {/* phone call */}
+          <PrivateRoute exact path='/phone-call' component={PhoneCall} />
 
           {/* not found */}
           <PrivateRoute exact path='' component={NotFound} />

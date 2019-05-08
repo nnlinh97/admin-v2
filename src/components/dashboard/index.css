@@ -1,50 +1,3 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  background-color: #fff;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-.opacity-5{
-  opacity: 0.5 !important;
-}
-
-.no-scroll{
-  overflow: hidden !important;
-}
-
-.content-wrapper {
-  background-color: #fff !important;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-
 /* New Format */
 .content-header
 {
@@ -244,8 +197,8 @@ section.content
 }
 .box.box-primary form div div.form-group img
 {
-    width: 100%;
-    height: 300px;
+    width: 100% !important;
+    height: 300px !important;
     object-fit:cover;
 }
 .col-lg-5.col-xs-5 div.box.box-primary form div div.form-group:nth-child(4)
@@ -267,4 +220,146 @@ section.content
 .col-lg-5.col-xs-5 div.box.box-primary form div div.form-group:nth-child(4) button.pull-right.btn.btn-default:hover 
 {
     color: #0a79df;
+}
+
+/* Book tour history */
+/* .book_tour_detail-information
+{
+    padding: 0 !important;
+} */
+.book_tour_detail-book_tour_history-title
+{
+    display: table;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+.book_tour_detail-book_tour_history-title h2
+{
+    width: 60%;
+    display: table-cell;
+}
+.book_tour_detail-book_tour_history-title .search_box
+{
+    width: 40%;
+    display: table-cell;
+}
+.book_tour_detail-book_tour_history .search_box
+{
+    width: 30%;
+    display: table-cell;
+}
+.book_tour_detail-book_tour_history .search_box .search_icon i
+{
+    width: 20px;
+    height: 20px;
+    color: #ccc;
+    font-size: 20px;
+}
+.book_tour_detail-book_tour_history .search_box .search_input
+{
+    padding: 10px 15px 10px 50px;
+    width: 100%;
+    font-size: 18px;
+    border-radius: 3px;
+    height: 40px;
+    color: #555;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+.box-body-main
+{
+    width: 100%;
+    display: table;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
+.box-body-left
+{
+    display: table-cell;
+    width: 15%;
+    height: 100px;
+    /* background: #292929; */
+    text-align: left;
+    padding-right: 26px;
+    font-weight: 700;
+    font-size: 18px;
+    /* border-right: 1px solid #999; */
+    /* text-transform: uppercase; */
+}
+.box-body-right
+{
+    display: table-cell;
+    width: 85%;
+    height: 100px;
+    /* background: #000; */
+    text-align: left;
+    padding-left: 26px;
+    font-weight: 500;
+    font-size: 18px;
+    /* border-left: 1px solid #999; */
+    color: #292929;
+}
+.box-body-left div,
+.box-body-right div
+{
+    margin-bottom: 7px;
+}
+.book_tour_history
+{
+    padding: 0 !important;
+}
+.book_tour_detail-book_tour_history .container
+{
+    width: 100%;
+}
+
+.td_mini_table
+{
+    background: #f4f4f4;
+}
+.mini_table
+{
+    margin-bottom: 0;
+    width: 80%;
+    margin-left: 10%;
+}
+
+.content .pagination {
+    align-items: center;
+    text-align: center;
+}
+
+#pagination {
+    align-content: center;
+    align-items: center;
+    text-align: center;
+}
+.book_tour_detail-information i
+{
+    left: 50%;
+    margin-top: 15px;
+    position: absolute;
+    font-size: 20px;
+}
+.manager_btn
+{
+    position: relative;
+    width: 100%;
+    height: 18px;
+    margin-bottom: 10px;
+}
+.custom-btn-danger
+{
+    position: absolute;
+    right: 0px;
+    padding: 5px;
+    font-size: 18px;
+}
+.custom-btn-infor
+{
+    position: absolute;
+    right: 120px;
+    padding: 5px;
+    font-size: 18px;
 }

@@ -10,7 +10,7 @@ import tourDetail from './tour/detail';
 import listTourTurn from './tour-turn/list';
 import tourTurnDetail from './tour-turn/detail';
 import listRoute from './route/list';
-import routeDetail from './route/detail';
+// import routeDetail from './route/detail';
 import listTransport from './transport/list';
 import transportDetail from './transport/detail';
 import listUser from './user/list';

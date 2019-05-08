@@ -1,11 +1,21 @@
-import React, { Component } from 'react';
-import { compose, withProps } from "recompose";
+import React from 'react';
+import { 
+    compose, 
+    // withProps 
+} from "recompose";
 import { withRouter } from 'react-router-dom';
-import { withScriptjs, withGoogleMap, GoogleMap, InfoWindow, Marker, DirectionsRenderer } from "react-google-maps";
+import {
+    withScriptjs,
+    withGoogleMap,
+    GoogleMap,
+    // InfoWindow,
+    Marker,
+    // DirectionsRenderer
+} from "react-google-maps";
 import { SearchBox } from "react-google-maps/lib/components/places/SearchBox";
 import { InfoBox } from "react-google-maps/lib/components/addons/InfoBox";
 import { connect } from 'react-redux';
-import _ from 'lodash';
+// import _ from 'lodash';
 import Geocode from "react-geocode";
 import { mapOption } from '../../../constants/map-option';
 import * as actions from './../../../actions/index';
@@ -115,7 +125,7 @@ class MapComponent extends React.Component {
             });
             this.setState({
                 center: { lat: newCenter.lat(), lng: newCenter.lng() },
-                marker: { lat: lat, lng: lng  },
+                marker: { lat: lat, lng: lng },
                 address: result.results[0].formatted_address,
                 zoom: this.googleMap.current.getZoom(),
                 isShowInfo: false

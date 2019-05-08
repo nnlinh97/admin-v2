@@ -489,12 +489,8 @@ class ListTypesComponent extends Component {
                     </SweetAlert>
                 }
                 <section className="content-header">
-                    <h1>
-                        Create Tour
-                    </h1>
-                </section>
-                <section className={`content ${(this.state.openModal || this.state.modalListImages) ? 'opacity-05' : ''}`}>
-                    <div className="row">
+                    <h1>Create Tour</h1>
+                    <div className="right_header">
                         <button
                             onClick={this.handleSave}
                             style={{
@@ -506,6 +502,8 @@ class ListTypesComponent extends Component {
                             <i className="fa fa-save" />&nbsp;Save
                         </button>
                     </div>
+                </section>
+                <section className={`content ${(this.state.openModal || this.state.modalListImages) ? 'opacity-05' : ''}`}>
                     <div className="row">
                         <div className="col-lg-5 col-xs-5">
                             <div className={`box box-primary ${this.state.errorTour ? 'bd-red' : ''}`}>
@@ -517,18 +515,34 @@ class ListTypesComponent extends Component {
                                         </div>
                                         <div style={{ height: '300px' }} className="form-group">
                                             <label>Feature Image (*)</label>
-                                            <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" /><br />
-                                            {this.state.previewImage !== '' ?
-                                                <img style={{ width: '100%', height: '250px' }} src={this.state.previewImage} /> :
-                                                <img style={{ width: '100%', height: '250px' }} src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
-                                            }
+                                            {/* <input onChange={this.handleChangeImage} type="file" id="exampeInputFile" /><br /> */}
+                                            <div className="inputImage" id="exampeInputFile">
+                                                {this.state.previewImage !== '' ?
+                                                    <img src={this.state.previewImage} /> :
+                                                    <img src="../../../public/dist/img/add_image.png" />
+                                                }
+                                                <a>Choose Image</a>
+                                            </div>
                                         </div><br />
                                         <div className="form-group">
                                             <label>Images</label>
-                                            <button onClick={this.openModalListImages} className="pull-right btn btn-default">
+                                            {/* <button onClick={this.openModalListImages} className="pull-right btn btn-default">
                                                 <i className="fa fa-pencil" />
                                             </button>
-                                            <input onChange={this.handleChangeListImages} type="file" multiple />
+                                            <input onChange={this.handleChangeListImages} type="file" multiple /> */}
+                                            <div className="slideshow">
+                                                <div className="imageOfSlideshow">
+                                                    <img src="http://localhost:5000/assets/images/locationFeatured/big-c-mien-dong.jpg"></img>
+                                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                                </div>
+                                                <div className="imageOfSlideshow">
+                                                    <img></img>
+                                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                                </div>
+                                                <div className="addImageOfSlideshow">
+                                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div className="form-group">
                                             <label>Policy</label>
@@ -604,7 +618,7 @@ class ListTypesComponent extends Component {
                                 marginRight: '15px'
                             }}
                             type="button"
-                            className="btn btn-success pull-right">
+                            className="btn btn-success pull-right addForTableCreateTour">
                             <i className="fa fa-plus" />&nbsp;Add
                         </button>
                     </div>
