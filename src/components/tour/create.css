@@ -254,7 +254,8 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
 {
     padding-left: 2.5%;
 }
-.content .row:nth-child(2)
+/* .content .row:nth-child(2) */
+.row
 {
     margin-left: 0;
     margin-right: 0;
