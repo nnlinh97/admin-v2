@@ -489,12 +489,8 @@ class ListTypesComponent extends Component {
                     </SweetAlert>
                 }
                 <section className="content-header">
-                    <h1>
-                        Create Tour
-                    </h1>
-                </section>
-                <section className={`content ${(this.state.openModal || this.state.modalListImages) ? 'opacity-05' : ''}`}>
-                    <div className="row">
+                    <h1>Create Tour</h1>
+                    <div className="right_header">
                         <button
                             onClick={this.handleSave}
                             style={{
@@ -506,6 +502,8 @@ class ListTypesComponent extends Component {
                             <i className="fa fa-save" />&nbsp;Save
                         </button>
                     </div>
+                </section>
+                <section className={`content ${(this.state.openModal || this.state.modalListImages) ? 'opacity-05' : ''}`}>
                     <div className="row">
                         <div className="col-lg-5 col-xs-5">
                             <div className={`box box-primary ${this.state.errorTour ? 'bd-red' : ''}`}>
@@ -620,7 +618,7 @@ class ListTypesComponent extends Component {
                                 marginRight: '15px'
                             }}
                             type="button"
-                            className="btn btn-success pull-right">
+                            className="btn btn-success pull-right addForTableCreateTour">
                             <i className="fa fa-plus" />&nbsp;Add
                         </button>
                     </div>

@@ -102,8 +102,8 @@ html body #root div div div section.content div.row button.btn.btn-success.pull-
     position: absolute;
     margin-top: -50px;
     right: 5%;
-    margin-bottom: 0px !important;
-    margin-right: 7px !important;
+    margin-bottom: 0px;
+    margin-right: 7px;
 }
 html body #root div div div section.content div.row div.col-lg-5.col-xs-5
 {
@@ -259,4 +259,12 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
 {
     margin-left: 0;
     margin-right: 0;
+}
+.addForTableCreateTour
+{
+    position: relative !important;
+    margin-top: 0 !important;
+    right: 0 !important;
+    margin-right: 0px !important;
+    margin-bottom: 10px !important;
 }
