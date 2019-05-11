@@ -12,15 +12,15 @@ class Dashboard extends Component {
         super(props);
         this.state = {
             keySearch: '',
-            requestCancelBooking: []
+            listBooking: [],
         }
     }
 
     componentDidMount = async () => {
         try {
-            let request = await apiGet('/request_cancel_booking/getAllRequest');
+            let request = await apiGet('/book_tour/getAllBookTourHistoryWithoutPagination');
             console.log(request.data.data);
-            this.setState({ requestCancelBooking: request.data.data });
+            this.setState({ listBooking: request.data.data });
         } catch (error) {
             console.log(error);
         }
@@ -30,7 +30,7 @@ class Dashboard extends Component {
         this.setState({ keySearch: target.value });
     }
 
-    handleSearchRequest= (requestCancelBooking, keySearch) => {
+    handleSearchRequest = (requestCancelBooking, keySearch) => {
         if (keySearch !== '' && requestCancelBooking.length > 0) {
             return requestCancelBooking.filter(request => matchString(request.user.email, keySearch) || matchString(request.book_tour_history.code, keySearch) || matchString(request.user.fullname, keySearch));
         }
@@ -43,7 +43,7 @@ class Dashboard extends Component {
                 Header: "Mã đặt tour",
                 accessor: "book_tour_history.code",
                 Cell: props => {
-                    return <i>#{props.original.book_tour_history.code}</i>
+                    return <i>#{props.original.code}</i>
                 },
                 style: { textAlign: 'center' },
                 width: 100,
@@ -52,44 +52,28 @@ class Dashboard extends Component {
             },
             {
                 Header: "Người liên hệ",
-                accessor: "user.fullname",
+                accessor: "book_tour_contact_info.fullname",
                 // style: { textAlign: 'center' }
-            },
-            {
-                Header: "Email",
-                accessor: "user.email",
-                // style: { textAlign: 'center' }
-            },
-            {
-                Header: "Thời gian hủy",
-                accessor: "book_time",
-                Cell: props => {
-                    return <p>{moment(props.original.request_time).format('DD/MM/YYYY HH:mm')}</p>
-                },
-                style: { textAlign: 'center' },
-                width: 130,
-                maxWidth: 130,
-                minWidth: 130
             },
             {
                 Header: "Tour",
-                accessor: "email",
+                accessor: "tour_turn.tour.name",
                 // style: { textAlign: 'center' }
             },
             {
-                Header: "Ngày bắt đầu",
-                accessor: "email",
-                // style: { textAlign: 'center' }
+                Header: "Ngày khởi hành",
+                accessor: "tour_turn.start_date",
+                style: { textAlign: 'center' }
             },
             {
                 Header: "Trạng thái",
                 accessor: "status",
-                Cell: props => {
-                    const status = getStatusItem(props.original.book_tour_history.status);
-                    return <label className={`label label-${status.colorStatus} disabled`} >
-                        {status.textStatus}
-                    </label>
-                },
+                // Cell: props => {
+                //     const status = getStatusItem(props.original.book_tour_history.status);
+                //     return <label className={`label label-${status.colorStatus} disabled`} >
+                //         {status.textStatus}
+                //     </label>
+                // },
                 style: { textAlign: 'center' },
                 width: 110,
                 maxWidth: 150,
@@ -118,7 +102,17 @@ class Dashboard extends Component {
                         <form className="form-horizontal">
                             <div className="box-body book_tour_detail-book_tour_history">
                                 <div style={{ marginTop: '40px' }} className="book_tour_detail-book_tour_history-title">
-                                    <h2>Danh Sách Yêu Cầu Hủy Đặt Tour</h2>
+                                    {/* <h2>Danh Sách Yêu Cầu Hủy Đặt Tour</h2> */}
+                                    {/* <div style={{ top: '10px' }} className="">
+                                        <select
+                                            // value={this.state.status}
+                                            // onChange={this.handleChange}
+                                            name="status"
+                                            className="search_input">
+                                            <option value="public">Công Khai</option>
+                                            <option value="private">Ẩn</option>
+                                        </select>
+                                    </div> */}
                                     <div style={{ top: '10px' }} className="search_box">
                                         <div className="search_icon">
                                             <i className="fa fa-search"></i>
@@ -132,14 +126,15 @@ class Dashboard extends Component {
                                             placeholder="Tìm kiếm..."
                                         />
                                     </div>
+
                                 </div>
                                 <div className="container">
                                     <div className="row">
                                         <div className="col-xs-12 book_tour_history">
                                             <ReactTable
                                                 columns={columns}
-                                                data={this.handleSearchRequest(this.state.requestCancelBooking, this.state.keySearch)}
-                                                defaultPageSize={5}
+                                                data={this.state.listBooking}
+                                                defaultPageSize={10}
                                                 noDataText={'Vui lòng đợi...'} >
                                             </ReactTable>
                                         </div>

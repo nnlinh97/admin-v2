@@ -34,7 +34,7 @@ import ReactTable from 'react-table';
 import { apiGet, apiPost } from '../../services/api';
 import { sortRoute } from './../../helper';
 import stateManager from 'react-select/lib/stateManager';
-import './modal.css'
+// import './modal.css'
 
 
 

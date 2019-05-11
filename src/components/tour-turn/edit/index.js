@@ -272,6 +272,7 @@ class CreateTourTurnComponent extends Component {
                     return (
                         <div className="checkbox checkbox-modal">
                             <input
+                                style={{width: '15px', height: '15px', marginTop: '0px', marginLeft: '-7px'}}
                                 className="input-modal"
                                 type="checkbox"
                                 name="choose"
@@ -281,11 +282,7 @@ class CreateTourTurnComponent extends Component {
                         </div>
                     )
                 },
-                sortable: false,
-                filterable: false,
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
@@ -293,11 +290,8 @@ class CreateTourTurnComponent extends Component {
             {
                 Header: "ID",
                 accessor: "id",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                },
+                Cell: props => <p>{props.original.id}</p> ,
+                style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
@@ -305,11 +299,7 @@ class CreateTourTurnComponent extends Component {
             {
                 Header: "NAME",
                 accessor: "name",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                }
+                style: { textAlign: 'center' }
             },
             {
                 Header: "PRICE PERCENT",
@@ -522,7 +512,7 @@ class CreateTourTurnComponent extends Component {
                                     </div>
                                 </div>
                             </form>
-                            <form className="form-horizontal">
+                            <form style={{marginBottom: '20px'}} className="form-horizontal">
                                 <div className="box-body book_tour_detail-book_tour_history">
                                     <div className="book_tour_detail-book_tour_history-title">
                                         <h2>Loại Hành Khách và Giá Tiền</h2>
@@ -552,9 +542,9 @@ class CreateTourTurnComponent extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="footer">
-                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Hủy</button>
-                                        <button onClick={this.handleSave} type="button" className="btn btn-info pull-right">Lưu Thay Đổi</button>
+                                    <div style={{marginTop: '10px', marginBottom: '20px'}} className="footer">
+                                        <button onClick={this.handleCancel} type="button" className="btn btn-default pull-right">Hủy</button>&nbsp;
+                                        <button style={{marginRight: '10px'}} onClick={this.handleSave} type="button" className="btn btn-info pull-right">Lưu Thay Đổi</button>
                                     </div>
                                 </div>
                             </form>

@@ -223,6 +223,7 @@ class CreateTourTurnComponent extends Component {
                     // });
                     return <div className="checkbox checkbox-modal">
                         <input
+                            style={{width: '15px', height: '15px', marginTop: '0px', marginLeft: '-7px'}}
                             className="input-modal"
                             type="checkbox"
                             name="choose"
@@ -439,7 +440,7 @@ class CreateTourTurnComponent extends Component {
                                     </div>
                                 </div>
                             </form>
-                            <form className="form-horizontal">
+                            <form style={{marginBottom: '20px'}} className="form-horizontal">
                                 <div className="box-body book_tour_detail-book_tour_history">
                                     <div className="book_tour_detail-book_tour_history-title">
                                         <h2>Loại Hành Khách và Giá Tiền</h2>
@@ -463,15 +464,16 @@ class CreateTourTurnComponent extends Component {
                                                 <ReactTable
                                                     columns={columns}
                                                     data={this.state.typePassenger ? this.state.typePassenger : []}
-                                                    defaultPageSize={5}
+                                                    defaultPageSize={10}
+                                                    showPagination={false}
                                                     noDataText={'Please wait...'} >
                                                 </ReactTable>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="footer">
-                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Hủy</button>
-                                        <button onClick={this.handleCreateTourTurn} type="button" className="btn btn-info pull-right">Lưu Thay Đổi</button>
+                                    <div style={{marginTop: '10px', marginBottom: '20px'}} className="footer">
+                                        <button onClick={this.handleCancel} type="button" className="btn btn-default pull-right">Hủy</button>
+                                        <button style={{marginRight: '10px'}} onClick={this.handleCreateTourTurn} type="button" className="btn btn-info pull-right">Lưu Thay Đổi</button>
                                     </div>
                                 </div>
                             </form>
