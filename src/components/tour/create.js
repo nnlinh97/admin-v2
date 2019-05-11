@@ -504,18 +504,150 @@ class ListTypesComponent extends Component {
                     </div>
                 </section>
                 <section className={`content ${(this.state.openModal || this.state.modalListImages) ? 'opacity-05' : ''}`}>
-                    <div className="row">
+                    <div className="row row_1">
+                        <div className="left_row_1">
+                            <div className="tour">
+                                <label  className="title_row" htmlFor="exampleInputEmail1">Tour *</label>
+                                <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
+                            </div>
+                            <div className="type_tour">
+                                <label  className="title_row" htmlFor="exampleInputEmail1">Loại tour *</label>
+                                <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
+                            </div>
+                            <div>
+                                <label  className="title_row">Ảnh đại diện*</label>
+                                {/* <input onChange={this.handleChangeImage} type="file" id="exampeInputFile" /><br /> */}
+                                <div className="inputImage" id="exampeInputFile">
+                                    {this.state.previewImage !== '' ?
+                                        <img src={this.state.previewImage} /> :
+                                        <img src="../../../public/dist/img/add_image.png" />
+                                    }
+                                    <a>Choose Image</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="right_row_1">
+                            <label className="title_row">Qui định</label>
+                            <FroalaEditor
+                                config={{
+                                    placeholderText: '',
+                                    heightMin: 425,
+                                    heightMax: 425,
+                                    toolbarButtons: configEditor.policy,
+                                }}
+                                model={this.state.policy}
+                                onModelChange={this.handleChangePolicy}
+                            />
+                        </div>
+                    </div>
+                    <div className="row row_2">
+                        <label className="title_row">Danh sách hình ảnh</label>
+                        {/* <button onClick={this.openModalListImages} className="pull-right btn btn-default">
+                            <i className="fa fa-pencil" />
+                        </button>
+                        <input onChange={this.handleChangeListImages} type="file" multiple /> */}
+                        <div className="slideshow">
+                            <div className="imageOfSlideshow">
+                                <img></img>
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </div>
+                            <div className="imageOfSlideshow">
+                                <img></img>
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </div>
+                            <div className="imageOfSlideshow">
+                                <img></img>
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row row_3">
+                        <label className="title_row">Chi tiết</label>
+                        <FroalaEditor
+                            config={{
+                                placeholderText: '',
+                                heightMax: 120,
+                                heightMin: 120,
+                                toolbarButtons: configEditor.policy,
+                            }}
+                            model={this.state.detail}
+                            onModelChange={this.handleChangeDetail}
+                        />
+                    </div>
+                    <div className="row row_4">
+                        <label className="title_row">Mô tả*</label>
+                        <FroalaEditor
+                            config={{
+                                heightMax: 362,
+                                heightMin: 362,
+                                placeholderText: '',
+                                toolbarButtons: configEditor.description,
+                                imageUploadParam: 'file',
+                                imageUploadURL: 'http://localhost:5000/admin/upload_image',
+                                imageUploadParams: { id: 'my_editor' },
+                                imageUploadMethod: 'POST',
+                                imageMaxSize: 5 * 1024 * 1024,
+                                imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+                                events: {
+                                    'froalaEditor.image.uploaded': (e, editor, response) => {
+                                        response = JSON.parse(response);
+                                        editor.image.insert(`http://localhost:5000${response.link.replace('/public', '')}`, true, null, editor.image.get(), null)
+                                        return false
+                                    }
+                                }
+
+                            }}
+                            model={this.state.desc}
+                            onModelChange={this.handleChangeDesc}
+                        />
+                    </div>
+                    <div className="row row_5">
+                        <div className="header_row">
+                            <label className="title_row">Danh sách địa điểm</label>
+                            <div style={{ top: '10px' }} className="mini_search_box">
+                                <div className="search_icon">
+                                    <i className="fa fa-search"></i>
+                                </div>
+                                <input
+                                    type="text"
+                                    onChange={this.handleChange}
+                                    value={this.state.keySearch}
+                                    name="keySearch"
+                                    className="search_input"
+                                    placeholder="Tìm kiếm..."
+                                />
+                            </div>
+                            <button
+                                onClick={this.openModal}
+                                type="button"
+                                className="btn btn-success pull-right addForTableCreateTour">
+                                <i className="fa fa-plus" />&nbsp;Add
+                            </button>
+                        </div>
+                        <div className="table_row">
+                            <ReactTable
+                                columns={columns}
+                                data={this.state.routes.length ? this.state.routes : []}
+                                defaultPageSize={5}
+                                noDataText={'No data...'}
+                            >
+                            </ReactTable>
+                        </div>
+                    </div>
+
+                    {/* <div className="row">
                         <div className="col-lg-5 col-xs-5">
                             <div className={`box box-primary ${this.state.errorTour ? 'bd-red' : ''}`}>
                                 <form role="form" encType="multipart/form-data">
                                     <div className="box-body">
+
                                         <div className="form-group">
                                             <label htmlFor="exampleInputEmail1">Name (*)</label>
                                             <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
                                         </div>
                                         <div style={{ height: '300px' }} className="form-group">
                                             <label>Feature Image (*)</label>
-                                            {/* <input onChange={this.handleChangeImage} type="file" id="exampeInputFile" /><br /> */}
+                                            <input onChange={this.handleChangeImage} type="file" id="exampeInputFile" /><br />
                                             <div className="inputImage" id="exampeInputFile">
                                                 {this.state.previewImage !== '' ?
                                                     <img src={this.state.previewImage} /> :
@@ -526,10 +658,10 @@ class ListTypesComponent extends Component {
                                         </div><br />
                                         <div className="form-group">
                                             <label>Images</label>
-                                            {/* <button onClick={this.openModalListImages} className="pull-right btn btn-default">
+                                            <button onClick={this.openModalListImages} className="pull-right btn btn-default">
                                                 <i className="fa fa-pencil" />
                                             </button>
-                                            <input onChange={this.handleChangeListImages} type="file" multiple /> */}
+                                            <input onChange={this.handleChangeListImages} type="file" multiple />
                                             <div className="slideshow">
                                                 <div className="imageOfSlideshow">
                                                     <img></img>
@@ -632,7 +764,7 @@ class ListTypesComponent extends Component {
                             >
                             </ReactTable>
                         </div>
-                    </div>
+                    </div> */}
 
                 </section>
                 {this.state.openModal &&
