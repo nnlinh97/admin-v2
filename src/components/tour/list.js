@@ -18,14 +18,12 @@ class ListTourComponent extends Component {
     }
 
     async componentDidMount() {
-        let { listTour } = this.props;
-        if (!listTour.length) {
-            try {
-                listTour = await apiGet('/tour/getAllWithoutPagination');
-                this.props.getListTour(listTour.data.data);
-            } catch (error) {
-                console.log(error);
-            }
+        let listTour = []
+        try {
+            listTour = await apiGet('/tour/getAllWithoutPagination');
+            this.props.getListTour(listTour.data.data);
+        } catch (error) {
+            console.log(error);
         }
     }
 

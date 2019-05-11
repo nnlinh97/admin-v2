@@ -206,7 +206,7 @@ class ListTypesComponent extends Component {
                         style={{ marginBottom: '2px', marginRight: '15px' }}
                         type="button"
                         className="btn btn-success pull-right">
-                        <i className="fa fa-plus" />&nbsp;Create
+                        <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
                 </div>
             </section>

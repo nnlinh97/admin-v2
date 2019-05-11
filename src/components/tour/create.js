@@ -58,7 +58,8 @@ class ListTypesComponent extends Component {
             previewImage: '',
             modalListImages: false,
             listImages: [],
-            listImagesPreviview: []
+            listImagesPreviview: [],
+            typeTour: 1
         }
     }
 
@@ -69,7 +70,7 @@ class ListTypesComponent extends Component {
         } catch (error) {
             console.log(error);
         }
-        
+
     }
     updateState = (listRoute) => {
         this.setState({
@@ -117,10 +118,11 @@ class ListTypesComponent extends Component {
             const { name, image, detail, policy, desc, routes, listImages } = this.state;
             let form = new FormData();
             form.append('name', name);
-            form.append('detail', detail);
+            // form.append('detail', detail);
             form.append('policy', policy);
             form.append('routes', JSON.stringify(routes));
             form.append('description', desc);
+            form.append('fk_type_tour', this.state.typeTour)
             if (image.length) {
                 form.append('featured_image', image[0], 'name.jpg');
             }
@@ -483,69 +485,60 @@ class ListTypesComponent extends Component {
                         confirmBtnText="Cancel"
                         confirmBtnBsStyle="default"
                         title="Fail!!!!!"
-                        onConfirm={this.hideFailAlert}
-                    >
+                        onConfirm={this.hideFailAlert} >
                         Please check carefully!
                     </SweetAlert>
                 }
                 <section className="content-header">
-                    <h1>Create Tour</h1>
-                    <div className="right_header">
+                    <h1> Thêm Mới Tour </h1>
+                </section>
+                <section className={`content ${(this.state.openModal || this.state.modalListImages) ? 'opacity-05' : ''}`}>
+                    <div className="row">
                         <button
                             onClick={this.handleSave}
                             style={{
                                 marginBottom: '2px',
-                                marginRight: '15px'
+                                marginRight: '15px',
+                                position: 'relative'
                             }}
                             type="button"
                             className="btn btn-success pull-right">
-                            <i className="fa fa-save" />&nbsp;Save
+                            <i className="fa fa-save" />&nbsp;Lưu Thay Đổi
                         </button>
                     </div>
-                </section>
-                <section className={`content ${(this.state.openModal || this.state.modalListImages) ? 'opacity-05' : ''}`}>
                     <div className="row">
                         <div className="col-lg-5 col-xs-5">
                             <div className={`box box-primary ${this.state.errorTour ? 'bd-red' : ''}`}>
                                 <form role="form" encType="multipart/form-data">
                                     <div className="box-body">
                                         <div className="form-group">
-                                            <label htmlFor="exampleInputEmail1">Name (*)</label>
+                                            <label htmlFor="exampleInputEmail1">Tên (*)</label>
                                             <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
                                         </div>
+                                        <div className="form-group">
+                                            <label htmlFor="exampleInputEmail1">Loại Tour (*)</label>
+                                            <select value={this.state.typeTour} onChange={this.onHandleChange} name="typeTour" className="form-control">
+                                                <option value="1">Trong nước</option>
+                                                <option value="2">Quốc tế</option>
+                                            </select>
+                                        </div>
                                         <div style={{ height: '300px' }} className="form-group">
-                                            <label>Feature Image (*)</label>
-                                            {/* <input onChange={this.handleChangeImage} type="file" id="exampeInputFile" /><br /> */}
-                                            <div className="inputImage" id="exampeInputFile">
-                                                {this.state.previewImage !== '' ?
-                                                    <img src={this.state.previewImage} /> :
-                                                    <img src="../../../public/dist/img/add_image.png" />
-                                                }
-                                                <a>Choose Image</a>
-                                            </div>
+                                            <label>Ảnh đại diện (*)</label>
+                                            <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" /><br />
+                                            {this.state.previewImage !== '' ?
+                                                <img style={{ width: '100%', height: '250px' }} src={this.state.previewImage} /> :
+                                                <img style={{ width: '100%', height: '250px' }} src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
+                                            }
                                         </div><br />
                                         <div className="form-group">
-                                            <label>Images</label>
-                                            {/* <button onClick={this.openModalListImages} className="pull-right btn btn-default">
+                                            <label>Danh sách ảnh</label>
+                                            <button onClick={this.openModalListImages} className="pull-right btn btn-default">
                                                 <i className="fa fa-pencil" />
                                             </button>
-                                            <input onChange={this.handleChangeListImages} type="file" multiple /> */}
-                                            <div className="slideshow">
-                                                <div className="imageOfSlideshow">
-                                                    <img src="http://localhost:5000/assets/images/locationFeatured/big-c-mien-dong.jpg"></img>
-                                                    <i class="fa fa-times" aria-hidden="true"></i>
-                                                </div>
-                                                <div className="imageOfSlideshow">
-                                                    <img></img>
-                                                    <i class="fa fa-times" aria-hidden="true"></i>
-                                                </div>
-                                                <div className="addImageOfSlideshow">
-                                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                                </div>
-                                            </div>
+                                            <input onChange={this.handleChangeListImages} type="file" multiple />
                                         </div>
                                         <div className="form-group">
-                                            <label>Policy</label>
+                                            <label>Quy định</label>
                                             <FroalaEditor
                                                 config={{
                                                     placeholderText: '',
@@ -565,7 +558,7 @@ class ListTypesComponent extends Component {
                             <div className="box box-primary">
                                 <form role="form">
                                     <div className="box-body">
-                                        <div className="form-group">
+                                        {/* <div className="form-group">
                                             <label>Detail</label>
                                             <FroalaEditor
                                                 config={{
@@ -577,9 +570,9 @@ class ListTypesComponent extends Component {
                                                 model={this.state.detail}
                                                 onModelChange={this.handleChangeDetail}
                                             />
-                                        </div>
+                                        </div> */}
                                         <div className="form-group">
-                                            <label>Description (*)</label>
+                                            <label>Mô tả (*)</label>
                                             <FroalaEditor
                                                 config={{
                                                     heightMax: 362,
@@ -614,12 +607,16 @@ class ListTypesComponent extends Component {
                         <button
                             onClick={this.openModal}
                             style={{
-                                marginBottom: '2px',
-                                marginRight: '15px'
+                                marginBottom: '10px',
+                                marginRight: '0',
+                                position: 'relative',
+                                marginTop: '0',
+                                right: '0',
+
                             }}
                             type="button"
-                            className="btn btn-success pull-right addForTableCreateTour">
-                            <i className="fa fa-plus" />&nbsp;Add
+                            className="btn btn-success pull-right">
+                            <i className="fa fa-plus" />&nbsp;Điểm Lộ Trình
                         </button>
                     </div>
                     <div className="row">

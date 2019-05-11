@@ -55,8 +55,12 @@ class listBookTourConponent extends Component {
             },
             {
                 Header: "Mã chuyến đi",
-                accessor: "id",
-                Cell: props => <i>#{props.original.code}</i>,
+                accessor: "code",
+                Cell: props => <i
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => this.props.history.push(`/tour-turn/list?search=${props.original.code}`)}>
+                    #{props.original.code}
+                </i>,
                 style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
@@ -141,25 +145,42 @@ class listBookTourConponent extends Component {
                     <h1> Danh Sách Chuyến Đi Đã Được Đặt </h1>
                 </section>
                 <section className="content">
-                    <div className="search_box">
-                        <div className="search_icon">
-                            <i className="fa fa-search"></i>
+                    <div className="row">
+                        <div className="col-lg-12 col-xs-12">
+                            <form className="form-horizontal">
+                                <div className="box-body book_tour_detail-book_tour_history">
+                                    <div className="book_tour_detail-book_tour_history-title">
+                                        <h2>&nbsp;</h2>
+                                        <div style={{ top: '10px' }} className="search_box">
+                                            <div className="search_icon">
+                                                <i className="fa fa-search"></i>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                onChange={this.handleChange}
+                                                value={this.state.keySearch}
+                                                name="keySearch"
+                                                className="search_input"
+                                                placeholder="Tìm kiếm..."
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-xs-12 book_tour_history">
+                                                <ReactTable
+                                                    data={this.state.listBookTour}
+                                                    defaultPageSize={10}
+                                                    noDataText={'vui lòng chờ...'}
+                                                    columns={columns} >
+                                                </ReactTable>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <input
-                            type="text"
-                            onChange={this.handleChange}
-                            value={this.state.keySearch}
-                            name="title"
-                            className="search_input"
-                            placeholder="Tìm kiếm..."
-                        />
                     </div>
-                    <ReactTable
-                        data={this.state.listBookTour}
-                        defaultPageSize={10}
-                        noDataText={'vui lòng chờ...'}
-                        columns={columns} >
-                    </ReactTable>
                 </section>
             </div>
         );

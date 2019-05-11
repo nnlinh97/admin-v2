@@ -68,7 +68,8 @@ class ListTypesComponent extends Component {
             tempDeletedImagesList: [],
 
             newListImages: [],
-            newPreviewImages: []
+            newPreviewImages: [],
+            typeTour: 0
         }
     }
 
@@ -109,7 +110,8 @@ class ListTypesComponent extends Component {
             newListImages: [],
             newPreviewImages: [],
             tempNewListImages: [],
-            tempNewPreviewImages: []
+            tempNewPreviewImages: [],
+            typeTour: tourDetail.fk_type_tour
         })
     }
 
@@ -170,6 +172,7 @@ class ListTypesComponent extends Component {
                 }
                 form.append('policy', policy);
                 form.append('detail', detail);
+                form.append('fk_type_tour', this.state.typeTour);
                 form.append('description', desc);
                 form.append('routes', JSON.stringify(routes));
                 const tour = await apiPost('/tour/updateWithRoutesAndListImage', form);
@@ -562,9 +565,7 @@ class ListTypesComponent extends Component {
                     </SweetAlert>
                 }
                 <section className="content-header">
-                    <h1>
-                        Edit Tour
-                    </h1>
+                    <h1> Chỉnh Sửa Tour <i>#{this.props.match.params.id}</i> </h1>
                 </section>
                 <section className={`content ${(this.state.openModal || this.state.modalListImages) ? 'opacity-05' : ''}`}>
                     <div className="row">
@@ -572,11 +573,12 @@ class ListTypesComponent extends Component {
                             onClick={this.handleSave}
                             style={{
                                 marginBottom: '2px',
-                                marginRight: '15px'
+                                marginRight: '15px',
+                                position: 'relative'
                             }}
                             type="button"
                             className="btn btn-success pull-right">
-                            <i className="fa fa-save" />&nbsp;Save
+                            <i className="fa fa-save" />&nbsp;Lưu Thay Đổi
                         </button>
                     </div>
                     <div className="row">
@@ -585,11 +587,18 @@ class ListTypesComponent extends Component {
                                 <form role="form">
                                     <div className="box-body">
                                         <div className="form-group">
-                                            <label htmlFor="exampleInputEmail1">Name (*)</label>
+                                            <label htmlFor="exampleInputEmail1">Tên (*)</label>
                                             <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
                                         </div>
+                                        <div className="form-group">
+                                            <label htmlFor="exampleInputEmail1">Loại Tour (*)</label>
+                                            <select value={this.state.typeTour} onChange={this.onHandleChange} name="typeTour" className="form-control">
+                                                <option value="1">Trong nước</option>
+                                                <option value="2">Quốc tế</option>
+                                            </select>
+                                        </div>
                                         <div style={{ height: '300px' }} className="form-group">
-                                            <label>Feature Image (*)</label>
+                                            <label>Ảnh đại diện (*)</label>
                                             <input onChange={this.handleChangeImage} type="file" id="exampleInputFile" />
                                             <div className="gallery w-100">
                                                 <div className="container-image">
@@ -613,7 +622,7 @@ class ListTypesComponent extends Component {
                                             </div>
                                         </div><br />
                                         <div className="form-group">
-                                            <label>Images</label>
+                                            <label>Danh sách ảnh</label>
                                             <button onClick={this.openModalListImages} className="pull-right btn btn-default">
                                                 <i className="fa fa-pencil" />
                                             </button>
@@ -640,7 +649,7 @@ class ListTypesComponent extends Component {
                             <div className="box box-primary">
                                 <form role="form">
                                     <div className="box-body">
-                                        <div className="form-group">
+                                        {/* <div className="form-group">
                                             <label>Detail</label>
                                             <FroalaEditor
                                                 config={{
@@ -652,9 +661,9 @@ class ListTypesComponent extends Component {
                                                 model={this.state.detail}
                                                 onModelChange={this.handleChangeDetail}
                                             />
-                                        </div>
+                                        </div> */}
                                         <div className="form-group">
-                                            <label>Description (*)</label>
+                                            <label>Mô tả (*)</label>
                                             <FroalaEditor
                                                 config={{
                                                     heightMax: 362,

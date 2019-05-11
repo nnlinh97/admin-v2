@@ -9,6 +9,7 @@ import _ from 'lodash';
 import moment from 'moment';
 // import DatePicker from "react-datepicker";
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { getNumberDays } from '../../../helper';
 import { apiGet, apiPost } from '../../../services/api';
 import Select from 'react-select';
 import './index.css';
@@ -33,7 +34,10 @@ class CreateTourTurnComponent extends Component {
             status: '',
             typePassenger: [],
             id: '',
-            discount: ''
+            discount: '',
+            bookingTerm: '',
+            paymentTerm: '',
+            holiday: false
         }
         this.inputFocus = React.createRef();
     }
@@ -46,6 +50,7 @@ class CreateTourTurnComponent extends Component {
         try {
             tourTurnDetail = await apiGet(`/tour_turn/getById_admin/${id}`);
             tourTurnDetail = tourTurnDetail.data.data;
+            console.log(tourTurnDetail)
             await this.props.getTourTurnDetail(tourTurnDetail);
         } catch (error) {
             console.log(error)
@@ -106,7 +111,10 @@ class CreateTourTurnComponent extends Component {
                 tourTurnDetail: tourTurnDetail,
                 status: tourTurnDetail.status,
                 typePassenger: [...listTypePassenger],
-                currentPeople: tourTurnDetail.num_current_people
+                currentPeople: tourTurnDetail.num_current_people,
+                bookingTerm: tourTurnDetail.booking_term,
+                paymentTerm: tourTurnDetail.payment_term,
+                holiday: tourTurnDetail.isHoliday
             });
         }
     }
@@ -129,6 +137,18 @@ class CreateTourTurnComponent extends Component {
         this.setState({ [name]: value });
     }
 
+    handleChangeNumber = (event) => {
+        const value = event.target.value;
+        const name = event.target.name;
+        this.setState({ [name]: parseInt(value) });
+    }
+
+    handleChangeBoolean = (event) => {
+        const value = event.target.value;
+        const name = event.target.name;
+        this.setState({ [name]: value === 'true' ? true : false });
+    }
+
     getListTypePassenger = () => {
         return this.state.typePassenger.filter(item => item.checked);
     }
@@ -147,7 +167,7 @@ class CreateTourTurnComponent extends Component {
     handleSave = async (event) => {
         event.preventDefault();
         const typePassenger = this.getListTypePassenger();
-        if (this.checkTourTurn() && this.checkListTypePassenger(typePassenger)) {
+        if (this.checkTourTurn() && this.checkListTypePassenger(typePassenger) && this.checkTerm()) {
             try {
                 const { id, startDate, endDate, limitPeople, price, discount, tour, status } = this.state;
                 await apiPost('/tour_turn/updateWithPricePassenger', {
@@ -159,7 +179,10 @@ class CreateTourTurnComponent extends Component {
                     idTour: tour.id,
                     price,
                     price_passenger: typePassenger,
-                    status
+                    status,
+                    booking_term: this.state.bookingTerm,
+                    payment_term: this.state.paymentTerm,
+                    isHoliday: this.state.holiday
                 });
                 this.setState({ success: true });
             } catch (error) {
@@ -185,6 +208,23 @@ class CreateTourTurnComponent extends Component {
             parseInt(discount) < 0 || parseInt(discount) > 100 || startDate > endDate ||
             !Number.isInteger(parseInt(limitPeople)) || parseInt(limitPeople) < 0 ||
             startDate < currentDate || limitPeople < this.state.tourTurnDetail.num_current_people) {
+            return false;
+        }
+        return true;
+    }
+
+    checkTerm = () => {
+        let { bookingTerm, paymentTerm, startDate } = this.state;
+        const currentDate = moment(new Date()).format('YYYY-MM-DD').toString();
+        startDate = moment(new Date(startDate)).format('YYYY-MM-DD').toString();
+        const days = getNumberDays(currentDate, startDate);
+        if (!Number.isInteger(bookingTerm) || !Number.isInteger(paymentTerm)) {
+            return false;
+        }
+        if(paymentTerm > bookingTerm) {
+            return false;
+        }
+        if(bookingTerm > days) {
             return false;
         }
         return true;
@@ -316,13 +356,15 @@ class CreateTourTurnComponent extends Component {
         ];
         console.log(this.state.tours)
         return (
-            <div style={{ height: '100vh' }} className="content-wrapper">
+            <div style={{ minHeight: '100vh' }} className="content-wrapper">
+
                 {this.state.success && <SweetAlert
                     success
                     title="Lưu Thành Công"
                     onConfirm={this.hideSuccessAlert}>
                     Tiếp Tục...
                 </SweetAlert>}
+
                 {this.state.error && <SweetAlert
                     warning
                     confirmBtnText="Hủy"
@@ -331,178 +373,191 @@ class CreateTourTurnComponent extends Component {
                     onConfirm={this.hideFailAlert}>
                     Vui Lòng Kiểm Tra Lại...
                 </SweetAlert>}
+
                 <section className="content-header">
                     <h1> Chỉnh Sửa Chuyến Đi <i>#{this.state.id}</i> </h1>
                 </section>
                 <section className="content">
                     <div className="row">
-                        <div className="col-lg-8 col-lg-offset-2 col-xs-8 col-xs-offset-2">
-                            <div className="nav-tabs-custom">
-                                <ul className="nav nav-tabs">
-                                    <li className="active"><a href="#activity" data-toggle="tab">Thông Tin Chuyến Đi</a></li>
-                                    <li><a href="#timeline" data-toggle="tab">Hành Khách và Giá Tiền</a></li>
-                                    {/* <li><a href="#settings" data-toggle="tab">Settings</a></li> */}
-                                </ul>
-                                <div className="tab-content">
-                                    <div className="active tab-pane" id="activity">
-                                        <div className="post">
-                                            <div className="user-block">
-                                                <form onSubmit={this.handleSave} className="form-horizontal">
-                                                    <div className="box-body">
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Tour (*)</label>
-                                                            <div className="col-sm-8">
-                                                                {this.state.tours.length > 0 && <Select
-                                                                    // value={selected}
-                                                                    onChange={this.handleChangeTour}
-                                                                    options={this.state.tours}
-                                                                    defaultValue={{ label: this.state.tour ? this.state.tour.name : 'linh', value: this.state.tour ? this.state.tour.id : '0' }}
-                                                                />}
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Giá Tiền (*)</label>
-                                                            <div className="col-sm-8">
-                                                                <input
-                                                                    type="number"
-                                                                    onChange={this.handleChange}
-                                                                    value={this.state.price}
-                                                                    name="price"
-                                                                    className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Giảm Giá</label>
-                                                            <div className="col-sm-8">
-                                                                <input
-                                                                    type="number"
-                                                                    onChange={this.handleChange}
-                                                                    value={this.state.discount}
-                                                                    name="discount"
-                                                                    className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Ngày Bắt Đầu (*)</label>
-                                                            <div className="col-sm-8">
-                                                                <input
-                                                                    type="date"
-                                                                    onChange={this.handleChange}
-                                                                    value={this.state.startDate}
-                                                                    name="startDate"
-                                                                    className="form-control" />
-                                                                {/* <DatePicker
-                                                                    className="form-control"
-                                                                    selected={this.state.startDate}
-                                                                    onChange={this.handleChangeStartDate}
-                                                                /> */}
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Ngày Kết Thúc (*)</label>
-                                                            <div className="col-sm-8">
-                                                                <input
-                                                                    type="date"
-                                                                    onChange={this.handleChange}
-                                                                    value={this.state.endDate}
-                                                                    name="endDate"
-                                                                    className="form-control" />
-                                                                {/* <DatePicker
-                                                                    className="form-control"
-                                                                    selected={this.state.endDate}
-                                                                    onChange={this.handleChangeEndDate}
-                                                                /> */}
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">SL Tối Đa (*)</label>
-                                                            <div className="col-sm-8">
-                                                                <input
-                                                                    type="number"
-                                                                    onChange={this.handleChange}
-                                                                    value={this.state.limitPeople}
-                                                                    name="limitPeople"
-                                                                    className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">Trạng Thái (*)</label>
-                                                            <div className="col-sm-8">
-                                                                <select
-                                                                    value={this.state.status}
-                                                                    onChange={this.handleChange}
-                                                                    name="status"
-                                                                    className="form-control">
-                                                                    <option value="public">Công Khai</option>
-                                                                    <option value="private">Ẩn</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="form-group">
-                                                            <label className="col-sm-4 control-label">SL Hiện tại</label>
-                                                            <div className="col-sm-8">
-                                                                <input
-                                                                    type="number"
-                                                                    disabled
-                                                                    value={this.state.currentPeople}
-                                                                    name="limitPeople"
-                                                                    className="form-control" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="box-footer">
-                                                        <button
-                                                            onClick={this.handleCancel}
-                                                            type="button"
-                                                            className="btn btn-default">
-                                                            Hủy
-                                                        </button>
-                                                        <button
-                                                            type="submit"
-                                                            className="btn btn-info pull-right">
-                                                            Lưu Thay Đổi
-                                                        </button>
-                                                    </div>
-                                                </form>
+                        <div className="col-lg-12 col-xs-12">
+                            <form className="form-horizontal">
+                                <div className="box-body book_tour_detail-information">
+                                    <h2>Thông Tin Chuyến Đi</h2>
+                                    <div className="box-body">
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">Tour (*)</label>
+                                            <div className="col-sm-6">
+                                                {this.state.tours.length > 0 && <Select
+                                                    // value={selected}
+                                                    onChange={this.handleChangeTour}
+                                                    options={this.state.tours}
+                                                    defaultValue={{ label: this.state.tour ? this.state.tour.name : 'linh', value: this.state.tour ? this.state.tour.id : '0' }}
+                                                />}
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">Giá tiền (*)</label>
+                                            <div className="col-sm-6">
+                                                <input
+                                                    type="number"
+                                                    onChange={this.handleChange}
+                                                    value={this.state.price}
+                                                    name="price"
+                                                    className="form-control" />
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">Giảm giá</label>
+                                            <div className="col-sm-6">
+                                                <input
+                                                    type="number"
+                                                    onChange={this.handleChange}
+                                                    value={this.state.discount}
+                                                    name="discount"
+                                                    className="form-control" />
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">Ngày khởi hành (*)</label>
+                                            <div className="col-sm-6">
+                                                <input
+                                                    type="date"
+                                                    onChange={this.handleChange}
+                                                    value={this.state.startDate}
+                                                    name="startDate"
+                                                    className="form-control" />
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">Ngày kết thúc (*)</label>
+                                            <div className="col-sm-6">
+                                                <input
+                                                    type="date"
+                                                    onChange={this.handleChange}
+                                                    value={this.state.endDate}
+                                                    name="endDate"
+                                                    className="form-control" />
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">Hạn đặt tour (*)</label>
+                                            <div className="col-sm-6">
+                                                <input
+                                                    type="number"
+                                                    onChange={this.handleChangeNumber}
+                                                    value={this.state.bookingTerm}
+                                                    name="bookingTerm"
+                                                    className="form-control" />
+                                            </div>
+                                            <label className="col-sm-4 control-label">
+                                                <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '14px', left: '0', marginTop: '0' }}>
+                                                    trước ngày khởi hành bao nhiêu ngày
+                                                </i>
+                                            </label>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">Hạn thanh toán (*)</label>
+                                            <div className="col-sm-6">
+                                                <input
+                                                    type="number"
+                                                    onChange={this.handleChangeNumber}
+                                                    value={this.state.paymentTerm}
+                                                    name="paymentTerm"
+                                                    className="form-control" />
+                                            </div>
+                                            <label className="col-sm-4 control-label">
+                                                <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '14px', left: '0', marginTop: '0' }}>
+                                                    trước ngày khởi hành bao nhiêu ngày
+                                                </i>
+                                            </label>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">Thời điểm (*)</label>
+                                            <div className="col-sm-6">
+                                                <select
+                                                    value={this.state.holiday}
+                                                    onChange={this.handleChangeBoolean}
+                                                    name="holiday"
+                                                    className="form-control">
+                                                    <option value="false">Ngày thường</option>
+                                                    <option value="true">Lễ, tết</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">SL tối đa (*)</label>
+                                            <div className="col-sm-6">
+                                                <input
+                                                    type="number"
+                                                    onChange={this.handleChange}
+                                                    value={this.state.limitPeople}
+                                                    name="limitPeople"
+                                                    className="form-control" />
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">Trạng thái (*)</label>
+                                            <div className="col-sm-6">
+                                                <select
+                                                    value={this.state.status}
+                                                    onChange={this.handleChange}
+                                                    name="status"
+                                                    className="form-control">
+                                                    <option value="public">Công Khai</option>
+                                                    <option value="private">Ẩn</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">Trạng thái (*)</label>
+                                            <div className="col-sm-6">
+                                                <input
+                                                    type="number"
+                                                    disabled
+                                                    value={this.state.currentPeople}
+                                                    name="limitPeople"
+                                                    className="form-control" />
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="tab-pane" id="timeline">
-                                        <div className="post">
-                                            <div className="user-block">
-                                                <form onSubmit={this.handleSave} className="form-horizontal">
-                                                    <div className="box-body">
-                                                        <ReactTable
-                                                            columns={columns}
-                                                            data={this.state.typePassenger ? this.state.typePassenger : []}
-                                                            defaultPageSize={5}
-                                                            noDataText={'Please wait...'}
-                                                        >
-                                                        </ReactTable>
-                                                    </div>
-                                                    <div className="box-footer">
-                                                        <button
-                                                            onClick={this.handleCancel}
-                                                            type="button"
-                                                            className="btn btn-default">
-                                                            Hủy
-                                                        </button>
-                                                        <button
-                                                            type="submit"
-                                                            className="btn btn-info pull-right">
-                                                            Lưu Thay Đổi
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    {/* <div className="tab-pane" id="settings">
-                                    </div> */}
                                 </div>
-                            </div>
+                            </form>
+                            <form className="form-horizontal">
+                                <div className="box-body book_tour_detail-book_tour_history">
+                                    <div className="book_tour_detail-book_tour_history-title">
+                                        <h2>Loại Hành Khách và Giá Tiền</h2>
+                                        <div style={{ top: '10px' }} className="search_box">
+                                            {/* <div className="search_icon">
+                                                <i className="fa fa-search"></i>
+                                            </div> */}
+                                            <input
+                                                type="text"
+                                                onChange={this.handleChange}
+                                                value={this.state.keySearch}
+                                                name="keySearch"
+                                                className="search_input"
+                                                placeholder="Tìm kiếm..."
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-xs-12 book_tour_history">
+                                                <ReactTable
+                                                    columns={columns}
+                                                    data={this.state.typePassenger ? this.state.typePassenger : []}
+                                                    defaultPageSize={5}
+                                                    noDataText={'Please wait...'} >
+                                                </ReactTable>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="footer">
+                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Hủy</button>
+                                        <button onClick={this.handleSave} type="button" className="btn btn-info pull-right">Lưu Thay Đổi</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </section>

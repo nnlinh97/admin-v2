@@ -121,11 +121,19 @@ class ListProvinceComponent extends Component {
     render() {
         const columns = [
             {
+                Header: "STT",
+                Cell: props => <p>{props.index + 1}</p>,
+                style: { textAlign: 'center' },
+                width: 40,
+                maxWidth: 50,
+                minWidth: 40
+            },
+            {
                 Header: "Mã đặt tour",
                 accessor: "code",
-                Cell: props => {
-                    return <p>#{props.original.code}</p>
-                },
+                Cell: props => <p>
+                    #{props.original.code}
+                </p>,
                 style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
@@ -228,27 +236,43 @@ class ListProvinceComponent extends Component {
                     <h1> Danh Sách Cần Thanh Toán </h1>
                 </section>
                 <section className="content">
-                    <div className="search_box">
-                        <div className="search_icon">
-                            <i className="fa fa-search"></i>
+                    <div className="row">
+                        <div className="col-lg-12 col-xs-12">
+                            <form className="form-horizontal">
+                                <div className="box-body book_tour_detail-book_tour_history">
+                                    <div className="book_tour_detail-book_tour_history-title">
+                                        <h2>&nbsp;</h2>
+                                        <div style={{ top: '10px' }} className="search_box">
+                                            <div className="search_icon">
+                                                <i className="fa fa-search"></i>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                onChange={this.handleChange}
+                                                value={this.state.keySearch}
+                                                name="keySearch"
+                                                className="search_input"
+                                                placeholder="Tìm kiếm..."
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-xs-12 book_tour_history">
+                                                <ReactTable
+                                                    columns={columns}
+                                                    // data={this.handleSearchProvince(this.props.listProvinces, this.state.keySearch)}
+                                                    data={this.state.listPhoneCall}
+                                                    defaultPageSize={10}
+                                                    noDataText={'Please wait...'} >
+                                                </ReactTable>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <input
-                            type="text"
-                            onChange={this.handleChange}
-                            value={this.state.keySearch}
-                            name="title"
-                            className="search_input"
-                            placeholder="Tìm kiếm..."
-                        />
                     </div>
-
-                    <ReactTable
-                        columns={columns}
-                        // data={this.handleSearchProvince(this.props.listProvinces, this.state.keySearch)}
-                        data={this.state.listPhoneCall}
-                        defaultPageSize={10}
-                        noDataText={'Please wait...'} >
-                    </ReactTable>
                 </section>
             </div>
         );

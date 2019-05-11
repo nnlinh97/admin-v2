@@ -14,7 +14,9 @@ class CancelRequestComponent extends Component {
     }
 
     componentDidMount = async () => {
-        this.setState({ message: this.props.message ? this.props.message.message : '' })
+        this.setState({
+            message: this.props.message ? this.props.message.message : ''
+        })
     }
 
     getNumberDays = (date1, date2) => {
@@ -36,11 +38,12 @@ class CancelRequestComponent extends Component {
         return timeDifferenceInDays;
     }
 
-    handleCancelRequest = async () => {
+    handleCancelRequest = async (event) => {
+        event.preventDefault();
         try {
-            const payment = await apiPost('/book_tour/cancel_boook', {
+            await apiPost('/book_tour/cancelBookTour', {
                 code: this.props.code,
-                message: this.props.message ? this.state.message : null
+                message: this.props.status === 'pending_cancel' ? null : this.state.message
             });
             this.props.handleCancelRequest(true);
         } catch (error) {
@@ -59,7 +62,7 @@ class CancelRequestComponent extends Component {
         const days = getNumberDays(moment(new Date()).format('YYYY-MM-DD'), this.props.startDate);
         return <div style={{ marginLeft: '0px' }} className="content-wrapper">
             <section style={{ marginBottom: "0px" }} className="content-header">
-                <h1> Kiểm Tra Hủy Đặt Tour</h1>
+                <h1> Xác Nhận Hủy Đặt Tour</h1>
             </section>
             <section style={{ minHeight: '160px' }} className="content">
                 <div className="row">
@@ -70,18 +73,18 @@ class CancelRequestComponent extends Component {
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label"></label>
                                         <div className="col-sm-8">
-                                            {this.props.status === 'paid' && <>
+                                            {this.props.status === 'paid' || this.props.status === 'pending_cancel' && <>
                                                 Qui định hoàn trả chi phí khi hủy tour:<br />
-                                                    - Trước <strong>15</strong> ngày: <strong>100%</strong><br />
-                                                    - Từ <strong>8</strong> đến <strong>14</strong> ngày: <strong>50%</strong><br />
-                                                    - Từ <strong>5</strong> đến <strong>7</strong> ngày: <strong>30%</strong><br />
-                                                    - Từ <strong>2</strong> đến <strong>4</strong> ngày: <strong>10%</strong><br />
-                                                    - Dưới <strong>2</strong> ngày: <strong>0%</strong><br /><br />
+                                                - Trước <strong>15</strong> ngày: <strong>100%</strong><br />
+                                                - Từ <strong>8</strong> đến <strong>14</strong> ngày: <strong>50%</strong><br />
+                                                - Từ <strong>5</strong> đến <strong>7</strong> ngày: <strong>30%</strong><br />
+                                                - Từ <strong>2</strong> đến <strong>4</strong> ngày: <strong>10%</strong><br />
+                                                - Dưới <strong>2</strong> ngày: <strong>0%</strong><br /><br />
 
                                                 Bạn đã hủy tour trước ngày bắt đầu: <strong>{days}</strong> ngày<br />
                                                 Chi phí của bạn sẽ được hoàn trả: <strong>{getPercentRefund(days)}%</strong><br />
                                                 Số tiền bạn đã thanh toán: <strong>{formatCurrency(this.props.totalPay)} VND</strong><br />
-                                                Số tiền bạn sẽ được hoàn trả: <strong>{formatCurrency(this.props.totalPay)} VND</strong><br />
+                                                Số tiền bạn sẽ được hoàn trả: <strong>{formatCurrency(this.props.totalPay * getPercentRefund(days) / 100)} VND</strong><br />
                                                 </>}
                                         </div>
                                     </div>

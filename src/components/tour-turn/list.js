@@ -14,18 +14,31 @@ class ListTourTurnComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            keySearch: ''
+            keySearch: '',
+            listTourTurn: []
         }
     }
 
     async componentDidMount() {
+        let listTourTurn = [];
         try {
-            let listTourTurn = await apiGet('/tour_turn/getAllWithoutPagination');
-            console.log(listTourTurn.data.data)
-            this.props.getListTourTurn(listTourTurn.data.data);
+            listTourTurn = await apiGet('/tour_turn/getAllWithoutPagination');
+            listTourTurn = listTourTurn.data.data
+            console.log(listTourTurn)
+            this.props.getListTourTurn(listTourTurn);
         } catch (error) {
             console.log(error);
         }
+        const search = this.getCode(window.location.search);
+        this.setState({
+            listTourTurn: listTourTurn,
+            keySearch: search ? search : ''
+        });
+    }
+
+    getCode = (query) => {
+        const search = new URLSearchParams(query);
+        return search.get('search');
     }
 
     handleChange = ({ target }) => {
@@ -45,9 +58,9 @@ class ListTourTurnComponent extends Component {
                 Header: "STT",
                 Cell: props => <p>{props.index + 1}</p>,
                 style: { textAlign: 'center' },
-                width: 80,
-                maxWidth: 80,
-                minWidth: 80
+                width: 40,
+                maxWidth: 50,
+                minWidth: 40
             },
             {
                 Header: "Mã chuyến đi",
@@ -206,9 +219,9 @@ class ListTourTurnComponent extends Component {
                                         <div className="row">
                                             <div className="col-xs-12 book_tour_history">
                                                 <ReactTable
-                                                    data={this.handleSearchTourTurn(this.props.listTourTurn, this.state.keySearch)}
+                                                    data={this.handleSearchTourTurn(this.state.listTourTurn, this.state.keySearch)}
                                                     defaultPageSize={10}
-                                                    noDataText={'Please wait...'}
+                                                    noDataText={'vui lòng chờ...'}
                                                     columns={columns} >
                                                 </ReactTable>
                                             </div>

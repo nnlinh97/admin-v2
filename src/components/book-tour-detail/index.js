@@ -185,8 +185,7 @@ class CreateTourTurnComponent extends Component {
         this.setState({ modalPayIsOpen: false });
     }
 
-    handleCloseModalCancelRequest = (event) => {
-        event.preventDefault();
+    handleCloseModalCancelRequest = () => {
         this.setState({ modalCancelRequestIsOpen: false });
     }
 
@@ -213,7 +212,8 @@ class CreateTourTurnComponent extends Component {
         this.handleOncloseModalPay();
         this.handleCloseModalUpdatePassenger();
         this.handleCloseModalUpdateContactInfo();
-        this.setState({ success: false })
+        this.handleCloseModalCancelRequest();
+        this.setState({ success: false });
     }
 
     hideFailAlert = () => {
@@ -260,8 +260,15 @@ class CreateTourTurnComponent extends Component {
         }
     }
 
-    handlePayment = async (flag) => {
+    handlePayment = (flag) => {
         if (flag) {
+            this.reRender();
+            this.setState({ success: true });
+        }
+    }
+
+    handleCancelRequest = (result) => {
+        if(result) {
             this.reRender();
             this.setState({ success: true });
         }
@@ -442,7 +449,7 @@ class CreateTourTurnComponent extends Component {
                     styles={{ 'modal': { width: '1280px' } }}
                     blockScroll={true} >
                     {this.state.bookTourDetail && <CancelRequest
-                        handlePayment={this.handlePayment}
+                        handleCancelRequest={this.handleCancelRequest}
                         code={this.state.code}
                         message={this.state.message}
                         status={this.state.status}

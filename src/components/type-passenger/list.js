@@ -227,7 +227,7 @@ class ListTypePassenger extends Component {
                                             <div className="col-xs-12 book_tour_history">
                                                 <ReactTable
                                                     columns={columns}
-                                                    data={this.handleSearchTypePassenger(this.state.listTypePassenger, this.state.keySearch)}
+                                                    data={this.handleSearchTypePassenger(this.props.listTypePassenger, this.state.keySearch)}
                                                     defaultPageSize={10}
                                                     noDataText={'vui lòng đợi...'} >
                                                 </ReactTable>
