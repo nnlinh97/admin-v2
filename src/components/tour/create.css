@@ -300,12 +300,12 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
 {
     font-size: 25px;
 }
-/* Style Row 5 */
-.row_5
+/* Style Row 4 */
+.row_4
 {
     padding-bottom: 40px;
 }
-.row_5 .header_row
+.row_4 .header_row
 {
     position: relative;
     width: 100%;
@@ -313,30 +313,31 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
     margin-top: 20px;
     margin-bottom: 10px;
 }
-.row_5 .header_row .title_row
+.row_4 .header_row .title_row
 {
     position: absolute;
     width: 54%;
     margin-top: 20px;
 }
-.row_5 .header_row .mini_search_box
+.row_4 .header_row .mini_search_box
 {
     position: absolute;
     width: 30%;
     right: 90px;
 }
-.row_5 .header_row button
+.row_4 .header_row button
 {
     position: absolute;
     margin-bottom: 0 !important;
     font-size: 17px !important;
     margin-top: 10px !important;
 }
-.row_5 .header_row .mini_search_box .search_icon
+.row_4 .header_row .mini_search_box .search_icon
 {
     width: 40px;
+    height: 40px;
 }
-.row_5 .header_row .mini_search_box .search_icon i
+.row_4 .header_row .mini_search_box .search_icon i
 {
     width: 20px;
     height: 20px;
@@ -344,7 +345,7 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
     font-size: 20px;
 
 }
-.row_5 .header_row .mini_search_box .search_input
+.row_4 .header_row .mini_search_box .search_input
 {
     padding: 10px 15px 10px 50px;
     width: 100%;
@@ -354,7 +355,7 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
     color: #555;
     border: 1px solid rgba(0,0,0,0.1);
 }
-.row_5 .table_row .ReactTable
+.row_4 .table_row .ReactTable
 {
     width: 100%;
 }
