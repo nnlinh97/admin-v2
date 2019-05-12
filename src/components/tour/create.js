@@ -544,10 +544,7 @@ class ListTypesComponent extends Component {
                     </div>
                     <div className="row row_2">
                         <label className="title_row">Danh sách hình ảnh</label>
-                        {/* <button onClick={this.openModalListImages} className="pull-right btn btn-default">
-                            <i className="fa fa-pencil" />
-                        </button>
-                        <input onChange={this.handleChangeListImages} type="file" multiple /> */}
+                        <input onChange={this.handleChangeListImages} type="file" multiple />
                         <div className="slideshow">
                             <div className="imageOfSlideshow">
                                 <img></img>
