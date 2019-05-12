@@ -96,38 +96,34 @@ class Dashboard extends Component {
             }
         ];
         return <div style={{ minHeight: '100vh' }} className="content-wrapper">
+            <section class="content-header">
+                <h1> Trang Chủ </h1>
+            </section>
             <section className="content">
+                <div className="row row_1_dashboard">
+                    <select name="combobox" class="form-control combobox">
+                        <option value="false">ABC</option>
+                        <option value="true">DEF</option>
+                        <option value="true">XYZ</option>
+                    </select>
+                    <div className="mini_search_box">
+                        <input
+                            type="text"
+                            onChange={this.handleChange}
+                            value={this.state.keySearch}
+                            name="keySearch"
+                            className="search_input"
+                            placeholder="Tìm kiếm..."
+                        />
+                        <div className="search_icon">
+                            <i className="fa fa-search"></i>
+                        </div>
+                    </div>
+                </div>
                 <div className="row">
                     <div className="col-lg-12 col-xs-12">
                         <form className="form-horizontal">
                             <div className="box-body book_tour_detail-book_tour_history">
-                                <div style={{ marginTop: '40px' }} className="book_tour_detail-book_tour_history-title">
-                                    {/* <h2>Danh Sách Yêu Cầu Hủy Đặt Tour</h2> */}
-                                    {/* <div style={{ top: '10px' }} className="">
-                                        <select
-                                            // value={this.state.status}
-                                            // onChange={this.handleChange}
-                                            name="status"
-                                            className="search_input">
-                                            <option value="public">Công Khai</option>
-                                            <option value="private">Ẩn</option>
-                                        </select>
-                                    </div> */}
-                                    <div style={{ top: '10px' }} className="search_box">
-                                        <div className="search_icon">
-                                            <i className="fa fa-search"></i>
-                                        </div>
-                                        <input
-                                            type="text"
-                                            onChange={this.handleChange}
-                                            value={this.state.keySearch}
-                                            name="keySearch"
-                                            className="search_input"
-                                            placeholder="Tìm kiếm..."
-                                        />
-                                    </div>
-
-                                </div>
                                 <div className="container">
                                     <div className="row">
                                         <div className="col-xs-12 book_tour_history">
