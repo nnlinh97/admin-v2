@@ -561,19 +561,6 @@ class ListTypesComponent extends Component {
                         </div>
                     </div>
                     <div className="row row_3">
-                        <label className="title_row">Chi tiết</label>
-                        <FroalaEditor
-                            config={{
-                                placeholderText: '',
-                                heightMax: 120,
-                                heightMin: 120,
-                                toolbarButtons: configEditor.policy,
-                            }}
-                            model={this.state.detail}
-                            onModelChange={this.handleChangeDetail}
-                        />
-                    </div>
-                    <div className="row row_4">
                         <label className="title_row">Mô tả*</label>
                         <FroalaEditor
                             config={{
@@ -600,7 +587,7 @@ class ListTypesComponent extends Component {
                             onModelChange={this.handleChangeDesc}
                         />
                     </div>
-                    <div className="row row_5">
+                    <div className="row row_4">
                         <div className="header_row">
                             <label className="title_row">Danh sách địa điểm</label>
                             <div style={{ top: '10px' }} className="mini_search_box">
