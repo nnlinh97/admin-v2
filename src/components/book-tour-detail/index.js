@@ -76,8 +76,8 @@ class CreateTourTurnComponent extends Component {
             const { code } = this.props.match.params;
             const detail = await apiGet(`/book_tour/getHistoryBookTourByCode/${code}?tour=true&isAdmin=true`);
             bookTourDetail = detail.data.data;
-            this.updateState(bookTourDetail);
             console.log(bookTourDetail)
+            this.updateState(bookTourDetail);
         } catch (error) {
             console.log(error);
         }
@@ -96,7 +96,7 @@ class CreateTourTurnComponent extends Component {
             passengers: bookTourDetail.passengers,
             numPassengers: bookTourDetail.num_passenger,
             tourTurn: bookTourDetail.tour_turn,
-            message: bookTourDetail.request_cancel_bookings.length > 0 ? bookTourDetail.request_cancel_bookings[0] : null,
+            message: bookTourDetail.cancel_bookings.length > 0 ? bookTourDetail.cancel_bookings[0] : null,
             bookTourDetail: bookTourDetail,
             code: bookTourDetail.code
         });
@@ -174,13 +174,6 @@ class CreateTourTurnComponent extends Component {
         this.setState({ modalCancelRequestIsOpen: true });
     }
 
-    handleCancelRequest = (code) => {
-        this.setState({
-            cancelCode: code,
-            confirmCancelRequest: true
-        });
-    }
-
     handleOncloseModalPay = () => {
         this.setState({ modalPayIsOpen: false });
     }
@@ -209,6 +202,7 @@ class CreateTourTurnComponent extends Component {
     }
 
     hideSuccessAlert = () => {
+        this.reRender();
         this.handleOncloseModalPay();
         this.handleCloseModalUpdatePassenger();
         this.handleCloseModalUpdateContactInfo();
@@ -223,7 +217,7 @@ class CreateTourTurnComponent extends Component {
     reRender = async () => {
         try {
             const { code } = this.props.match.params;
-            const detail = await apiGet(`/book_tour/getHistoryBookTourByCode/${code}?tour=true`);
+            const detail = await apiGet(`/book_tour/getHistoryBookTourByCode/${code}?tour=true&isAdmin=true`);
             let bookTourDetail = detail.data.data;
             this.updateState(bookTourDetail);
         } catch (error) {
@@ -267,10 +261,11 @@ class CreateTourTurnComponent extends Component {
         }
     }
 
-    handleCancelRequest = (result) => {
-        if(result) {
-            this.reRender();
+    handleConfirmRequest = (result) => {
+        if (result) {
             this.setState({ success: true });
+        } else {
+            this.setState({ error: true });
         }
     }
 
@@ -449,12 +444,14 @@ class CreateTourTurnComponent extends Component {
                     styles={{ 'modal': { width: '1280px' } }}
                     blockScroll={true} >
                     {this.state.bookTourDetail && <CancelRequest
-                        handleCancelRequest={this.handleCancelRequest}
+                        handleConfirmRequest={this.handleConfirmRequest}
                         code={this.state.code}
                         message={this.state.message}
                         status={this.state.status}
                         startDate={this.state.tourTurn.start_date}
+                        tour={this.state.tourTurn.tour.name}
                         totalPay={this.state.totalPay}
+                        holiday={this.state.tourTurn.isHoliday}
                     />}
                 </Modal>
 
@@ -554,12 +551,12 @@ class CreateTourTurnComponent extends Component {
                                             <div className="">{formatCurrency(this.state.totalPay)} VND</div>
                                             {this.state.paymentMethod && <div className="">{getPaymentType(this.state.paymentMethod.name)}</div>}
                                             <div className="">
-                                                <label className={`label label-${getStatusItem(this.state.status).colorStatus} disabled`} >
+                                                <span style={{ backgroundColor: getStatusItem(this.state.status).colorStatus }} className={`label disabled`} >
                                                     {getStatusItem(this.state.status).textStatus}
-                                                </label>
+                                                </span>
                                             </div>
                                             {this.state.message && <>
-                                                <div className=""> {this.state.message.message} </div>
+                                                <div className=""> {this.state.message.request_message} </div>
                                                 <div className=""> {moment(this.state.message.request_time).format('DD/MM/YYYY HH:MM')} </div>
                                                 </>}
                                         </div>
@@ -573,7 +570,7 @@ class CreateTourTurnComponent extends Component {
                                         {getCancelChecked(this.state.status) && <button
                                             onClick={this.handleOpenModalCancelRequest}
                                             className="btn btn-xs btn-danger custom-btn-danger" >
-                                            Hủy Đặt Tour
+                                            Xác Nhận Hủy
                                         </button>}
                                     </div>
                                 </div>

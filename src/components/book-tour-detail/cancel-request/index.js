@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import { formatCurrency, getNumberDays, getPercentRefund } from './../../../helper';
+import { formatCurrency, getNumberDays, getPercentRefund, getFeeCancelBooking } from './../../../helper';
 import { apiPost } from '../../../services/api';
 import './index.css';
 
@@ -9,7 +9,8 @@ class CancelRequestComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            message: ''
+            message: '',
+            datePeriod: ''
         }
     }
 
@@ -38,27 +39,40 @@ class CancelRequestComponent extends Component {
         return timeDifferenceInDays;
     }
 
-    handleCancelRequest = async (event) => {
+    handleConfirmRequest = async (event) => {
         event.preventDefault();
-        try {
-            await apiPost('/book_tour/cancelBookTour', {
-                code: this.props.code,
-                message: this.props.status === 'pending_cancel' ? null : this.state.message
-            });
-            this.props.handleCancelRequest(true);
-        } catch (error) {
-            console.log(error);
+        if (this.checkData()) {
+            const days = getNumberDays(moment(new Date()).format('YYYY-MM-DD'), this.props.startDate);
+            try {
+                await apiPost('/cancel_booking/confirmCancel', {
+                    idCancelBooking: this.props.message.id,
+                    refund_period: moment(this.state.datePeriod).format('YYYY-MM-DD'),
+                    money_refunded: this.props.totalPay * (100 - getFeeCancelBooking(days, this.props.holiday)) / 100
+                });
+                this.props.handleConfirmRequest(true);
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            this.props.handleConfirmRequest(false);
         }
     }
 
+    checkData = () => {
+        const current = moment(new Date()).format('YYYY-MM-DD');
+        const period = moment(this.state.datePeriod).format('YYYY-MM-DD');
+        const days = getNumberDays(current, period);
+        if (this.state.datePeriod === '') {
+            return false;
+        }
+        return days >= 3;
+    }
+
     handleChange = ({ target }) => {
-        this.setState({ message: target.value });
+        this.setState({ datePeriod: target.value });
     }
 
     render() {
-        console.log(this.props.startDate)
-        console.log(moment(new Date()).format('YYYY-MM-DD'))
-        console.log(getNumberDays(moment(new Date()).format('YYYY-MM-DD'), this.props.startDate))
         const days = getNumberDays(moment(new Date()).format('YYYY-MM-DD'), this.props.startDate);
         return <div style={{ marginLeft: '0px' }} className="content-wrapper">
             <section style={{ marginBottom: "0px" }} className="content-header">
@@ -68,38 +82,60 @@ class CancelRequestComponent extends Component {
                 <div className="row">
                     <div className="col-lg-12 col-xs-12 ">
                         <div className="box box-info">
-                            <form onSubmit={this.handleCancelRequest} className="form-horizontal">
+                            <form onSubmit={this.handleConfirmRequest} className="form-horizontal">
                                 <div className="box-body">
+                                    {this.props.status === 'paid' || this.props.status === 'pending_cancel' && <div className="form-group">
+                                        <div className="col-sm-6">
+                                            <strong>Chi phí khi hủy tour ngày thường:</strong><br />
+                                            - Trước <strong>20</strong> ngày: <strong>0%</strong> (trên giá tour du lịch)<br />
+                                            - Từ <strong>15</strong> đến <strong>19</strong> ngày: <strong>15%</strong><br />
+                                            - Từ <strong>12</strong> đến <strong>14</strong> ngày: <strong>30%</strong><br />
+                                            - Từ <strong>08</strong> đến <strong>11</strong> ngày: <strong>50%</strong><br />
+                                            - Từ <strong>05</strong> đến <strong>07</strong> ngày: <strong>70%</strong><br />
+                                            - Từ <strong>02</strong> đến <strong>04</strong> ngày: <strong>90%</strong><br />
+                                            - Dưới <strong>02</strong> ngày: <strong>100%</strong><br /><br />
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <strong>Chi phí khi hủy tour ngày lễ, tết:</strong><br />
+                                            - Trước <strong>30</strong> ngày: <strong>0%</strong> (trên giá tour du lịch)<br />
+                                            - Từ <strong>25</strong> đến <strong>29</strong> ngày: <strong>15%</strong><br />
+                                            - Từ <strong>22</strong> đến <strong>24</strong> ngày: <strong>30%</strong> <br />
+                                            - Từ <strong>17</strong> đến <strong>19</strong> ngày: <strong>50%</strong> <br />
+                                            - Từ <strong>08</strong> đến <strong>16</strong> ngày: <strong>70%</strong> <br />
+                                            - Từ <strong>02</strong> đến <strong>07</strong> ngày: <strong>90%</strong> <br />
+                                            - Dưới <strong>02</strong> ngày: <strong>100%</strong> <br /><br />
+                                        </div>
+                                    </div>}
                                     <div className="form-group">
-                                        <label className="col-sm-3 control-label"></label>
-                                        <div className="col-sm-8">
-                                            {this.props.status === 'paid' || this.props.status === 'pending_cancel' && <>
-                                                Qui định hoàn trả chi phí khi hủy tour:<br />
-                                                - Trước <strong>15</strong> ngày: <strong>100%</strong><br />
-                                                - Từ <strong>8</strong> đến <strong>14</strong> ngày: <strong>50%</strong><br />
-                                                - Từ <strong>5</strong> đến <strong>7</strong> ngày: <strong>30%</strong><br />
-                                                - Từ <strong>2</strong> đến <strong>4</strong> ngày: <strong>10%</strong><br />
-                                                - Dưới <strong>2</strong> ngày: <strong>0%</strong><br /><br />
-
-                                                Bạn đã hủy tour trước ngày bắt đầu: <strong>{days}</strong> ngày<br />
-                                                Chi phí của bạn sẽ được hoàn trả: <strong>{getPercentRefund(days)}%</strong><br />
-                                                Số tiền bạn đã thanh toán: <strong>{formatCurrency(this.props.totalPay)} VND</strong><br />
-                                                Số tiền bạn sẽ được hoàn trả: <strong>{formatCurrency(this.props.totalPay * getPercentRefund(days) / 100)} VND</strong><br />
-                                                </>}
+                                        <div className="col-sm-12">
+                                            <>
+                                            - Tour: <strong>{this.props.tour}</strong><br />
+                                            - Ngày khởi hành: <strong>{moment(this.props.startDate).format('MM/DD/YYYY')}</strong><br />
+                                            - Thời điểm: <strong>{this.props.holiday ? 'Ngày lễ, tết' : 'Ngày thường'}</strong><br />
+                                            - Thời gian hủy tour: <strong>{moment(this.props.message.request_time).format('MM/DD/YYYY HH:MM')}</strong><br />
+                                            - Hủy tour trước ngày khởi hành: <strong>{days}</strong> ngày<br />
+                                            - Chi phí hủy tour: <strong>{getFeeCancelBooking(days, this.props.holiday)}</strong>%<br />
+                                            - Số tiền hoàn trả: <strong>{formatCurrency(this.props.totalPay * (100 - getFeeCancelBooking(days, this.props.holiday)) / 100)} VND</strong><br /><br />
+                                            </>
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label className="col-sm-3 control-label">Chú thích</label>
-                                        <div className="col-sm-8">
-                                            <textarea
-                                                readOnly={this.props.message ? true : false}
+                                        <label className="col-sm-2 control-label">Hẹn gặp</label>
+                                        <div className="col-sm-6">
+                                            <input
                                                 onChange={this.handleChange}
-                                                value={this.state.message}
-                                                name="message"
+                                                value={this.state.datePeriod}
+                                                type="date"
+                                                name="datePeriod"
                                                 className="form-control"
                                                 rows={3}
                                             />
                                         </div>
+                                        <label className="col-sm-4 control-label">
+                                            <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '12px', left: '0', marginTop: '0' }}>
+                                                3 đến 15 ngày kể từ ngày xác nhận hủy
+                                            </i>
+                                        </label>
                                     </div>
                                 </div>
                                 <div className="box-footer col-sm-11">

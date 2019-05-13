@@ -112,26 +112,47 @@ export function pagination(list, page, limit) {
 export function getStatusItem(status) {
     let colorStatus = '';
     let textStatus = '';
+    let bgStatus = '';
     switch (status) {
-        case 'paid':
-            colorStatus = 'success';
-            textStatus = 'đã thanh toán';
+        case 'pending_cancel':
+            colorStatus = '#dd4b39';
+            textStatus = 'yêu cầu hủy';
+            bgStatus = '#fff';
             break;
         case 'booked':
-            colorStatus = 'warning';
+            colorStatus = '#f39c12';
             textStatus = 'chưa thanh toán';
+            bgStatus = '#fff';
             break;
-        case 'cancelled':
-            colorStatus = 'default';
-            textStatus = 'đã hủy';
+        case 'confirm_cancel':
+            colorStatus = '#A52A2A';
+            textStatus = 'xác nhận hủy';
+            bgStatus = '#fff';
             break;
-        case 'pending_cancel':
-            colorStatus = 'danger';
-            textStatus = 'yêu cầu hủy';
+        case 'paid':
+            colorStatus = '#5cb85c';
+            textStatus = 'đã thanh toán';
+            bgStatus = '#fff';
             break;
         case 'finished':
-            colorStatus = 'info';
+            colorStatus = '#5bc0de';
             textStatus = 'đã tham gia';
+            bgStatus = '#fff';
+            break;
+        case 'not_refunded':
+            colorStatus = '#8B0000';
+            textStatus = 'không nhận tiền';
+            bgStatus = '#fff';
+            break;
+        case 'refunded':
+            colorStatus = '#7FFF00';
+            textStatus = 'đã hoàn tiền';
+            bgStatus = '#fff';
+            break;
+        case 'cancelled':
+            colorStatus = '#777';
+            textStatus = 'đã hủy';
+            bgStatus = '#fff';
             break;
     }
     return {
@@ -212,6 +233,42 @@ export function getPercentRefund(numDate) {
     }
 }
 
+export function getFeeCancelBooking(numDay, holiday) {
+    if (!holiday) {
+        if (numDay >= 20) {
+            return 0;
+        } else if (15 <= numDay && numDay <= 19) {
+            return 15;
+        } else if (12 <= numDay && numDay <= 14) {
+            return 30;
+        } else if (8 <= numDay && numDay <= 11) {
+            return 50;
+        } else if (5 <= numDay && numDay <= 7) {
+            return 70;
+        } else if (2 <= numDay && numDay <= 4) {
+            return 90;
+        } else {
+            return 100;
+        }
+    } else {
+        if (numDay >= 30) {
+            return 0;
+        } else if (25 <= numDay && numDay <= 29) {
+            return 15;
+        } else if (22 <= numDay && numDay <= 24) {
+            return 30;
+        } else if (17 <= numDay && numDay <= 19) {
+            return 50;
+        } else if (8 <= numDay && numDay <= 16) {
+            return 70;
+        } else if (2 <= numDay && numDay <= 7) {
+            return 90;
+        } else {
+            return 100;
+        }
+    }
+}
+
 export function getNumberDays(date1, date2) {
     date1 = date1.split('-');
     date2 = date2.split('-');
@@ -232,7 +289,6 @@ export function getNumberDays(date1, date2) {
 }
 
 export function getPaymentType(type) {
-    console.log(type)
     let result = '';
     switch (type) {
         case 'incash':
