@@ -26,6 +26,8 @@ import PrintListPassenger from './components/book-tour/print';
 import BookTourDetail from './pages/book-tour-detail';
 import PhoneCall from './pages/phone-call';
 import PrivateRoute from './components/private-route/';
+import BillCancelBooking from './components/book-tour-detail/bill-cancel';
+import BillPayment from './components/book-tour-detail/bill-payment';
 import './App.css';
 
 class App extends Component {
@@ -77,6 +79,8 @@ class App extends Component {
           <PrivateRoute exact path='/book-tour/list' component={ListBookTourPage} />
           <PrivateRoute exact path='/book-tour/:id' component={BookTourTurnDetail} />
           <PrivateRoute exact path='/book-tour-detail/:code' component={BookTourDetail} />
+          <PrivateRoute exact path='/print/bill-cancel-booking' component={BillCancelBooking} />
+          <PrivateRoute exact path='/print/bill-payment' component={BillPayment} />
 
           {/* country */}
           <PrivateRoute exact path='/country/list' component={ListCountryPage} />

@@ -10,6 +10,7 @@ import PassengerUpdate from './passenger-update';
 import ContactInfoUpdate from './contact-info';
 import Payment from './payment';
 import CancelRequest from './cancel-request';
+import ChangeDate from './change-date';
 import * as actions from './../../actions/index';
 import { apiGet, apiPost } from '../../services/api';
 import {
@@ -41,6 +42,7 @@ class CreateTourTurnComponent extends Component {
             modalUpdatePassengerIsOpen: false,
             modalUpdateContactInfoIsOpen: false,
             modalCancelRequestIsOpen: false,
+            modalChangeDateIsOpen: false,
             bookPay: null,
             passengerUpdate: null,
             contactInfoUpdate: null,
@@ -201,12 +203,21 @@ class CreateTourTurnComponent extends Component {
         this.setState({ modalUpdateContactInfoIsOpen: true, contactInfoUpdate: contactInfo });
     }
 
+    handleOpenModalChangeDate = () => {
+        this.setState({ modalChangeDateIsOpen: true });
+    }
+
+    handleCloseChangeDateModal = () => {
+        this.setState({ modalChangeDateIsOpen: false });
+    }
+
     hideSuccessAlert = () => {
         this.reRender();
         this.handleOncloseModalPay();
         this.handleCloseModalUpdatePassenger();
         this.handleCloseModalUpdateContactInfo();
         this.handleCloseModalCancelRequest();
+        this.handleCloseChangeDateModal();
         this.setState({ success: false });
     }
 
@@ -264,6 +275,14 @@ class CreateTourTurnComponent extends Component {
     handleConfirmRequest = (result) => {
         if (result) {
             this.setState({ success: true });
+        } else {
+            this.setState({ error: true });
+        }
+    }
+
+    handleChangeDate = (result) => {
+        if(result){
+            this.setState({success: true});
         } else {
             this.setState({ error: true });
         }
@@ -479,6 +498,19 @@ class CreateTourTurnComponent extends Component {
                     />}
                 </Modal>
 
+                <Modal
+                    open={this.state.modalChangeDateIsOpen}
+                    onClose={this.handleCloseChangeDateModal}
+                    center
+                    styles={{ 'modal': { width: '1280px' } }}
+                    blockScroll={true} >
+                    {this.state.message && <ChangeDate
+                        handleChangeDate={this.handleChangeDate}
+                        id={this.state.message.id}
+                        period={this.state.message.refund_period}
+                    />}
+                </Modal>
+
                 <section className="content-header">
                     <div style={{
                         position: 'absolute',
@@ -507,60 +539,143 @@ class CreateTourTurnComponent extends Component {
                 <section className="content">
                     <div className="row">
                         <div className="col-lg-12 col-xs-12">
-                            <form className="form-horizontal">
-                                <div className="box-body book_tour_detail-information">
-                                    <div className="book_tour_detail-information-title">
-                                        <h2>Thông Tin Người Đặt và Đặt Tour #{this.state.code}</h2>
+                            <h2>Thông Tin Người Đặt và Đặt Tour #{this.state.code}</h2>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-lg-12 col-xs-12">
+                            <div className="col-lg-6 col-xs-6">
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Tên</label>
+                                    <label className="col-sm-6 control-label">
+                                        {this.state.contactInfo ? this.state.contactInfo.fullname : ''}
+                                    </label>
+                                    <label className="col-sm-2">
                                         {!this.checkStatus(this.state.status) && <i
                                             title="chỉnh sửa thông tin người đặt"
                                             onClick={() => this.openUpdateContactInfo(this.state.contactInfo)}
                                             style={{ cursor: 'pointer' }}
                                             className="fa fa-pencil" />}
+                                    </label>
+                                </div>
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Số điện thoại</label>
+                                    <label className="col-sm-8 control-label">
+                                        {this.state.contactInfo ? this.state.contactInfo.phone : ''}
+                                    </label>
+                                </div>
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Email</label>
+                                    <label className="col-sm-8 control-label">
+                                        {this.state.contactInfo ? this.state.contactInfo.email : ''}
+                                    </label>
+                                </div>
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Tour</label>
+                                    <label className="col-sm-8 control-label">
+                                        {this.state.tourTurn ? this.state.tourTurn.tour.name : ''}
+                                    </label>
+                                </div>
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Mã chuyến đi</label>
+                                    <label className="col-sm-8 control-label">
+                                        {this.state.tourTurn ? this.state.tourTurn.code : ''}
+                                    </label>
+                                </div>
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Ngày khởi hành</label>
+                                    <label className="col-sm-8 control-label">
+                                        {this.state.tourTurn ? moment(this.state.tourTurn.start_date).format('DD/MM/YYYY') : ''}
+                                    </label>
+                                </div>
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Ngày kết thúc</label>
+                                    <label className="col-sm-8 control-label">
+                                        {this.state.tourTurn ? moment(this.state.tourTurn.end_date).format('DD/MM/YYYY') : ''}
+                                    </label>
+                                </div>
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Giá/người</label>
+                                    <label className="col-sm-8 control-label">
+                                        {this.state.tourTurn ? formatCurrency(this.state.tourTurn.price) : ''} VND
+                                    </label>
+                                </div>
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Giảm</label>
+                                    <label className="col-sm-8 control-label">
+                                        {this.state.tourTurn ? this.state.tourTurn.discount : ''} %
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="col-lg-6 col-xs-6">
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Số người đi</label>
+                                    <label className="col-sm-8 control-label">
+                                        {this.state.numPassengers}
+                                    </label>
+                                </div>
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Tổng tiền</label>
+                                    <label className="col-sm-8 control-label">
+                                        {formatCurrency(this.state.totalPay)} VND
+                                    </label>
+                                </div>
+                                {this.state.paymentMethod && <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Thanh toán</label>
+                                    <label className="col-sm-8 control-label">
+                                        {getPaymentType(this.state.paymentMethod.name)}
+                                    </label>
+                                </div>}
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Trạng thái</label>
+                                    <label className="col-sm-8 control-label">
+                                        <span style={{ backgroundColor: getStatusItem(this.state.status).colorStatus }} className={`label disabled`} >
+                                            {getStatusItem(this.state.status).textStatus}
+                                        </span>
+                                    </label>
+                                </div>
+                                {this.state.message && <>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Tin nhắn</label>
+                                        <label className="col-sm-8 control-label">
+                                            {this.state.message.request_message}
+                                        </label>
                                     </div>
-                                    <div className="box-body-main">
-                                        <div className="box-body-left">
-                                            <div className="">Tên</div>
-                                            <div className="">Số điện thoại</div>
-                                            <div className="">Email</div>
-                                            <div className="">Tour</div>
-                                            <div className="">Mã chuyến đi</div>
-                                            <div className="">Ngày bắt đầu</div>
-                                            <div className="">Ngày kết thúc</div>
-                                            <div className="">Giá/người</div>
-                                            <div className="">Giảm</div>
-                                            <div className="">Số người đi</div>
-                                            <div className="">Tổng tiền</div>
-                                            {this.state.paymentMethod && <div className="">Thanh toán</div>}
-                                            <div className="">Trạng thái</div>
-                                            {this.state.message && <>
-                                                <div className="">Tin nhắn</div>
-                                                <div className="">Gửi lúc</div>
-                                                </>}
-                                        </div>
-                                        <div className="box-body-right">
-                                            <div className="">{this.state.contactInfo ? this.state.contactInfo.fullname : ''}</div>
-                                            <div className="">{this.state.contactInfo ? this.state.contactInfo.phone : ''}</div>
-                                            <div className="">{this.state.contactInfo ? this.state.contactInfo.email : ''}</div>
-                                            <div className="">{this.state.tourTurn ? this.state.tourTurn.tour.name : ''}</div>
-                                            <div className="">#{this.state.tourTurn ? this.state.tourTurn.code : ''}</div>
-                                            <div className="">{this.state.tourTurn ? moment(this.state.tourTurn.start_date).format('DD/MM/YYYY') : ''}</div>
-                                            <div className="">{this.state.tourTurn ? moment(this.state.tourTurn.end_date).format('DD/MM/YYYY') : ''}</div>
-                                            <div className="">{this.state.tourTurn ? formatCurrency(this.state.tourTurn.price) : ''} VND</div>
-                                            <div className="">{this.state.tourTurn ? this.state.tourTurn.discount : ''} %</div>
-                                            <div className="">{this.state.numPassengers}</div>
-                                            <div className="">{formatCurrency(this.state.totalPay)} VND</div>
-                                            {this.state.paymentMethod && <div className="">{getPaymentType(this.state.paymentMethod.name)}</div>}
-                                            <div className="">
-                                                <span style={{ backgroundColor: getStatusItem(this.state.status).colorStatus }} className={`label disabled`} >
-                                                    {getStatusItem(this.state.status).textStatus}
-                                                </span>
-                                            </div>
-                                            {this.state.message && <>
-                                                <div className=""> {this.state.message.request_message} </div>
-                                                <div className=""> {moment(this.state.message.request_time).format('DD/MM/YYYY HH:MM')} </div>
-                                                </>}
-                                        </div>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Gửi lúc</label>
+                                        <label className="col-sm-8 control-label">
+                                            {moment(this.state.message.request_time).format('DD/MM/YYYY HH:MM')}
+                                        </label>
                                     </div>
+                                    </>}
+                                {this.state.status === 'confirm_cancel' && <>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Tiền hoàn trả</label>
+                                        <label className="col-sm-8 control-label">
+                                            {formatCurrency(this.state.message.money_refunded)} VND
+                                        </label>
+                                    </div>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Hạn hoàn tiền</label>
+                                        <label className="col-sm-6 control-label">
+                                            {moment(this.state.message.refund_period).format('MM/DD/YYYY')}
+                                        </label>
+                                        <label className="col-sm-2">
+                                            <i
+                                                title="chỉnh sửa ngày hẹn"
+                                                onClick={this.handleOpenModalChangeDate}
+                                                style={{ cursor: 'pointer' }}
+                                                className="fa fa-pencil" />
+                                        </label>
+                                    </div>
+                                    </>}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-lg-12 col-xs-12">
+                            <form className="form-horizontal">
+                                <div className="box-body book_tour_detail-information">
                                     <div className="manager_btn">
                                         {getPaymentChecked(this.state.status) && <button
                                             onClick={this.handleOpenModalPay}
@@ -575,6 +690,10 @@ class CreateTourTurnComponent extends Component {
                                     </div>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-lg-12 col-xs-12">
                             <form className="form-horizontal">
                                 <div className="box-body book_tour_detail-book_tour_history">
                                     <div className="book_tour_detail-book_tour_history-title">
