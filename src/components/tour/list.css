@@ -2,3 +2,7 @@ h4 {
     margin-top: 3px !important;
     margin-bottom: 7px !important;
 }
+.col-lg-12.col-xs-12
+{
+    padding: 0 !important;
+}
