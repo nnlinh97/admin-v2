@@ -90,11 +90,6 @@
 {
     flex: 70%;
 }
-.row_3_bill_payment--left--left p:nth-child(2),
-.row_3_bill_payment--right--left p:nth-child(2)
-{
-    padding-bottom: 20px;
-}
 .bill_payment textarea
 {
     outline: none;
