@@ -57,8 +57,11 @@
 .row_3_bill_payment--left
 {
     flex: 50%;
-    display: flex;
     padding-right: 2px;
+}
+.row_3_bill_payment--left__parent
+{
+    display: flex;
 }
 .row_3_bill_payment--left--left
 {
@@ -72,17 +75,20 @@
 .row_3_bill_payment--right
 {
     flex: 50%;
-    display: flex;
     padding-left: 2px;
+}
+.row_3_bill_payment--right__parent
+{
+    display: flex;
 }
 .row_3_bill_payment--right--left
 {
-    flex: 20%;
+    flex: 30%;
     font-weight: bold;
 }
 .row_3_bill_payment--right--right
 {
-    flex: 80%;
+    flex: 70%;
 }
 .row_3_bill_payment--left--left p:nth-child(2),
 .row_3_bill_payment--right--left p:nth-child(2)
@@ -105,7 +111,7 @@
     font-style: italic;
     text-align: center;
 }
-.row_4_bill_payment--left p:nth-child(4)
+.row_4_bill_payment--left p:nth-child(8)
 {
     padding-top: 12px;
 }
@@ -128,14 +134,19 @@
     flex: 50%;
     font-weight: bold;
 }
-.row_4_bill_payment--right--left p:nth-child(4),
-.row_4_bill_payment--right--right p:nth-child(4)
+.row_4_bill_payment--right--left p:nth-child(8),
+.row_4_bill_payment--right--right p:nth-child(8)
 {
     font-weight: bold;
     border-top: 2px solid #000;
     padding-top: 10px;
 }
 /* row_5_bill_payment */
+.row_5_bill_payment
+{
+    margin-top: 5px;
+    font-size: 20px;
+}
 .row_5_bill_payment .cashier
 {
     flex: 45%;

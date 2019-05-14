@@ -24,36 +24,52 @@ class BillPayment extends Component {
                 </div>
                 <div className="row_print row_3_bill_payment">
                     <div className="row_3_bill_payment--left">
-                        <div className="row_3_bill_payment--left--left">
-                            <p>Tên(người thanh toán)</p>
-                            <p>Địa chỉ</p>
-                            <p>Số điện thoại</p>
-                            <p>Tên tài khoản(nếu có)</p>
+                        <div className="row_3_bill_payment--left__parent">
+                            <p className="row_3_bill_payment--left--left">Tên(người thanh toán)</p>
+                            <p className="row_3_bill_payment--left--right">: &nbsp;&nbsp; Nguyễn Văn A</p>
                         </div>
-                        <div className="row_3_bill_payment--left--right">
-                            <p>: &nbsp;&nbsp; Nguyễn Văn A</p>
-                            <textarea name="address" rows="2" readonly="readonly">: &nbsp;&nbsp; 123 ABC XYZ, P 1, Q 1, TH ABC</textarea>
-                            <p>: &nbsp;&nbsp; (+84) 111 111 111</p>
-                            <p>: &nbsp;&nbsp; Hello Văn A</p>
+                        <div className="row_3_bill_payment--left__parent">
+                            <p className="row_3_bill_payment--left--left">Địa chỉ</p>
+                            <p className="row_3_bill_payment--left--right">: &nbsp;&nbsp; 123 ABC XYZ, P 1, Q 1, TH ABC</p>
+                        </div>
+                        <div className="row_3_bill_payment--left__parent">
+                            <p className="row_3_bill_payment--left--left">Số điện thoại</p>
+                            <p className="row_3_bill_payment--left--right">: &nbsp;&nbsp; (+84) 111 111 111</p>
+                        </div>
+                        <div className="row_3_bill_payment--left__parent">
+                            <p className="row_3_bill_payment--left--left">Tên tài khoản(nếu có)</p>
+                            <p className="row_3_bill_payment--left--right">: &nbsp;&nbsp; Hello Văn A</p>
                         </div>
                     </div>
                     <div className="row_3_bill_payment--right">
-                        <div className="row_3_bill_payment--right--left">
-                            <p>Mã tour</p>
-                            <p>Tên tour</p>
-                            <p>Ngày đi</p>
-                            <p>Ngày về</p>
+                        <div className="row_3_bill_payment--right__parent">
+                            <p className="row_3_bill_payment--right--left">Mã tour</p>
+                            <p className="row_3_bill_payment--right--right">: &nbsp;&nbsp; ABA000111010</p>
                         </div>
-                        <div className="row_3_bill_payment--right--right">
-                            <p>: &nbsp;&nbsp; ABA000111010</p>
-                            <textarea name="name" rows="2" readonly="readonly">: &nbsp;&nbsp; Tour đi ABC và XYZ từ A, B, C đến X, Y, Z </textarea>
-                            <p>: &nbsp;&nbsp; 12/12/2012</p>
-                            <p>: &nbsp;&nbsp; 12/12/2012</p>
+                        <div className="row_3_bill_payment--right__parent">
+                            <p className="row_3_bill_payment--right--left">Tên tour</p>
+                            <p className="row_3_bill_payment--right--right">: &nbsp;&nbsp; Tour đi ABC và XYZ</p>
+                        </div>
+                        <div className="row_3_bill_payment--right__parent">
+                            <p className="row_3_bill_payment--right--left">Mã chuyến đi</p>
+                            <p className="row_3_bill_payment--right--right">: &nbsp;&nbsp; ABC</p>
+                        </div>
+                        <div className="row_3_bill_payment--right__parent">
+                            <p className="row_3_bill_payment--right--left">Ngày đi</p>
+                            <p className="row_3_bill_payment--right--right">: &nbsp;&nbsp; 12/12/2012</p>
+                        </div>
+                        <div className="row_3_bill_payment--right__parent">
+                            <p className="row_3_bill_payment--right--left">Ngày về</p>
+                            <p className="row_3_bill_payment--right--right">: &nbsp;&nbsp; 12/12/2012</p>
                         </div>
                     </div>
                 </div>
                 <div className="row_print row_4_bill_payment">
                     <div className="row_4_bill_payment--left">
+                        <p>&nbsp;&nbsp;</p>
+                        <p>&nbsp;&nbsp;</p>
+                        <p>&nbsp;&nbsp;</p>
+                        <p>&nbsp;&nbsp;</p>
                         <p>&nbsp;&nbsp;</p>
                         <p>&nbsp;&nbsp;</p>
                         <p>&nbsp;&nbsp;</p>
@@ -63,13 +79,21 @@ class BillPayment extends Component {
                         <div className="row_4_bill_payment--right--left">
                             <p>Chi Tiết</p>
                             <p>Giá tour</p>
+                            <p>&nbsp;&nbsp;</p>
+                            <p>Giảm</p>
                             <p>Số người</p>
+                            <p>Người lớn</p>
+                            <p>Trẻ em</p>
                             <p>Tổng cộng</p>
                         </div>
                         <div className="row_4_bill_payment--right--right">
-                            <p>&nbsp;&nbsp;</p>
-                            <p>: &nbsp;&nbsp; 50.000.000</p>
+                            <p>  &nbsp;&nbsp; </p>
+                            <p>: &nbsp;&nbsp; 50 / người lớn</p>
+                            <p>: &nbsp;&nbsp; 40 / trẻ em</p>
+                            <p>: &nbsp;&nbsp; 10%</p>
                             <p>: &nbsp;&nbsp; 4</p>
+                            <p>: &nbsp;&nbsp; 2</p>
+                            <p>: &nbsp;&nbsp; 2</p>
                             <p>: &nbsp;&nbsp; 200.000.000</p>
                         </div>
                     </div>
