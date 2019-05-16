@@ -297,12 +297,12 @@ class CreateTourTurnComponent extends Component {
                 minWidth: 100
             },
             {
-                Header: "NAME",
-                accessor: "name",
+                Header: "Loại khách",
+                accessor: "name_vi",
                 style: { textAlign: 'center' }
             },
             {
-                Header: "PRICE PERCENT",
+                Header: "Phần trăm giá vé",
                 accessor: "percent",
                 Cell: props => {
                     if (props.original.checked) {

@@ -303,7 +303,6 @@ class CreateTourTurnComponent extends Component {
 
     render() {
         const { bookTourHistory, tourTurn, tour } = this.state;
-        const bookHistory = mergeBookHistory(bookTourHistory);
         const columnHistory = [
             {
                 Header: "Mã đặt tour",
@@ -369,9 +368,9 @@ class CreateTourTurnComponent extends Component {
                 accessor: "status",
                 Cell: props => {
                     const status = getStatusItem(props.original.status);
-                    return <label className={`label label-${status.colorStatus} disabled`} >
+                    return <span style={{ backgroundColor: status.colorStatus }} className={`label disabled`} >
                         {status.textStatus}
-                    </label>
+                    </span>
                 },
                 style: { textAlign: 'center' },
                 width: 110,

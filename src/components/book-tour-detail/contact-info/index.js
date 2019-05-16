@@ -12,6 +12,7 @@ class UpdateContactInfo extends Component {
             phone: '',
             email: '',
             address: '',
+            passport: ''
         }
     }
 
@@ -22,7 +23,8 @@ class UpdateContactInfo extends Component {
             phone: contactInfo.phone ? contactInfo.phone : '',
             id: contactInfo.id,
             email: contactInfo.email ? contactInfo.email : '',
-            address: contactInfo.address ? contactInfo.address : ''
+            address: contactInfo.address ? contactInfo.address : '',
+            passport: contactInfo.passport ? contactInfo.passport : '',
         });
     }
 
@@ -69,7 +71,7 @@ class UpdateContactInfo extends Component {
         return (
             <div className="">
                 <section className="content-header">
-                    <h1>Chỉnh Sửa Thông Tin Người Liên Hệ <i>#{this.state.id}</i> </h1>
+                    <h1>Chỉnh Sửa Thông Tin Người Liên Hệ</h1>
                 </section>
                 <section className="content">
                     <div className="row invoice-info">
@@ -79,6 +81,12 @@ class UpdateContactInfo extends Component {
                                     <label className="col-sm-3 control-label">Tên</label>
                                     <div className="col-sm-8">
                                         <input type="text" onChange={this.handleChange} value={fullname} name="fullname" className="form-control" />
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="col-sm-3 control-label">CMND/Passport</label>
+                                    <div className="col-sm-8">
+                                        <input type="text" onChange={this.handleChange} value={this.state.passport} name="passport" className="form-control" />
                                     </div>
                                 </div>
                                 <div className="form-group">

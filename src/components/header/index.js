@@ -36,12 +36,16 @@ class Header extends Component {
         this.props.history.push('/admin/change-password');
     }
 
+    handleToDashboard = (event) => {
+        event.preventDefault();
+        this.props.history.push('/');
+    }
+
     render() {
         return (
             <header className="main-header">
-                {/* Logo */}
-                <a href="index2.html" className="logo">
-                    <span className="logo-lg">
+                <a href="" className="logo">
+                    <span onClick={this.handleToDashboard} className="logo-lg">
                         <b>Admin</b></span>
                 </a>
                 <nav className="navbar navbar-static-top">

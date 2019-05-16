@@ -79,8 +79,8 @@ class App extends Component {
           <PrivateRoute exact path='/book-tour/list' component={ListBookTourPage} />
           <PrivateRoute exact path='/book-tour/:id' component={BookTourTurnDetail} />
           <PrivateRoute exact path='/book-tour-detail/:code' component={BookTourDetail} />
-          <PrivateRoute exact path='/print/bill-cancel-booking' component={BillCancelBooking} />
-          <PrivateRoute exact path='/print/bill-payment' component={BillPayment} />
+          <PrivateRoute exact path='/print/bill-cancel-booking/:code' component={BillCancelBooking} />
+          <PrivateRoute exact path='/print/bill-payment/:code' component={BillPayment} />
 
           {/* country */}
           <PrivateRoute exact path='/country/list' component={ListCountryPage} />

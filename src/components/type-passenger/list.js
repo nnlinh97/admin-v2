@@ -23,6 +23,7 @@ class ListTypePassenger extends Component {
             modalEditIsOpen: false,
             name: '',
             id: '',
+            name_vi: '',
             keySearch: '',
             listTypePassenger: []
         }
@@ -32,6 +33,7 @@ class ListTypePassenger extends Component {
         try {
             let listTypePassenger = await apiGet('/type_passenger/getAll');
             this.props.getListTypePassenger(listTypePassenger.data.data);
+            console.log(listTypePassenger.data.data)
             this.setState({ listTypePassenger: listTypePassenger.data.data });
         } catch (error) {
             console.log(error);
@@ -42,12 +44,13 @@ class ListTypePassenger extends Component {
         this.setState({
             modalEditIsOpen: true,
             name: props.original.name,
-            id: props.original.id
+            id: props.original.id,
+            name_vi: props.original.name_vi
         });
     }
 
     closeEditModal = () => {
-        this.setState({ modalEditIsOpen: false, id: null, name: '', marker: '' });
+        this.setState({ modalEditIsOpen: false, id: null, name: '', name_vi: '' });
     }
 
     redirectToCreateTypePage = () => {
@@ -59,13 +62,13 @@ class ListTypePassenger extends Component {
     }
 
     closeCreateModal = () => {
-        this.setState({ modalCreateIsOpen: false, name: '', marker: '' });
+        this.setState({ modalCreateIsOpen: false, name: '' });
     }
 
-    handleCreate = async (name) => {
-        if (name !== '') {
+    handleCreate = async (type) => {
+        if (type.name !== '' && type.name_vi !== '') {
             try {
-                let newTypePassenger = await apiPost('/type_passenger/create', { name: name });
+                let newTypePassenger = await apiPost('/type_passenger/create', type);
                 this.props.createTypePassenger(newTypePassenger.data);
                 this.setState({ success: true });
             } catch (error) {
@@ -104,7 +107,7 @@ class ListTypePassenger extends Component {
 
     handleSearchTypePassenger = (listTypePassenger, keySearch) => {
         if (keySearch !== '' && listTypePassenger.length > 0) {
-            return listTypePassenger.filter(type => matchString(type.name, keySearch) || matchString(type.id.toString(), keySearch));
+            return listTypePassenger.filter(type => matchString(type.name_vi, keySearch) || matchString(type.name, keySearch) || matchString(type.id.toString(), keySearch));
         }
         return listTypePassenger;
     }
@@ -129,8 +132,13 @@ class ListTypePassenger extends Component {
                 minWidth: 80
             },
             {
-                Header: "Loại hành khách",
+                Header: "Loại hành khách (EN)",
                 accessor: "name",
+                style: { textAlign: 'center' }
+            },
+            {
+                Header: "Loại hành khách (VN)",
+                accessor: "name_vi",
                 style: { textAlign: 'center' }
             },
             {
@@ -182,7 +190,8 @@ class ListTypePassenger extends Component {
                     <EditComponent
                         handleEdit={this.handleEdit}
                         name={this.state.name}
-                        id={this.state.id} />
+                        id={this.state.id}
+                        name_vi={this.state.name_vi} />
                 </Modal>
 
                 <section className="content-header">

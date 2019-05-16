@@ -6,13 +6,14 @@ class EditTypePassenger extends Component {
         super(props);
         this.state = {
             name: '',
-            id: ''
+            id: '',
+            name_vi: ''
         }
     }
 
     componentDidMount = () => {
-        const { name, id } = this.props;
-        this.setState({ name, id });
+        const { name, id, name_vi } = this.props;
+        this.setState({ name, id, name_vi });
     }
 
 
@@ -40,13 +41,24 @@ class EditTypePassenger extends Component {
                             <form onSubmit={this.handleEdit} className="form-horizontal">
                                 <div className="box-body">
                                     <div className="form-group">
-                                        <label className="col-sm-2 control-label">Tên Quốc Gia</label>
-                                        <div className="col-sm-9">
+                                        <label className="col-sm-3 control-label">Loại Hàng Khách (EN)</label>
+                                        <div className="col-sm-8">
                                             <input
                                                 type="text"
                                                 onChange={this.handleChange}
                                                 value={this.state.name}
                                                 name="name"
+                                                className="form-control" />
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="col-sm-3 control-label">Loại Hành Khách (VN)</label>
+                                        <div className="col-sm-8">
+                                            <input
+                                                type="text"
+                                                onChange={this.handleChange}
+                                                value={this.state.name_vi}
+                                                name="name_vi"
                                                 className="form-control" />
                                         </div>
                                     </div>

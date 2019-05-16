@@ -27,7 +27,7 @@ class ChangeDate extends Component {
         event.preventDefault();
         if(this.state.id !== '' && this.state.period !== '') {
             try {
-                await apiPost('api', {
+                await apiPost('/cancel_booking/updateRefundPeriod', {
                     idCancelBooking: this.state.id,
                     refund_period: moment(this.state.period).format('YYYY-MM-DD')
                 });
@@ -46,7 +46,7 @@ class ChangeDate extends Component {
                 <section className="content-header">
                     <h1>Thay Đổi Hạn Hoàn Tiền</h1>
                 </section>
-                <section className="content">
+                <section style={{minHeight: '110px'}} className="content">
                     <div className="row invoice-info">
                         <form onSubmit={this.handleChangeDate} className="form-horizontal">
                             <div className="box-body">

@@ -6,12 +6,13 @@ class CreateTypePassenger extends Component {
         super(props);
         this.state = {
             name: '',
+            name_vi: ''
         }
     }
 
     handleCreate = (event) => {
         event.preventDefault();
-        this.props.handleCreate(this.state.name);
+        this.props.handleCreate(this.state);
     }
 
     handleChange = (event) => {
@@ -33,13 +34,24 @@ class CreateTypePassenger extends Component {
                             <form onSubmit={this.handleCreate} className="form-horizontal">
                                 <div className="box-body">
                                     <div className="form-group">
-                                        <label className="col-sm-3 control-label">Tên</label>
+                                        <label className="col-sm-3 control-label">Loại Hành Khách (EN)</label>
                                         <div className="col-sm-8">
                                             <input
                                                 type="text"
                                                 onChange={this.handleChange}
                                                 value={this.state.name}
                                                 name="name"
+                                                className="form-control" />
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="col-sm-3 control-label">Loại Hành Khách (VN)</label>
+                                        <div className="col-sm-8">
+                                            <input
+                                                type="text"
+                                                onChange={this.handleChange}
+                                                value={this.state.name_vi}
+                                                name="name_vi"
                                                 className="form-control" />
                                         </div>
                                     </div>

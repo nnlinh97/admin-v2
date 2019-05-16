@@ -247,7 +247,7 @@ class CreateTourTurnComponent extends Component {
             },
             {
                 Header: "Loại Khách",
-                accessor: "name",
+                accessor: "name_vi",
                 style: {
                     textAlign: 'center'
                 }

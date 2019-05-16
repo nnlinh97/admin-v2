@@ -363,3 +363,7 @@ section.content
     padding: 5px;
     font-size: 18px;
 }
+
+.styles_overlayCenter__YHoO7 {
+    z-index: 4999 !important;
+}

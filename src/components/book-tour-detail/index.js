@@ -11,6 +11,7 @@ import ContactInfoUpdate from './contact-info';
 import Payment from './payment';
 import CancelRequest from './cancel-request';
 import ChangeDate from './change-date';
+import Refund from './refund';
 import * as actions from './../../actions/index';
 import { apiGet, apiPost } from '../../services/api';
 import {
@@ -23,7 +24,8 @@ import {
     getSex,
     getCancelChecked,
     getPaymentChecked,
-    getPaymentType
+    getPaymentType,
+    getNumberDays
 } from './../../helper';
 import 'font-awesome/css/font-awesome.css';
 import './index.css';
@@ -43,6 +45,7 @@ class CreateTourTurnComponent extends Component {
             modalUpdateContactInfoIsOpen: false,
             modalCancelRequestIsOpen: false,
             modalChangeDateIsOpen: false,
+            modalRefundIsOpen: false,
             bookPay: null,
             passengerUpdate: null,
             contactInfoUpdate: null,
@@ -68,7 +71,8 @@ class CreateTourTurnComponent extends Component {
             paymentChecked: false,
             message: null,
             bookTourDetail: null,
-            code: ''
+            code: '',
+            messagePayment: null
         }
     }
 
@@ -100,7 +104,8 @@ class CreateTourTurnComponent extends Component {
             tourTurn: bookTourDetail.tour_turn,
             message: bookTourDetail.cancel_bookings.length > 0 ? bookTourDetail.cancel_bookings[0] : null,
             bookTourDetail: bookTourDetail,
-            code: bookTourDetail.code
+            code: bookTourDetail.code,
+            messagePayment: bookTourDetail.message_pay
         });
     }
 
@@ -176,6 +181,15 @@ class CreateTourTurnComponent extends Component {
         this.setState({ modalCancelRequestIsOpen: true });
     }
 
+    handleOpenModalRefund = (event) => {
+        event.preventDefault();
+        this.setState({ modalRefundIsOpen: true });
+    }
+
+    handleCloseRefundModal = () => {
+        this.setState({ modalRefundIsOpen: false });
+    }
+
     handleOncloseModalPay = () => {
         this.setState({ modalPayIsOpen: false });
     }
@@ -214,6 +228,7 @@ class CreateTourTurnComponent extends Component {
     hideSuccessAlert = () => {
         this.reRender();
         this.handleOncloseModalPay();
+        this.handleCloseRefundModal();
         this.handleCloseModalUpdatePassenger();
         this.handleCloseModalUpdateContactInfo();
         this.handleCloseModalCancelRequest();
@@ -269,6 +284,8 @@ class CreateTourTurnComponent extends Component {
         if (flag) {
             this.reRender();
             this.setState({ success: true });
+        } else {
+            this.setState({ error: true });
         }
     }
 
@@ -281,8 +298,16 @@ class CreateTourTurnComponent extends Component {
     }
 
     handleChangeDate = (result) => {
-        if(result){
-            this.setState({success: true});
+        if (result) {
+            this.setState({ success: true });
+        } else {
+            this.setState({ error: true });
+        }
+    }
+
+    handleRefundMoney = (result) => {
+        if (result) {
+            this.setState({ success: true });
         } else {
             this.setState({ error: true });
         }
@@ -453,6 +478,7 @@ class CreateTourTurnComponent extends Component {
                         handlePayment={this.handlePayment}
                         code={this.state.code}
                         totalPay={this.state.totalPay}
+                        contactInfo={this.state.contactInfo}
                     />}
                 </Modal>
 
@@ -471,6 +497,7 @@ class CreateTourTurnComponent extends Component {
                         tour={this.state.tourTurn.tour.name}
                         totalPay={this.state.totalPay}
                         holiday={this.state.tourTurn.isHoliday}
+                        contactInfo={this.state.contactInfo}
                     />}
                 </Modal>
 
@@ -511,6 +538,25 @@ class CreateTourTurnComponent extends Component {
                     />}
                 </Modal>
 
+                <Modal
+                    open={this.state.modalRefundIsOpen}
+                    onClose={this.handleCloseRefundModal}
+                    center
+                    styles={{ 'modal': { width: '1280px' } }}
+                    blockScroll={true} >
+                    {this.state.bookTourDetail && <Refund
+                        handleRefundMoney={this.handleRefundMoney}
+                        code={this.state.code}
+                        message={this.state.message}
+                        status={this.state.status}
+                        startDate={this.state.tourTurn.start_date}
+                        tour={this.state.tourTurn.tour.name}
+                        totalPay={this.state.totalPay}
+                        holiday={this.state.tourTurn.isHoliday}
+                        contactInfo={this.state.contactInfo}
+                    />}
+                </Modal>
+
                 <section className="content-header">
                     <div style={{
                         position: 'absolute',
@@ -535,6 +581,34 @@ class CreateTourTurnComponent extends Component {
                         />
                     </div>
                     <h1> Thông Tin Chi Tiết Đặt Tour <i>#{this.state.id}</i> </h1>
+                    <div className="right_header">
+                        {this.state.status === 'paid' && <i
+                            onClick={() => window.open(`/print/bill-payment/${this.state.code}`, '_blank')}
+                            style={{
+                                fontSize: '35px',
+                                marginBottom: '2px',
+                                marginRight: '15px',
+                                marginTop: '10px',
+                                color: '#3c8dbc',
+                                cursor: 'pointer'
+                            }}
+                            className="fa fa-print pull-right"
+                            title="in hóa đơn thanh toán"
+                        />}
+                        {this.state.status === 'refunded' && <i
+                            onClick={() => window.open(`/print/bill-cancel-booking/${this.state.code}`, '_blank')}
+                            style={{
+                                fontSize: '35px',
+                                marginBottom: '2px',
+                                marginRight: '15px',
+                                marginTop: '10px',
+                                color: '#3c8dbc',
+                                cursor: 'pointer'
+                            }}
+                            className="fa fa-print pull-right"
+                            title="in hóa đơn hoàn tiền"
+                        />}
+                    </div>
                 </section>
                 <section className="content">
                     <div className="row">
@@ -556,6 +630,12 @@ class CreateTourTurnComponent extends Component {
                                             onClick={() => this.openUpdateContactInfo(this.state.contactInfo)}
                                             style={{ cursor: 'pointer' }}
                                             className="fa fa-pencil" />}
+                                    </label>
+                                </div>
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">CMND/Passport</label>
+                                    <label className="col-sm-8 control-label">
+                                        {this.state.contactInfo ? this.state.contactInfo.passport : ''}
                                     </label>
                                 </div>
                                 <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
@@ -597,7 +677,7 @@ class CreateTourTurnComponent extends Component {
                                 <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                     <label className="col-sm-4 control-label">Giá/người</label>
                                     <label className="col-sm-8 control-label">
-                                        {this.state.tourTurn ? formatCurrency(this.state.tourTurn.price) : ''} VND
+                                        <mark style={{ backgroundColor: '#ff0' }}>{this.state.tourTurn ? formatCurrency(this.state.tourTurn.price) : ''}</mark> VND
                                     </label>
                                 </div>
                                 <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
@@ -617,7 +697,7 @@ class CreateTourTurnComponent extends Component {
                                 <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                     <label className="col-sm-4 control-label">Tổng tiền</label>
                                     <label className="col-sm-8 control-label">
-                                        {formatCurrency(this.state.totalPay)} VND
+                                        <mark style={{ backgroundColor: '#ff0' }}>{formatCurrency(this.state.totalPay)}</mark> VND
                                     </label>
                                 </div>
                                 {this.state.paymentMethod && <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
@@ -634,21 +714,47 @@ class CreateTourTurnComponent extends Component {
                                         </span>
                                     </label>
                                 </div>
+                                {(this.state.messagePayment && this.state.messagePayment.helper) && <>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Người thanh toán</label>
+                                        <label className="col-sm-8 control-label">
+                                            {this.state.messagePayment.name}
+                                        </label>
+                                    </div>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">CMND/Passport</label>
+                                        <label className="col-sm-8 control-label">
+                                            {this.state.messagePayment.passport}
+                                        </label>
+                                    </div>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Chú thích</label>
+                                        <label className="col-sm-8 control-label">
+                                            {this.state.messagePayment.note}
+                                        </label>
+                                    </div>
+                                </>}
                                 {this.state.message && <>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">Tin nhắn</label>
+                                        <label className="col-sm-4 control-label">Chú thích hủy tour</label>
                                         <label className="col-sm-8 control-label">
                                             {this.state.message.request_message}
                                         </label>
                                     </div>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">Gửi lúc</label>
+                                        <label className="col-sm-4 control-label">Thời gian</label>
                                         <label className="col-sm-8 control-label">
                                             {moment(this.state.message.request_time).format('DD/MM/YYYY HH:MM')}
                                         </label>
                                     </div>
                                     </>}
                                 {this.state.status === 'confirm_cancel' && <>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Xác nhận lúc</label>
+                                        <label className="col-sm-8 control-label">
+                                            {moment(this.state.message.confirm_time).format('DD/MM/YYYY HH:MM')}
+                                        </label>
+                                    </div>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Tiền hoàn trả</label>
                                         <label className="col-sm-8 control-label">
@@ -678,6 +784,7 @@ class CreateTourTurnComponent extends Component {
                                 <div className="box-body book_tour_detail-information">
                                     <div className="manager_btn">
                                         {getPaymentChecked(this.state.status) && <button
+                                            style={{ right: '130px' }}
                                             onClick={this.handleOpenModalPay}
                                             className="btn btn-xs btn-info custom-btn-infor" >
                                             Thanh Toán
@@ -686,6 +793,11 @@ class CreateTourTurnComponent extends Component {
                                             onClick={this.handleOpenModalCancelRequest}
                                             className="btn btn-xs btn-danger custom-btn-danger" >
                                             Xác Nhận Hủy
+                                        </button>}
+                                        {this.state.status === 'confirm_cancel' && <button
+                                            onClick={this.handleOpenModalRefund}
+                                            className="btn btn-xs btn-danger custom-btn-danger" >
+                                            Hoàn Tiền
                                         </button>}
                                     </div>
                                 </div>
