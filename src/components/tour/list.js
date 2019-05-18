@@ -18,14 +18,12 @@ class ListTourComponent extends Component {
     }
 
     async componentDidMount() {
-        let { listTour } = this.props;
-        if (!listTour.length) {
-            try {
-                listTour = await apiGet('/tour/getAllWithoutPagination');
-                this.props.getListTour(listTour.data.data);
-            } catch (error) {
-                console.log(error);
-            }
+        let listTour = []
+        try {
+            listTour = await apiGet('/tour/getAllWithoutPagination');
+            this.props.getListTour(listTour.data.data);
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -52,8 +50,18 @@ class ListTourComponent extends Component {
     render() {
         const columns = [
             {
+                Header: "STT",
+                Cell: props => <p>{props.index + 1}</p>,
+                style: { textAlign: 'center' },
+                style: { textAlign: 'center' },
+                width: 80,
+                maxWidth: 80,
+                minWidth: 80
+            },
+            {
                 Header: "ID",
                 accessor: "id",
+                Cell: props => <i>#{props.original.id}</i>,
                 style: { textAlign: 'center' },
                 width: 90,
                 maxWidth: 100,
@@ -80,7 +88,7 @@ class ListTourComponent extends Component {
             }
         ];
         return (
-            <div style={{ height: '100vh' }} className="content-wrapper">
+            <div style={{ minHeight: '100vh' }} className="content-wrapper">
                 <section className="content-header">
                     <h1> Danh Sách Tour </h1>
                     <div className="right_header">
@@ -95,28 +103,42 @@ class ListTourComponent extends Component {
                     </div>
                 </section>
                 <section className="content">
-                    <div class="search_box">
-                        <div class="search_icon">
-                            <i class="fa fa-search"></i>
+                    <div className="row">
+                        <div className="col-lg-12 col-xs-12">
+                            <form className="form-horizontal">
+                                <div className="box-body book_tour_detail-book_tour_history">
+                                    <div className="book_tour_detail-book_tour_history-title">
+                                        <h2>&nbsp;</h2>
+                                        <div style={{ top: '10px' }} className="search_box">
+                                            <div className="search_icon">
+                                                <i className="fa fa-search"></i>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                onChange={this.handleChange}
+                                                value={this.state.keySearch}
+                                                name="keySearch"
+                                                className="search_input"
+                                                placeholder="Tìm kiếm..."
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-xs-12 book_tour_history">
+                                                <ReactTable
+                                                    columns={columns}
+                                                    data={this.handleSearchTour(this.props.listTour, this.state.keySearch)}
+                                                    defaultPageSize={10}
+                                                    noDataText={'Please wait...'} >
+                                                </ReactTable>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <input
-                            type="text"
-                            onChange={this.handleChange}
-                            value={this.state.keySearch}
-                            name="title"
-                            className="search_input"
-                            placeholder="Tìm kiếm..."
-                        />
-                        {this.state.keySearch !== '' && <div class="search_result_count">
-                            <span>{this.handleSearchTour(this.props.listTour, this.state.keySearch).length} </span>results
-                        </div>}
                     </div>
-                    <ReactTable
-                        columns={columns}
-                        data={this.handleSearchTour(this.props.listTour, this.state.keySearch)}
-                        defaultPageSize={10}
-                        noDataText={'Please wait...'} >
-                    </ReactTable>
                 </section>
             </div>
         );

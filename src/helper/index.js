@@ -1,4 +1,6 @@
 
+import moment from 'moment';
+
 export const sortRoute = async (routes) => {
     //true nếu arrive nhỏ hơn leave
     const sync_check_time = (arrive, leave) => {
@@ -90,4 +92,250 @@ function changeAlias(alias) {
 
 export function matchString(str, key) {
     return changeAlias(str.toLowerCase()).indexOf(changeAlias(key.toLowerCase())) !== -1;
+}
+
+export function pagination(list, page, limit) {
+    const offset = (page - 1) * limit;
+    let result = [];
+    if (offset + limit > list.length) {
+        for (let i = offset; i < list.length; i++) {
+            result.push(list[i]);
+        }
+    } else {
+        for (let i = offset; i < offset + limit; i++) {
+            result.push(list[i]);
+        }
+    }
+    return result;
+}
+
+export function getStatusItem(status) {
+    let colorStatus = '';
+    let textStatus = '';
+    let bgStatus = '';
+    switch (status) {
+        case 'pending_cancel':
+            colorStatus = '#dd4b39';
+            textStatus = 'yêu cầu hủy';
+            bgStatus = '#fff';
+            break;
+        case 'booked':
+            colorStatus = '#f39c12';
+            textStatus = 'chưa thanh toán';
+            bgStatus = '#fff';
+            break;
+        case 'confirm_cancel':
+            colorStatus = '#A52A2A';
+            textStatus = 'xác nhận hủy';
+            bgStatus = '#fff';
+            break;
+        case 'paid':
+            colorStatus = '#5cb85c';
+            textStatus = 'đã thanh toán';
+            bgStatus = '#fff';
+            break;
+        case 'finished':
+            colorStatus = '#5bc0de';
+            textStatus = 'đã tham gia';
+            bgStatus = '#fff';
+            break;
+        case 'not_refunded':
+            colorStatus = '#8B0000';
+            textStatus = 'không nhận tiền';
+            bgStatus = '#fff';
+            break;
+        case 'refunded':
+            colorStatus = '#7FFF00';
+            textStatus = 'đã hoàn tiền';
+            bgStatus = '#fff';
+            break;
+        case 'cancelled':
+            colorStatus = '#777';
+            textStatus = 'đã hủy';
+            bgStatus = '#fff';
+            break;
+    }
+    return {
+        colorStatus,
+        textStatus
+    };
+}
+
+export function getStatusTourTurn(startDate, endDate) {
+    const currentDate = moment(new Date()).format('YYYY-MM-DD');
+
+    let status = "";
+    let css = '';
+    if (startDate <= currentDate && currentDate <= endDate) {
+        status = "đang đi";
+        css = 'warning'
+    } else if (startDate > currentDate) {
+        status = "chưa đi";
+        css = 'success';
+    } else {
+        status = "đã đi";
+        css = 'default';
+    }
+    return { status, css };
+}
+
+export function getSex(sex) {
+    let name = '';
+    switch (sex) {
+        case 'male':
+            name = 'Nam';
+            break;
+        case 'female':
+            name = 'Nữ';
+            break;
+        case 'other':
+            name = 'Khác';
+            break;
+    }
+    return name;
+}
+
+export function getCancelChecked(status) {
+    switch (status) {
+        case 'paid':
+        case 'pending_cancel':
+        case 'booked':
+            return true;
+        case 'cancelled':
+        case '':
+            return false;
+    }
+}
+
+export function getPaymentChecked(status) {
+    switch (status) {
+        case 'booked':
+            return true;
+        case 'paid':
+        case 'cancelled':
+        case 'pending_cancel':
+        case '':
+            return false;
+    }
+}
+
+export function getPercentRefund(numDate) {
+    if (numDate >= 15) {
+        return 100;
+    } else if (8 <= numDate && numDate <= 14) {
+        return 50;
+    } else if (5 <= numDate && numDate <= 7) {
+        return 30;
+    } else if (2 <= numDate && numDate <= 4) {
+        return 10;
+    } else {
+        return 0;
+    }
+}
+
+export function getFeeCancelBooking(numDay, holiday) {
+    if (!holiday) {
+        if (numDay >= 20) {
+            return 0;
+        } else if (15 <= numDay && numDay <= 19) {
+            return 15;
+        } else if (12 <= numDay && numDay <= 14) {
+            return 30;
+        } else if (8 <= numDay && numDay <= 11) {
+            return 50;
+        } else if (5 <= numDay && numDay <= 7) {
+            return 70;
+        } else if (2 <= numDay && numDay <= 4) {
+            return 90;
+        } else {
+            return 100;
+        }
+    } else {
+        if (numDay >= 30) {
+            return 0;
+        } else if (25 <= numDay && numDay <= 29) {
+            return 15;
+        } else if (22 <= numDay && numDay <= 24) {
+            return 30;
+        } else if (17 <= numDay && numDay <= 19) {
+            return 50;
+        } else if (8 <= numDay && numDay <= 16) {
+            return 70;
+        } else if (2 <= numDay && numDay <= 7) {
+            return 90;
+        } else {
+            return 100;
+        }
+    }
+}
+
+export function percentMoneyRefund(numDay, holiday) {
+    if (!holiday) {
+        if (numDay >= 20) {
+            return 100;
+        } else if (15 <= numDay && numDay <= 19) {
+            return 85;
+        } else if (12 <= numDay && numDay <= 14) {
+            return 70;
+        } else if (8 <= numDay && numDay <= 11) {
+            return 50;
+        } else if (5 <= numDay && numDay <= 7) {
+            return 30;
+        } else if (2 <= numDay && numDay <= 4) {
+            return 10;
+        } else {
+            return 0;
+        }
+    } else {
+        if (numDay >= 30) {
+            return 0;
+        } else if (25 <= numDay && numDay <= 29) {
+            return 85;
+        } else if (22 <= numDay && numDay <= 24) {
+            return 70;
+        } else if (17 <= numDay && numDay <= 19) {
+            return 50;
+        } else if (8 <= numDay && numDay <= 16) {
+            return 30;
+        } else if (2 <= numDay && numDay <= 7) {
+            return 10;
+        } else {
+            return 0;
+        }
+    }
+}
+
+export function getNumberDays(date1, date2) {
+    date1 = date1.split('-');
+    date2 = date2.split('-');
+
+    date1 = new Date(date1[0], date1[1], date1[2]);
+    date2 = new Date(date2[0], date2[1], date2[2]);
+
+    const date1_unixtime = parseInt(date1.getTime() / 1000);
+    const date2_unixtime = parseInt(date2.getTime() / 1000);
+
+    const timeDifference = date2_unixtime - date1_unixtime;
+
+    const timeDifferenceInHours = timeDifference / 60 / 60;
+
+    const timeDifferenceInDays = timeDifferenceInHours / 24;
+
+    return timeDifferenceInDays;
+}
+
+export function getPaymentType(type) {
+    let result = '';
+    switch (type) {
+        case 'incash':
+            result = 'Tiền mặt';
+            break;
+        case 'transfer':
+            result = 'Chuyển khoản';
+            break;
+        case 'online':
+            result = 'Trực tuyến';
+            break;
+    }
+    return result;
 }

@@ -16,6 +16,7 @@ class EditLocationComponent extends Component {
     }
 
     handleInputLocation = (location) => {
+        console.log(location)
         this.setState({ location });
     }
 

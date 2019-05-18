@@ -1,23 +1,12 @@
-import 'froala-editor/js/froala_editor.pkgd.min.js';
-import 'froala-editor/css/froala_style.min.css';
-import 'froala-editor/css/froala_editor.pkgd.min.css';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import ReactTable from 'react-table';
-import * as actions from './../../actions/index';
-import _ from 'lodash';
-import moment from 'moment';
-import DatePicker from "react-datepicker";
-import TimePicker from 'react-time-picker';
-import 'font-awesome/css/font-awesome.css';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import * as actions from './../../actions/index';
 import axios from 'axios';
 import { apiGet, apiPost } from '../../services/api';
-import Select from 'react-select';
 import './index.css';
 
-class CreateTourTurnComponent extends Component {
+class ChangePasswordComponent extends Component {
 
     constructor(props) {
         super(props);
@@ -72,40 +61,23 @@ class CreateTourTurnComponent extends Component {
                 'Content-Type': 'application/json',
                 Authorization: localStorage.token
             };
-            const body = {
-                new_password: this.state.newPassword,
-                old_password: this.state.currentPassword
-            };
+            const body = { new_password: this.state.newPassword, old_password: this.state.currentPassword };
             axios.defaults.headers.common['Authorization'] = `${localStorage.token}`;
             try {
                 const result = await apiPost(`/admin/updatePassword`, body, { headers: headers });
                 if (result && result.status === 200) {
-                    this.setState({
-                        success: true
-                    })
+                    this.setState({ success: true });
                 } else {
-                    this.setState({
-                        error: true,
-                        message: "Something went wrong!"
-                    });
+                    this.setState({ error: true, message: "Đã có lỗi xảy ra!" });
                 }
             } catch (error) {
-                this.setState({
-                    error: true,
-                    message: "Something went wrong!"
-                });
+                this.setState({ error: true, message: "Đã có lỗi xảy ra!" });
             }
         } else {
             if (this.checkWarning()) {
-                this.setState({
-                    error: true,
-                    message: "New Password must be different from Current Password!"
-                });
+                this.setState({ error: true, message: "Mật khẩu mới phải khác mật khẩu hiện tại!" });
             } else {
-                this.setState({
-                    error: true,
-                    message: "Something went wrong!"
-                });
+                this.setState({ error: true, message: "Đã có lỗi xảy ra!" });
             }
         }
     }
@@ -115,53 +87,46 @@ class CreateTourTurnComponent extends Component {
     }
 
     hideFailAlert = () => {
-        this.setState({
-            error: false
-        })
+        this.setState({ error: false });
     }
-
 
     render() {
         return (
-            <div style={{ height: '100vh' }} className="content-wrapper">
-                {this.state.success &&
-                    <SweetAlert success title="Successfully" onConfirm={this.hideSuccessAlert}>
-                        hihihehehaha
-                    </SweetAlert>
-                }
-                {this.state.error &&
-                    <SweetAlert
-                        warning
-                        confirmBtnText="Cancel"
-                        confirmBtnBsStyle="default"
-                        title="Fail!!!!!"
-                        onConfirm={this.hideFailAlert}
-                    >
-                        {this.state.message}
-                    </SweetAlert>
-                }
-                <section className="content-header">
-                    <h1>
-                        ĐỔI MẬT KHẨU
-                    </h1>
+            <div style={{ height: '100vh', paddingTop: '70px' }} className="content-wrapper">
+
+                {this.state.success && <SweetAlert
+                    success
+                    title="Lưu Thành Công"
+                    onConfirm={this.hideSuccessAlert}>
+                    Tiếp Tục...
+                </SweetAlert>}
+
+                {this.state.error && <SweetAlert
+                    warning
+                    confirmBtnText="Hủy"
+                    confirmBtnBsStyle="default"
+                    title={this.state.message}
+                    onConfirm={this.hideFailAlert}>
+                    Vui Lòng Kiểm Tra Lại...
+                </SweetAlert>}
+
+                <section style={{ marginBottom: '20px' }} className="content-header">
+                    <h1> ĐỔI MẬT KHẨU </h1>
                 </section>
                 <section className="content">
                     <div className="row">
                         <div className="col-lg-8 col-lg-offset-2 col-xs-8 col-xs-offset-2">
                             <div className="box box-info">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">Change Password Form</h3>
-                                </div>
                                 <form onSubmit={this.handleSave} className="form-horizontal">
                                     <div className="box-body">
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Current Password (*)</label>
+                                            <label className="col-sm-3 control-label">Mật khẩu hiện tại</label>
                                             <div className="col-sm-8">
                                                 <input type="password" onChange={this.handleChange} value={this.state.currentPassword} name="currentPassword" className="form-control" />
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">New Password (*)</label>
+                                            <label className="col-sm-3 control-label">Mật khẩu mới</label>
                                             <div className="col-sm-8">
                                                 <input type="password" onChange={this.handleChange} value={this.state.newPassword} name="newPassword" className="form-control" />
                                             </div>
@@ -169,18 +134,16 @@ class CreateTourTurnComponent extends Component {
 
                                         </div>
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Confirm Password (*)</label>
+                                            <label className="col-sm-3 control-label">Nhập lại mật khẩu mới</label>
                                             <div className="col-sm-8">
                                                 <input type="password" onChange={this.handleChange} value={this.state.confirmPassword} name="confirmPassword" className="form-control" />
                                             </div>
-                                            {this.checkNewAndConfirmPassword() &&
-                                                <i className="fa fa-check checked" />
-                                            }
+                                            {this.checkNewAndConfirmPassword() && <i className="fa fa-check checked" />}
                                         </div>
                                     </div>
-                                    <div className="box-footer">
-                                        <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button>
-                                        <button type="submit" className="btn btn-info pull-right">Save</button>
+                                    <div className="box-footer col-sm-11">
+                                        {/* <button onClick={this.handleCancel} type="button" className="btn btn-default">Cancel</button> */}
+                                        <button type="submit" className="btn btn-info pull-right">Lưu Thay Đổi</button>
                                     </div>
                                 </form>
                             </div>
@@ -193,26 +156,4 @@ class CreateTourTurnComponent extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        info: state.infoLocation,
-        listTypeLocation: state.listTypeLocation,
-        listLocation: state.listLocation,
-        listTour: state.listTour,
-        listRoute: state.listRoute
-    }
-}
-
-const mapDispatchToProps = (dispatch, action) => {
-    return {
-        changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
-        getListTypeLocation: (type) => dispatch(actions.getListTypeLocation(type)),
-        createType: (type) => dispatch(actions.createType(type)),
-        editType: (type) => dispatch(actions.editType(type)),
-        getListTour: (tour) => dispatch(actions.getListTour(tour)),
-        getListTransport: (transport) => dispatch(actions.getListTransport(transport)),
-        createRoute: (route) => dispatch(actions.createRoute(route)),
-        getListRoute: (route) => dispatch(actions.getListRoute(route))
-    }
-}
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreateTourTurnComponent));
+export default withRouter(ChangePasswordComponent);

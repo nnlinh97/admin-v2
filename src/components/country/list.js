@@ -119,11 +119,18 @@ class ListCountryComponent extends Component {
     render() {
         const columns = [
             {
+                Header: "STT",
+                Cell: props => <p>{props.index + 1}</p>,
+                style: { textAlign: 'center' },
+                width: 80,
+                maxWidth: 80,
+                minWidth: 80
+            },
+            {
                 Header: "ID",
                 accessor: "id",
-                style: {
-                    textAlign: 'center'
-                },
+                Cell: props => <i>#{props.original.id}</i>,
+                style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
@@ -131,32 +138,25 @@ class ListCountryComponent extends Component {
             {
                 Header: "Tên Quốc Gia",
                 accessor: "name",
-                style: {
-                    textAlign: 'left',
-                    marginLeft: '50px'
-                }
+                style: { textAlign: 'center' }
             },
             {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
-                    return (
-                        <button className="btn btn-xs btn-success"
-                            onClick={() => this.handleOpenEditModal(props)}
-                            title="chỉnh sửa" >
-                            <i className="fa fa-pencil" />
-                        </button>
-                    )
+                    return <button className="btn btn-xs btn-success"
+                        onClick={() => this.handleOpenEditModal(props)}
+                        title="chỉnh sửa" >
+                        <i className="fa fa-pencil" />
+                    </button>
                 },
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
             }
         ];
         return (
-            <div style={{ height: '90vh' }} className="content-wrapper">
+            <div style={{ minHeight: '100vh' }} className="content-wrapper">
 
                 {this.state.success && <SweetAlert
                     success
@@ -197,9 +197,7 @@ class ListCountryComponent extends Component {
                 </Modal>
 
                 <section className="content-header">
-                    <h1>
-                        Danh sách Quốc Gia
-                    </h1>
+                    <h1> Danh sách Quốc Gia </h1>
                     <div className="right_header">
                         <button
                             onClick={this.handleOpenCreateModal}
@@ -215,29 +213,42 @@ class ListCountryComponent extends Component {
                     </div>
                 </section>
                 <section className="content">
-                    <div class="search_box">
-                        <div class="search_icon">
-                            <i class="fa fa-search"></i>
+                    <div className="row">
+                        <div className="col-lg-12 col-xs-12">
+                            <form className="form-horizontal">
+                                <div className="box-body book_tour_detail-book_tour_history">
+                                    <div className="book_tour_detail-book_tour_history-title">
+                                        <h2>&nbsp;</h2>
+                                        <div style={{ top: '10px' }} className="search_box">
+                                            <div className="search_icon">
+                                                <i className="fa fa-search"></i>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                onChange={this.handleChange}
+                                                value={this.state.keySearch}
+                                                name="keySearch"
+                                                className="search_input"
+                                                placeholder="Tìm kiếm..."
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-xs-12 book_tour_history">
+                                                <ReactTable
+                                                    columns={columns}
+                                                    data={this.handleSearchCountry(this.props.listCountries, this.state.keySearch)}
+                                                    defaultPageSize={10}
+                                                    noDataText={'Please wait...'} >
+                                                </ReactTable>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <input
-                            type="text"
-                            onChange={this.handleChange}
-                            value={this.state.keySearch}
-                            name="title"
-                            className="search_input"
-                            placeholder="Tìm kiếm..."
-                        />
-                        {this.state.keySearch !== '' && <div class="search_result_count">
-                            <span>{this.handleSearchCountry(this.props.listCountries, this.state.keySearch).length} </span>results
-                        </div>}
                     </div>
-
-                    <ReactTable
-                        columns={columns}
-                        data={this.handleSearchCountry(this.props.listCountries, this.state.keySearch)}
-                        defaultPageSize={10}
-                        noDataText={'Please wait...'} >
-                    </ReactTable>
                 </section>
             </div>
         );

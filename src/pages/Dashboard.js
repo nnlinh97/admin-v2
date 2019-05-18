@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
-import Footer from '../components/Footer';
-import DashboardComponent from '../components/dashboard/content';
+import Header from '../components/header/';
+import Sidebar from '../components/sidebar/';
+import Footer from '../components/footer/';
+import DashboardComponent from '../components/dashboard/';
 import { URL } from '../constants/url';
 import { withRouter } from 'react-router-dom';
 

@@ -2,39 +2,39 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
-import 'react-table/react-table.css';
-// import Modal from 'react-bootstrap-modal';
-import './modal.css';
-import * as actions from './../../actions/index';
-import { URL } from '../../constants/url';
-import axios from 'axios';
-import { apiGet, apiPost } from './../../services/api';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import * as actions from './../../actions/index';
+import { matchString } from '../../helper';
+import { apiGet, apiPost } from './../../services/api';
 import Modal from 'react-responsive-modal';
 import CreateComponent from './create';
 import EditComponent from './edit';
 import './list.css';
+import 'react-table/react-table.css';
 
-class ListTypesComponent extends Component {
+class ListTypePassenger extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            listTypes: [],
-            createModal: false,
-            editModal: false,
-            type: null,
-            name: '',
             error: false,
-            success: false
+            success: false,
+            modalCreateIsOpen: false,
+            modalEditIsOpen: false,
+            name: '',
+            id: '',
+            name_vi: '',
+            keySearch: '',
+            listTypePassenger: []
         }
     }
 
     async componentDidMount() {
         try {
             let listTypePassenger = await apiGet('/type_passenger/getAll');
-            console.log(listTypePassenger.data.data);
             this.props.getListTypePassenger(listTypePassenger.data.data);
+            console.log(listTypePassenger.data.data)
+            this.setState({ listTypePassenger: listTypePassenger.data.data });
         } catch (error) {
             console.log(error);
         }
@@ -42,34 +42,34 @@ class ListTypesComponent extends Component {
 
     openEditModal = (props) => {
         this.setState({
-            editModal: true,
+            modalEditIsOpen: true,
             name: props.original.name,
-            marker: props.original.marker,
-            id: props.original.id
+            id: props.original.id,
+            name_vi: props.original.name_vi
         });
     }
 
     closeEditModal = () => {
-        this.setState({ editModal: false, id: null,  name: '', marker: '' });
+        this.setState({ modalEditIsOpen: false, id: null, name: '', name_vi: '' });
     }
 
     redirectToCreateTypePage = () => {
-        this.setState({  createModal: true });
+        this.setState({ modalCreateIsOpen: true });
     }
 
-    openCreateModal = () => {
-        this.setState({ createModal: true  });
+    handleOpenCreateModal = () => {
+        this.setState({ modalCreateIsOpen: true });
     }
 
     closeCreateModal = () => {
-        this.setState({ createModal: false, name: '', marker: '' });
+        this.setState({ modalCreateIsOpen: false, name: '' });
     }
 
-    handleCreate = async (name) => {
-        if (name !== '') {
+    handleCreate = async (type) => {
+        if (type.name !== '' && type.name_vi !== '') {
             try {
-                let newTypePassenger = await apiPost('/type_passenger/create', { name: name });
-                await this.props.createTypePassenger(newTypePassenger.data);
+                let newTypePassenger = await apiPost('/type_passenger/create', type);
+                this.props.createTypePassenger(newTypePassenger.data);
                 this.setState({ success: true });
             } catch (error) {
                 this.setState({ error: true });
@@ -78,79 +78,85 @@ class ListTypesComponent extends Component {
             this.setState({ error: true });
         }
     }
-    
-    handleEdit = async (name) => {
-        if (!this.state.id || name === '') {
-            this.setState({ error: true });
-        } else {
+
+    handleEdit = async (type) => {
+        if (type.id !== '' && type.name !== '') {
             try {
-                let typePassenger = await apiPost('/type_passenger/update', {
-                    id: this.state.id,
-                    name: name
-                });
-                await this.props.editTypePassenger(typePassenger.data.data);    
+                let typePassenger = await apiPost('/type_passenger/update', type);
+                this.props.editTypePassenger(typePassenger.data.data);
                 this.setState({ success: true });
             } catch (error) {
                 this.setState({ error: true });
             }
+        } else {
+            this.setState({ error: true });
         }
     }
 
     hideSuccessAlert = () => {
-        this.setState({ success: false, createModal: false, editModal: false });
+        this.setState({ success: false, modalCreateIsOpen: false, modalEditIsOpen: false });
     }
 
     hideFailAlert = () => {
         this.setState({ error: false });
     }
 
+    handleChange = ({ target }) => {
+        this.setState({ keySearch: target.value });
+    }
+
+    handleSearchTypePassenger = (listTypePassenger, keySearch) => {
+        if (keySearch !== '' && listTypePassenger.length > 0) {
+            return listTypePassenger.filter(type => matchString(type.name_vi, keySearch) || matchString(type.name, keySearch) || matchString(type.id.toString(), keySearch));
+        }
+        return listTypePassenger;
+    }
+
     render() {
         const columns = [
             {
-                Header: "ID",
-                accessor: "id",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                },
-                width: 100,
-                maxWidth: 100,
-                minWidth: 100
+                Header: "STT",
+                Cell: props => <p>{props.index + 1}</p>,
+                style: { textAlign: 'center' },
+                width: 80,
+                maxWidth: 80,
+                minWidth: 80
             },
             {
-                Header: "NAME",
+                Header: "ID",
+                accessor: "id",
+                Cell: props => <i>#{props.original.id}</i>,
+                style: { textAlign: 'center' },
+                width: 90,
+                maxWidth: 100,
+                minWidth: 80
+            },
+            {
+                Header: "Loại hành khách (EN)",
                 accessor: "name",
-                sortable: true,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                }
+                style: { textAlign: 'center' }
+            },
+            {
+                Header: "Loại hành khách (VN)",
+                accessor: "name_vi",
+                style: { textAlign: 'center' }
             },
             {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
-                    return (
-                        <button className="btn btn-xs btn-success"
-                            onClick={() => this.openEditModal(props)}
-                        >
-                            <i className="fa fa-pencil" />
-                        </button>
-                    )
+                    return <button className="btn btn-xs btn-success"
+                        onClick={() => this.openEditModal(props)} >
+                        <i className="fa fa-pencil" />
+                    </button>
                 },
-                sortable: false,
-                filterable: false,
-                style: {
-                    textAlign: 'center'
-                },
+                style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
             }
         ];
-        const { createModal, editModal, name, marker } = this.state;
         return (
-            <div style={{ height: '100vh' }} className="content-wrapper">
+            <div style={{ minHeight: '100vh' }} className="content-wrapper">
                 {this.state.success && <SweetAlert
                     success
                     title="Lưu Thành Công"
@@ -167,7 +173,7 @@ class ListTypesComponent extends Component {
                 </SweetAlert>}
 
                 <Modal
-                    open={createModal}
+                    open={this.state.modalCreateIsOpen}
                     onClose={this.closeCreateModal}
                     center
                     styles={{ 'modal': { width: '1280px' } }}
@@ -176,69 +182,88 @@ class ListTypesComponent extends Component {
                 </Modal>
 
                 <Modal
-                    open={editModal}
+                    open={this.state.modalEditIsOpen}
                     onClose={this.closeEditModal}
                     center
                     styles={{ 'modal': { width: '1280px' } }}
-                    blockScroll={true}
-                >
-                    <EditComponent handleEdit={this.handleEdit} name={name} />
+                    blockScroll={true} >
+                    <EditComponent
+                        handleEdit={this.handleEdit}
+                        name={this.state.name}
+                        id={this.state.id}
+                        name_vi={this.state.name_vi} />
                 </Modal>
-                
-                <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content-header">
-                    <h1>
-                        List Type Passenger
-                    </h1>
-                </section>
-                <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content">
-                    <div className="row">
+
+                <section className="content-header">
+                    <h1> Danh Sách Loại Hành Khách </h1>
+                    <div className="right_header">
                         <button
-                            onClick={this.openCreateModal}
+                            onClick={this.handleOpenCreateModal}
                             style={{
                                 marginBottom: '2px',
                                 marginRight: '15px'
                             }}
                             type="button"
+                            title="thêm mới"
                             className="btn btn-success pull-right">
-                            <i className="fa fa-plus" />&nbsp;Create
+                            <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
                     </div>
-
-                    <ReactTable
-                        columns={columns}
-                        data={this.props.listTypePassenger ? this.props.listTypePassenger : []}
-                        defaultPageSize={10}
-                        noDataText={'Please wait...'}
-                    >
-                    </ReactTable>
                 </section>
-
-
-
+                <section className="content">
+                    <div className="row">
+                        <div className="col-lg-12 col-xs-12">
+                            <form className="form-horizontal">
+                                <div className="box-body book_tour_detail-book_tour_history">
+                                    <div className="book_tour_detail-book_tour_history-title">
+                                        <h2>&nbsp;</h2>
+                                        <div style={{ top: '10px' }} className="search_box">
+                                            <div className="search_icon">
+                                                <i className="fa fa-search"></i>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                onChange={this.handleChange}
+                                                value={this.state.keySearch}
+                                                name="keySearch"
+                                                className="search_input"
+                                                placeholder="Tìm kiếm..."
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-xs-12 book_tour_history">
+                                                <ReactTable
+                                                    columns={columns}
+                                                    data={this.handleSearchTypePassenger(this.props.listTypePassenger, this.state.keySearch)}
+                                                    defaultPageSize={10}
+                                                    noDataText={'vui lòng đợi...'} >
+                                                </ReactTable>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
             </div>
         );
     }
 }
 
-// export default withRouter(ListTypesComponent);
 const mapStateToProps = (state) => {
     return {
-        info: state.infoLocation,
-        allType: state.allType,
-        allLocation: state.allLocation,
         listTypePassenger: state.listTypePassenger
     }
 }
 
 const mapDispatchToProps = (dispatch, action) => {
     return {
-        changeLocationInfo: (info) => dispatch(actions.changeLocationInfo(info)),
-        getListTypeLocation: (type) => dispatch(actions.getListTypeLocation(type)),
-        createType: (type) => dispatch(actions.createType(type)),
-        editType: (type) => dispatch(actions.editType(type)),
         getListTypePassenger: (listTypePassenger) => dispatch(actions.getListTypePassenger(listTypePassenger)),
         createTypePassenger: (data) => dispatch(actions.createTypePassenger(data)),
         editTypePassenger: (data) => dispatch(actions.editTypePassenger(data))
     }
 }
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListTypesComponent));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListTypePassenger));

@@ -10,7 +10,6 @@ import { apiGet, apiPost } from './../../services/api';
 import CreateComponent from './create';
 import EditComponent from './edit';
 import { matchString } from '../../helper';
-import './modal.css';
 import './list.css';
 
 class ListProvinceComponent extends Component {
@@ -116,8 +115,17 @@ class ListProvinceComponent extends Component {
     render() {
         const columns = [
             {
+                Header: "STT",
+                Cell: props => <p>{props.index + 1}</p>,
+                style: { textAlign: 'center' },
+                width: 80,
+                maxWidth: 80,
+                minWidth: 80
+            },
+            {
                 Header: "ID",
                 accessor: "id",
+                Cell: props => <i>#{props.original.id}</i>,
                 style: { textAlign: 'center' },
                 width: 100,
                 maxWidth: 100,
@@ -148,90 +156,101 @@ class ListProvinceComponent extends Component {
                 minWidth: 100
             }
         ];
-        return (
-            <div style={{ height: '100vh' }} className="content-wrapper">
+        return <div style={{ minHeight: '100vh' }} className="content-wrapper">
 
-                {this.state.success && <SweetAlert
-                    success
-                    title="Lưu Thành Công"
-                    onConfirm={this.hideSuccessAlert}>
-                    Tiếp Tục...
+            {this.state.success && <SweetAlert
+                success
+                title="Lưu Thành Công"
+                onConfirm={this.hideSuccessAlert}>
+                Tiếp Tục...
                 </SweetAlert>}
 
-                {this.state.error && <SweetAlert
-                    warning
-                    confirmBtnText="Cancel"
-                    confirmBtnBsStyle="default"
-                    title="Đã Có Lỗi Xảy Ra!"
-                    onConfirm={this.hideFailAlert}>
-                    Vui Lòng Kiểm Tra Lại...
+            {this.state.error && <SweetAlert
+                warning
+                confirmBtnText="Cancel"
+                confirmBtnBsStyle="default"
+                title="Đã Có Lỗi Xảy Ra!"
+                onConfirm={this.hideFailAlert}>
+                Vui Lòng Kiểm Tra Lại...
                 </SweetAlert>}
 
-                <Modal
-                    open={this.state.modalCreateIsOpen}
-                    onClose={this.handleCloseCreateModal}
-                    center
-                    styles={{ 'modal': { width: '1280px' } }}
-                    blockScroll={true} >
-                    <CreateComponent
-                        handleCreateProvince={this.handleCreateProvince}
-                        listCountries={this.props.listCountries}
-                    />
-                </Modal>
+            <Modal
+                open={this.state.modalCreateIsOpen}
+                onClose={this.handleCloseCreateModal}
+                center
+                styles={{ 'modal': { width: '1280px' } }}
+                blockScroll={true} >
+                <CreateComponent
+                    handleCreateProvince={this.handleCreateProvince}
+                    listCountries={this.props.listCountries}
+                />
+            </Modal>
 
-                <Modal
-                    open={this.state.modalEditIsOpen}
-                    onClose={this.handleCloseEditModal}
-                    center
-                    styles={{ 'modal': { width: '1280px' } }}
-                    blockScroll={true} >
-                    <EditComponent
-                        handleEditProvince={this.handleEditProvince}
-                        listCountries={this.props.listCountries}
-                        province={this.state.province}
-                    />
-                </Modal>
+            <Modal
+                open={this.state.modalEditIsOpen}
+                onClose={this.handleCloseEditModal}
+                center
+                styles={{ 'modal': { width: '1280px' } }}
+                blockScroll={true} >
+                <EditComponent
+                    handleEditProvince={this.handleEditProvince}
+                    listCountries={this.props.listCountries}
+                    province={this.state.province}
+                />
+            </Modal>
 
-                <section className="content-header">
-                    <h1> Danh Sách Tỉnh Thành </h1>
-                    <div className="right_header">
-                        <button
-                            onClick={this.handleOpenCreateModal}
-                            style={{ marginBottom: '2px', marginRight: '15px' }}
-                            type="button"
-                            title="thêm mới"
-                            className="btn btn-success pull-right">
-                            <i className="fa fa-plus" />&nbsp;Thêm
+            <section className="content-header">
+                <h1> Danh Sách Tỉnh Thành </h1>
+                <div className="right_header">
+                    <button
+                        onClick={this.handleOpenCreateModal}
+                        style={{ marginBottom: '2px', marginRight: '15px' }}
+                        type="button"
+                        title="thêm mới"
+                        className="btn btn-success pull-right">
+                        <i className="fa fa-plus" />&nbsp;Thêm
                         </button>
+                </div>
+            </section>
+            <section className="content">
+                <div className="row">
+                    <div className="col-lg-12 col-xs-12">
+                        <form className="form-horizontal">
+                            <div className="box-body book_tour_detail-book_tour_history">
+                                <div className="book_tour_detail-book_tour_history-title">
+                                    <h2>&nbsp;</h2>
+                                    <div style={{ top: '10px' }} className="search_box">
+                                        <div className="search_icon">
+                                            <i className="fa fa-search"></i>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            onChange={this.handleChange}
+                                            value={this.state.keySearch}
+                                            name="keySearch"
+                                            className="search_input"
+                                            placeholder="Tìm kiếm..."
+                                        />
+                                    </div>
+                                </div>
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-xs-12 book_tour_history">
+                                            <ReactTable
+                                                columns={columns}
+                                                data={this.handleSearchProvince(this.props.listProvinces, this.state.keySearch)}
+                                                defaultPageSize={10}
+                                                noDataText={'Please wait...'} >
+                                            </ReactTable>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </section>
-                <section className="content">
-                    <div class="search_box">
-                        <div class="search_icon">
-                            <i class="fa fa-search"></i>
-                        </div>
-                        <input
-                            type="text"
-                            onChange={this.handleChange}
-                            value={this.state.keySearch}
-                            name="title"
-                            className="search_input"
-                            placeholder="Tìm kiếm..."
-                        />
-                        {this.state.keySearch !== '' && <div class="search_result_count">
-                            <span>{this.handleSearchProvince(this.props.listProvinces, this.state.keySearch).length} </span>results
-                        </div>}
-                    </div>
-
-                    <ReactTable
-                        columns={columns}
-                        data={this.handleSearchProvince(this.props.listProvinces, this.state.keySearch)}
-                        defaultPageSize={10}
-                        noDataText={'Please wait...'} >
-                    </ReactTable>
-                </section>
-            </div>
-        );
+                </div>
+            </section>
+        </div>
     }
 }
 

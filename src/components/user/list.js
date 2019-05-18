@@ -54,14 +54,20 @@ class ListTypesComponent extends Component {
     render() {
         const columns = [
             {
+                Header: "STT",
+                Cell: props => <p>{props.index + 1}</p>,
+                style: { textAlign: 'center' },
+                style: { textAlign: 'center' },
+                width: 80,
+                maxWidth: 80,
+                minWidth: 80
+            },
+            {
                 Header: "ID",
                 accessor: "id",
-                sortable: false,
-                filterable: true,
-                style: {
-                    textAlign: 'center'
-                },
-                width: 80,
+                Cell: props => <i>#{props.original.id}</i>,
+                style: { textAlign: 'center' },
+                width: 90,
                 maxWidth: 100,
                 minWidth: 80
             },

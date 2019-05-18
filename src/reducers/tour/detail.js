@@ -1,5 +1,4 @@
 import * as Types from './../../constants/index';
-import _ from 'lodash';
 
 const initialState = null;
 const getListTour = (state = initialState, action) => {

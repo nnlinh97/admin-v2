@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import Modal from 'react-responsive-modal';
-import './../modal.css';
-import { apiGet, apiPost } from './../../../services/api';
 
 class CreateCountryComponent extends Component {
 

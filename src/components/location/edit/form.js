@@ -39,6 +39,11 @@ class InfoEdit extends Component {
         try {
             location = await apiGet(`/location/getById/${id}`)
             location = location.data.data;
+            this.props.handleInputLocation({
+                marker: { lat: parseFloat(location.latitude), lng: parseFloat(location.longitude) },
+                address: location.address
+            });
+            console.log(location)
         } catch (error) {
             console.log(error);
         }
@@ -84,6 +89,7 @@ class InfoEdit extends Component {
     }
 
     componentWillReceiveProps = (nextProps) => {
+        console.log('componentWillReceiveProps')
         const { locationInfo } = nextProps;
         if (locationInfo) {
             this.setState({

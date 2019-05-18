@@ -23,7 +23,6 @@ class CreateTypeLocationComponent extends Component {
     }
 
     render() {
-        const { name, marker } = this.state;
         return <div style={{ marginLeft: '0px', height: '285px' }} className="content-wrapper">
             <section style={{ marginBottom: "20px" }} className="content-header">
                 <h1> Thêm Mới Loại Địa Điểm</h1>

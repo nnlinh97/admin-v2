@@ -1,0 +1,87 @@
+.print_infor_tour .title_tour
+{
+    font-weight: bold;
+    font-size: 30px;
+    text-align: center;
+    margin-top: 10px;
+}
+.print_infor_tour .row_title_h2
+{
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+.print_infor_tour .custom-table-responsive
+{
+    padding: 0;
+}
+.print_infor_tour .table_info_passengers tbody td
+{
+    padding: 0;
+}
+.print_infor_tour .table_info_passengers tbody td:nth-child(5)
+{
+    text-overflow:ellipsis;
+}
+.print_infor_tour .table_info_passengers .mini_table
+{
+    margin: 0 !important;
+    width: 100% !important;
+}
+.print_infor_tour .table_info_passengers td
+{
+    padding: 2px !important;
+}
+.print_infor_tour .box-body-main
+{
+    margin: 0 !important;
+}
+.print_infor_tour .box-body-main-left
+{
+    display: table-cell;
+    width: 50%;
+}
+.print_infor_tour .box-body-main-right
+{
+    display: table-cell;
+    width: 50%;
+}
+.print_infor_tour .box-body-left
+{
+    display: table-cell;
+    width: 50% !important;
+}
+.print_infor_tour .box-body-right 
+{
+    display: table-cell;
+    width: 50% !important;
+}
+.print_infor_tour .row_title_h2
+{
+    display: table;
+    width: 100%;
+}
+.print_infor_tour .row_title_h2 h2
+{
+    display: table-cell;
+    width: 95%;
+}
+.print_infor_tour .row_title_h2 button
+{
+    display: table-cell;
+    width: 5%;
+    background: #fff;
+    height: 25px;
+    width: 25px;
+    border: 0;
+}
+.print_infor_tour .row_title_h2 button:hover
+{
+    border: 1px solid #000;
+}
+.print_infor_tour .row_title_h2 button i
+{
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    color: #3c8dbc;
+}

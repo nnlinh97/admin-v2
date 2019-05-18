@@ -10,7 +10,7 @@ import tourDetail from './tour/detail';
 import listTourTurn from './tour-turn/list';
 import tourTurnDetail from './tour-turn/detail';
 import listRoute from './route/list';
-import routeDetail from './route/detail';
+// import routeDetail from './route/detail';
 import listTransport from './transport/list';
 import transportDetail from './transport/detail';
 import listUser from './user/list';
@@ -19,6 +19,7 @@ import listBookTourTurn from './book-tour/list';
 import bookTourTurnDetail from './book-tour/detail';
 import listCountries from './country/list';
 import listProvinces from './province/list';
+import profile from './login/';
 
 const appReducers = combineReducers({
    searchLocation,
@@ -39,7 +40,8 @@ const appReducers = combineReducers({
    listBookTourTurn,
    bookTourTurnDetail,
    listCountries,
-   listProvinces
+   listProvinces,
+   profile
 });
 
 export default appReducers;

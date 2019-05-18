@@ -1,10 +1,10 @@
 import React from 'react';
-import { compose, withProps, withStateHandlers, lifecycle } from "recompose";
-import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
-import { SearchBox } from "react-google-maps/lib/components/places/SearchBox";
-import _ from 'lodash';
+// import { compose, withProps, withStateHandlers, lifecycle } from "recompose";
+// import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
+// import { SearchBox } from "react-google-maps/lib/components/places/SearchBox";
+// import _ from 'lodash';
 import Geocode from "react-geocode";
-import { mapOption } from '../../../constants/map-option';
+// import { mapOption } from '../../../constants/map-option';
 import MapComponent from './map-component';
 const KEY_GOOGLE_MAP = 'AIzaSyDL7sUf9bCXYdpq5RGDBvnxD1VG9C1619Q'
 Geocode.setApiKey(KEY_GOOGLE_MAP);

@@ -1,5 +1,12 @@
 import * as Types from './../constants/index';
 
+export const login = (profile) => {
+    return {
+        type: Types.LOGIN,
+        profile
+    }
+}
+
 export const searchLocation = (location) => {
     return {
         type: Types.SEARCH_LOCATION,
