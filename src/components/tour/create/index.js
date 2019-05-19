@@ -558,6 +558,34 @@ class ListTypesComponent extends Component {
                         <label className="title_row">Danh sách hình ảnh</label>
                         <input className="upload_image_create_tour" onChange={this.handleChangeListImages} type="file" multiple />
                         <div className="slideshow">
+                            <div className="imageOfSlideshow">
+                                <img></img>
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </div>
+                            <div className="imageOfSlideshow">
+                                <img></img>
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </div>
+                            <div className="imageOfSlideshow">
+                                <img></img>
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </div>
+                            <div className="imageOfSlideshow">
+                                <img></img>
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </div>
+                            <div className="imageOfSlideshow">
+                                <img></img>
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </div>
+                            <div className="imageOfSlideshow">
+                                <img></img>
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </div>
+                            <div className="imageOfSlideshow">
+                                <img></img>
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </div>
                             {this.state.listImagesPreviview.length > 6 && <div className="">
                                 <i
                                     onClick={this.previousImage}
@@ -575,6 +603,7 @@ class ListTypesComponent extends Component {
                             } */}
                             {this.state.listImagesPreviview.length === 0 && <div className="imageOfSlideshow">
                                 <p onClick={this.handleOpenModalListImage} style={{ fontSize: '20px', marginTop: '40%' }}>không có dữ liệu...</p>
+
                             </div>}
                             {this.state.listImagesPreviview.length > 6 && <div className="">
                                 <i

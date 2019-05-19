@@ -257,27 +257,30 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
 /* Style Image */
 .slideshow
 {
-    display: -webkit-flex; /* Safari */
-    -webkit-flex-direction: row-reverse; /* Safari 6.1+ */
+    /* display: -webkit-flex;
+    -webkit-flex-direction: row-reverse;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: row;
+    flex-direction: row; */
     /* border: 1px solid #ccc; */
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    height: 200px;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     padding-top: 5px;
     padding-bottom: 5px;
 }
-.imageOfSlideshow,
-.addImageOfSlideshow
+.imageOfSlideshow
 {
     position: relative;
     height: 180px;
     width: 180px;
     margin: 0 5px;
     vertical-align: middle;
-    
+    display: inline-block;
 }
 .imageOfSlideshow img
 {
@@ -299,6 +302,25 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
 .imageOfSlideshow i:hover
 {
     font-size: 25px;
+}
+/* width */
+.slideshow::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+.slideshow::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+/* Handle */
+.slideshow::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+/* Handle on hover */
+.slideshow::-webkit-scrollbar-thumb:hover {
+    background: #555; 
 }
 /* Style Row 5 */
 .row_5
