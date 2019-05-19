@@ -358,3 +358,11 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
 {
     width: 100%;
 }
+.upload_image_create_tour
+{
+    display: inline !important;
+    margin-left: 20px;
+    /* float: right;
+    margin-top: 23px;
+    margin-bottom: 10px; */
+}

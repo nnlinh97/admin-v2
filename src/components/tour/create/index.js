@@ -531,7 +531,7 @@ class ListTypesComponent extends Component {
                             </div>
                             <div>
                                 <label className="title_row">Ảnh đại diện *</label>
-                                <input id="upload-image" onChange={this.handleChangeImage} type="file" /><br />
+                                <input id="upload-image" className="upload_image_create_tour" onChange={this.handleChangeImage} type="file" /><br />
                                 <div className="inputImage">
                                     {this.state.previewImage !== '' ?
                                         <img src={this.state.previewImage} /> :
@@ -556,7 +556,7 @@ class ListTypesComponent extends Component {
                     </div>
                     <div className="row row_2">
                         <label className="title_row">Danh sách hình ảnh</label>
-                        <input onChange={this.handleChangeListImages} type="file" multiple />
+                        <input className="upload_image_create_tour" onChange={this.handleChangeListImages} type="file" multiple />
                         <div className="slideshow">
                             {this.state.listImagesPreviview.length > 6 && <div className="">
                                 <i
