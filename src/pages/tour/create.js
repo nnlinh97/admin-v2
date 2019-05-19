@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from '../../components/header/';
 import Footer from '../../components/footer/';
 import Sidebar from '../../components/sidebar/';
-import CreateTourComponent from '../../components/tour/create';
+import CreateTourComponent from '../../components/tour/create/index';
 
 
 

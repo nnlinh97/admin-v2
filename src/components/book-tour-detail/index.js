@@ -786,7 +786,7 @@ class CreateTourTurnComponent extends Component {
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Chú thích hủy tour</label>
                                         <label className="col-sm-8 control-label">
-                                            {this.state.message.request_message}
+                                            {this.state.message.request_message !== '' ? this.state.message.request_message : 'không có'}
                                         </label>
                                     </div>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">

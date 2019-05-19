@@ -1,5 +1,6 @@
 
 import moment from 'moment';
+import dateFns from 'date-fns';
 
 export const sortRoute = async (routes) => {
     //true nếu arrive nhỏ hơn leave
@@ -288,7 +289,7 @@ export function percentMoneyRefund(numDay, holiday) {
         }
     } else {
         if (numDay >= 30) {
-            return 0;
+            return 100;
         } else if (25 <= numDay && numDay <= 29) {
             return 85;
         } else if (22 <= numDay && numDay <= 24) {
@@ -303,6 +304,15 @@ export function percentMoneyRefund(numDay, holiday) {
             return 0;
         }
     }
+}
+
+export function getDateAfter(days) {
+    const date = dateFns.addDays(new Date(), days);
+    return moment(date).format('YYYY-MM-DD');
+}
+
+export function getNumberDays1(date1, date2) {
+    return dateFns.differenceInCalendarDays(date2, date1);
 }
 
 export function getNumberDays(date1, date2) {

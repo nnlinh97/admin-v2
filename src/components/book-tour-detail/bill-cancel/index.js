@@ -173,8 +173,8 @@ class BillCancelBooking extends Component {
                 </div>
                 <div className="row_print row_5_bill_cancel">
                     <p className="guest">Khách hàng</p>
-                    <p className="cashier">Tham toán viên</p>
-                    <p className="manager">Giám đốc</p>
+                    <p className="cashier"></p>
+                    <p className="manager">Nhân viên</p>
                 </div>
             </div>
         );
