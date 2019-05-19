@@ -586,6 +586,9 @@ class ListTypesComponent extends Component {
                                 <img></img>
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </div>
+                            <div className="click_to_open_pop_up">
+                                <p onClick={this.handleOpenModalListImage}>Nhấn vào để xem hình</p>
+                            </div>
                             {this.state.listImagesPreviview.length > 6 && <div className="">
                                 <i
                                     onClick={this.previousImage}
@@ -603,7 +606,6 @@ class ListTypesComponent extends Component {
                             } */}
                             {this.state.listImagesPreviview.length === 0 && <div className="imageOfSlideshow">
                                 <p onClick={this.handleOpenModalListImage} style={{ fontSize: '20px', marginTop: '40%' }}>không có dữ liệu...</p>
-
                             </div>}
                             {this.state.listImagesPreviview.length > 6 && <div className="">
                                 <i

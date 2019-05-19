@@ -264,14 +264,15 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
     justify-content: center;
     flex-direction: row; */
     /* border: 1px solid #ccc; */
-    overflow-x: scroll;
+    overflow-x: hidden;
     overflow-y: hidden;
     white-space: nowrap;
-    height: 200px;
+    height: 192px;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     padding-top: 5px;
     padding-bottom: 5px;
+    position: relative;
 }
 .imageOfSlideshow
 {
@@ -321,6 +322,32 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
 /* Handle on hover */
 .slideshow::-webkit-scrollbar-thumb:hover {
     background: #555; 
+}
+
+.click_to_open_pop_up
+{
+    margin-top: -200px;
+    position: absolute;
+    height: 220px;
+    width: 100%;
+    cursor: pointer;
+}
+.click_to_open_pop_up:hover
+{
+    background-color: rgba(0, 0, 0, 0.4);
+}
+.click_to_open_pop_up p
+{
+    font-size: 50px;
+    text-align: center;
+    margin-top: 70px;
+    font-weight: bolder;
+    color: #fff;
+    display: none;
+}
+.click_to_open_pop_up:hover p
+{
+    display: block;
 }
 /* Style Row 5 */
 .row_5
