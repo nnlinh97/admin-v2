@@ -1,0 +1,17 @@
+.react-time-picker__button {
+    display: none !important;
+}
+
+.react-time-picker__button {
+    display: none !important;
+}
+.react-time-picker__inputGroup {
+    height: 34px !important;
+}
+.react-time-picker__wrapper{
+    border-color: #d2d6de !important;
+}
+
+.react-time-picker__clock{
+    display: none !important;
+}
