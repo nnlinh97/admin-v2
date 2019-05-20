@@ -432,16 +432,16 @@ class ListTypesComponent extends Component {
                 Cell: props => {
                     return <>
                         <button
-                            style={{ padding: '0px 7px', position: 'absolute', height: '17px' }}
+                            style={{ position: 'absolute', marginLeft: '-12.5px', marginTop: '-2px', height: '17px', width: '20px' }}
                             className="btn btn-default"
                             onClick={() => this.handleUp(props)} >
-                            <i className="fa fa-sort-asc" />
+                            <i style={{ position: 'absolute', top: '5px', marginLeft: '-4px' }} className="fa fa-sort-asc" />
                         </button>
                         <button
-                            style={{ padding: '0px 7px', marginTop: '11px', height: '20px' }}
+                            style={{ position: 'absolute', marginLeft: '-12.5px', marginTop: '17px', height: '17px', width: '20px' }}
                             className="btn btn-default"
                             onClick={() => this.handleDown(props)} >
-                            <i className="fa fa-sort-desc" />
+                            <i style={{ position: 'absolute', top: '-2px', marginLeft: '-4px' }} className="fa fa-sort-desc" />
                         </button>
                         </>
                 },
