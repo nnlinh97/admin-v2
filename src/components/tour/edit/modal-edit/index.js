@@ -4,21 +4,21 @@ import { connect } from 'react-redux';
 import Select from 'react-select';
 import * as actions from './../../../../actions/index';
 import { apiGet, apiPost } from './../../../../services/api';
-import './index.css';
 
 class CreateRouteComponent extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            arrive_time: '',
-            leave_time: '',
-            location: null,
+            arrive_time: this.props.route.arrive_time,
+            leave_time: this.props.route.leave_time,
+            location: this.props.route.location,
             locations: [],
             transports: [],
-            transport: null,
-            detail: '',
-            day: '',
+            transport: this.props.route.transport,
+            detail: this.props.route.detail,
+            day: this.props.route.day,
+            id: this.props.route.id
         }
     }
 
@@ -29,7 +29,7 @@ class CreateRouteComponent extends Component {
             try {
                 listLocation = await apiGet('/location/getAllWithoutPagination');
                 listLocation = listLocation.data.data;
-                this.props.getListLocation(listLocation);
+                await this.props.getListLocation(listLocation);
             } catch (error) {
                 console.log(error);
             }
@@ -38,7 +38,7 @@ class CreateRouteComponent extends Component {
             try {
                 listTransport = await apiGet('/transport/getAll');
                 listTransport = listTransport.data.data
-                this.props.getListTransport(listTransport);
+                await this.props.getListTransport(listTransport);
             } catch (error) {
                 console.log(error);
             }
@@ -60,14 +60,6 @@ class CreateRouteComponent extends Component {
         return true;
     }
 
-    onHandleChangeArriveTime = (time) => {
-        this.setState({ arriveTime: time + ":00" });
-    }
-
-    onHandleChangeleaveTime = (time) => {
-        this.setState({ leaveTime: time + ":00" });
-    }
-
     handleChangeLocation = (selected) => {
         this.setState({ location: selected });
     }
@@ -82,29 +74,29 @@ class CreateRouteComponent extends Component {
         this.setState({ [name]: value });
     }
 
-    handleCreateRoute = async (event) => {
+    handleEditRoute = async (event) => {
         event.preventDefault();
         const { location, day, arriveTime, leaveTime, title, transport, detail } = this.state;
         if (this.checkRoute()) {
             let state = this.state;
             delete state.locations;
             delete state.transports;
-            this.props.handleCreateRoute(state);
+            this.props.handleEditRoute(state);
         } else {
-            this.props.handleCreateRoute(null);
+            this.props.handleEditRoute(null);
         }
     }
 
     render() {
         return <div style={{ marginLeft: '0px' }} className="content-wrapper">
             <section style={{ marginBottom: "20px" }} className="content-header">
-                <h1> Thêm Địa Điểm Tour </h1>
+                <h1> Chỉnh Sửa Địa Điểm Tour </h1>
             </section>
             <section className="content">
                 <div className="row">
                     <div className="col-lg-12 col-xs-12 ">
                         <div className="box box-info">
-                            <form onSubmit={this.handleCreateRoute} className="form-horizontal">
+                            <form onSubmit={this.handleEditRoute} className="form-horizontal">
                                 <div className="box-body">
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Địa Điểm (*)</label>
@@ -113,6 +105,10 @@ class CreateRouteComponent extends Component {
                                                 onChange={this.handleChangeLocation}
                                                 options={this.state.locations}
                                                 placeholder=""
+                                                defaultValue={{
+                                                    label: this.state.location ? this.state.location.name : '',
+                                                    value: this.state.location ? this.state.location.id : ''
+                                                }}
                                             />
                                         </div>
                                     </div>
@@ -151,6 +147,10 @@ class CreateRouteComponent extends Component {
                                                 onChange={this.handleChangeTransport}
                                                 options={this.state.transports}
                                                 placeholder=""
+                                                defaultValue={{
+                                                    label: this.state.transport ? this.state.transport.name_vn : '',
+                                                    value: this.state.transport ? this.state.transport.id : ''
+                                                }}
                                             />
                                         </div>
                                     </div>

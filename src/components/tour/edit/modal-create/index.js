@@ -60,14 +60,6 @@ class CreateRouteComponent extends Component {
         return true;
     }
 
-    onHandleChangeArriveTime = (time) => {
-        this.setState({ arriveTime: time + ":00" });
-    }
-
-    onHandleChangeleaveTime = (time) => {
-        this.setState({ leaveTime: time + ":00" });
-    }
-
     handleChangeLocation = (selected) => {
         this.setState({ location: selected });
     }

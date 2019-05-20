@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-// import TimePicker from 'react-time-picker';
 import Select from 'react-select';
 import * as actions from './../../../../actions/index';
 import { apiGet, apiPost } from './../../../../services/api';
@@ -12,8 +11,8 @@ class CreateRouteComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            arriveTime: this.props.route.arriveTime,
-            leaveTime: this.props.route.leaveTime,
+            arrive_time: this.props.route.arrive_time,
+            leave_time: this.props.route.leave_time,
             location: this.props.route.location,
             locations: [],
             transports: [],
@@ -128,8 +127,8 @@ class CreateRouteComponent extends Component {
                                             <input
                                                 type="time"
                                                 onChange={this.handleChange}
-                                                value={this.state.arriveTime}
-                                                name="arriveTime"
+                                                value={this.state.arrive_time}
+                                                name="arrive_time"
                                                 className="form-control" />
                                         </div>
                                     </div>
@@ -139,8 +138,8 @@ class CreateRouteComponent extends Component {
                                             <input
                                                 type="time"
                                                 onChange={this.handleChange}
-                                                value={this.state.leaveTime}
-                                                name="leaveTime"
+                                                value={this.state.leave_time}
+                                                name="leave_time"
                                                 className="form-control" />
                                         </div>
                                     </div>

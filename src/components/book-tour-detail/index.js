@@ -6,12 +6,15 @@ import _ from 'lodash';
 import moment from 'moment';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
+import dateFns from 'date-fns';
 import PassengerUpdate from './passenger-update';
 import ContactInfoUpdate from './contact-info';
 import Payment from './payment';
 import CancelRequest from './cancel-request';
 import ChangeDate from './change-date';
 import Refund from './refund';
+import RemoveRequest from './remove-request';
+import ChangeRefundPeople from './change-refund-people';
 import * as actions from './../../actions/index';
 import { apiGet, apiPost } from '../../services/api';
 import {
@@ -46,6 +49,8 @@ class CreateTourTurnComponent extends Component {
             modalCancelRequestIsOpen: false,
             modalChangeDateIsOpen: false,
             modalRefundIsOpen: false,
+            modalRemoveRequest: false,
+            modalChangeRefundPeopleIsOpen: false,
             bookPay: null,
             passengerUpdate: null,
             contactInfoUpdate: null,
@@ -186,6 +191,15 @@ class CreateTourTurnComponent extends Component {
         this.setState({ modalRefundIsOpen: true });
     }
 
+    handleOpenRemoveRequest = (event) => {
+        event.preventDefault();
+        this.setState({ modalRemoveRequest: true });
+    }
+
+    handleCloseRemoveRequest = () => {
+        this.setState({ modalRemoveRequest: false });
+    }
+
     handleCloseRefundModal = () => {
         this.setState({ modalRefundIsOpen: false });
     }
@@ -221,8 +235,16 @@ class CreateTourTurnComponent extends Component {
         this.setState({ modalChangeDateIsOpen: true });
     }
 
+    handleOpenModalChangeRefundPeople = () => {
+        this.setState({ modalChangeRefundPeopleIsOpen: true });
+    }
+
     handleCloseChangeDateModal = () => {
         this.setState({ modalChangeDateIsOpen: false });
+    }
+
+    handleCloseModalChangeRefundPeople = () => {
+        this.setState({modalChangeRefundPeopleIsOpen: false});
     }
 
     hideSuccessAlert = () => {
@@ -233,6 +255,8 @@ class CreateTourTurnComponent extends Component {
         this.handleCloseModalUpdateContactInfo();
         this.handleCloseModalCancelRequest();
         this.handleCloseChangeDateModal();
+        this.handleCloseRemoveRequest();
+        this.handleCloseModalChangeRefundPeople();
         this.setState({ success: false });
     }
 
@@ -256,7 +280,6 @@ class CreateTourTurnComponent extends Component {
             try {
                 passenger.fk_type_passenger = parseInt(passenger.type_passenger, 10);
                 const passengerUpdate = await apiPost('/book_tour/updatePassenger', { ...passenger });
-                this.reRender();
                 this.setState({ success: true });
             } catch (error) {
                 this.setState({ error: true });
@@ -270,7 +293,6 @@ class CreateTourTurnComponent extends Component {
         if (contactInfo) {
             try {
                 const contactInfoUpdate = await apiPost('/book_tour/updateContactInfo', { ...contactInfo });
-                this.reRender();
                 this.setState({ success: true });
             } catch (error) {
                 this.setState({ error: true });
@@ -282,7 +304,6 @@ class CreateTourTurnComponent extends Component {
 
     handlePayment = (flag) => {
         if (flag) {
-            this.reRender();
             this.setState({ success: true });
         } else {
             this.setState({ error: true });
@@ -305,6 +326,14 @@ class CreateTourTurnComponent extends Component {
         }
     }
 
+    handleRemoveRequest = (result) => {
+        if (result) {
+            this.setState({ success: true });
+        } else {
+            this.setState({ error: true });
+        }
+    }
+
     handleRefundMoney = (result) => {
         if (result) {
             this.setState({ success: true });
@@ -314,7 +343,6 @@ class CreateTourTurnComponent extends Component {
     }
 
     handleRefund = (info) => {
-        console.log(info);
         this.setState({ confirmRefund: true, refundCode: info.code });
     }
 
@@ -535,6 +563,32 @@ class CreateTourTurnComponent extends Component {
                         handleChangeDate={this.handleChangeDate}
                         id={this.state.message.id}
                         period={this.state.message.refund_period}
+                        fromDate={this.state.message.confirm_time}
+                    />}
+                </Modal>
+
+                <Modal
+                    open={this.state.modalChangeRefundPeopleIsOpen}
+                    onClose={this.handleCloseModalChangeRefundPeople}
+                    center
+                    styles={{ 'modal': { width: '1280px' } }}
+                    blockScroll={true} >
+                    {this.state.message && <ChangeRefundPeople
+                        handleChangeRefundPeople={this.handleChangeRefundPeople}
+                        people={this.state.message.refund_message}
+                        contactInfo={this.state.contactInfo}
+                    />}
+                </Modal>
+
+                <Modal
+                    open={this.state.modalRemoveRequest}
+                    onClose={this.handleCloseRemoveRequest}
+                    center
+                    styles={{ 'modal': { width: '1280px' } }}
+                    blockScroll={true} >
+                    {this.state.message && <RemoveRequest
+                        handleRemoveRequest={this.handleRemoveRequest}
+                        id={this.state.message.id}
                     />}
                 </Modal>
 
@@ -715,7 +769,78 @@ class CreateTourTurnComponent extends Component {
                                     </label>
                                 </div>
 
-                                {(this.state.messagePayment && this.state.messagePayment.helper) && <>
+                                {/* pending_cancel */}
+                                {(this.state.status === 'pending_cancel' && this.state.message) && <>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Chú thích hủy tour</label>
+                                        <label className="col-sm-8 control-label">
+                                            {this.state.message.request_message !== '' ? this.state.message.request_message : 'không có'}
+                                        </label>
+                                    </div></>}
+
+                                {/* confirm_cancel */}
+                                {(this.state.status === 'confirm_cancel' && this.state.message) && <>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Chú thích hủy tour</label>
+                                        <label className="col-sm-8 control-label">
+                                            {this.state.message.request_message !== '' ? this.state.message.request_message : 'không có'}
+                                        </label>
+                                    </div>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Xác nhận</label>
+                                        <label className="col-sm-8 control-label">
+                                            {moment(this.state.message.confirm_time).format('MM/DD/YYYY HH:MM')}
+                                        </label>
+                                    </div>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Tiền hoàn trả</label>
+                                        <label className="col-sm-8 control-label">
+                                            <mark style={{ backgroundColor: '#ff0' }}>{formatCurrency(this.state.message.money_refunded)}</mark> VND
+                                        </label>
+                                    </div>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Hạn hoàn tiền</label>
+                                        <label className="col-sm-6 control-label">
+                                            {moment(dateFns.addDays(new Date(this.state.message.confirm_time), 3)).format('MM/DD/YYYY')} đến {moment(this.state.message.refund_period).format('MM/DD/YYYY')}
+                                        </label>
+                                        <label className="col-sm-2">
+                                            <i
+                                                title="Chỉnh sửa ngày hẹn"
+                                                onClick={this.handleOpenModalChangeDate}
+                                                style={{ cursor: 'pointer' }}
+                                                className="fa fa-pencil" />
+                                        </label>
+                                    </div>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Người Nhận tiền</label>
+                                        <label className="col-sm-6 control-label">
+                                            {this.state.message.refund_message.name}
+                                        </label>
+                                        <label className="col-sm-2">
+                                            <i
+                                                title="Chỉnh sửa người nhận tiền"
+                                                onClick={this.handleOpenModalChangeRefundPeople}
+                                                style={{ cursor: 'pointer' }}
+                                                className="fa fa-pencil" />
+                                        </label>
+                                    </div>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">CMND/Passport</label>
+                                        <label className="col-sm-8 control-label">
+                                            {this.state.message.refund_message.passport}
+                                        </label>
+                                    </div>
+                                    {(this.state.message.refund_message.note && this.state.message.refund_message.note !== '') &&
+                                        <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                            <label className="col-sm-4 control-label">Chú thích</label>
+                                            <label className="col-sm-8 control-label">
+                                                {this.state.message.refund_message.note}
+                                            </label>
+                                        </div>}
+                                    </>}
+
+                                {/* paid */}
+                                {(this.state.status === 'paid' && this.state.messagePayment) && <>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Người thanh toán</label>
                                         <label className="col-sm-8 control-label">
@@ -728,41 +853,40 @@ class CreateTourTurnComponent extends Component {
                                             {this.state.messagePayment.passport}
                                         </label>
                                     </div>
-                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    {this.state.messagePayment.note !== '' && <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Chú thích</label>
                                         <label className="col-sm-8 control-label">
                                             {this.state.messagePayment.note}
                                         </label>
-                                    </div>
+                                    </div>}
                                     </>}
-                                {this.state.status === 'refunded' && <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                    <label className="col-sm-4 control-label">Tiền hoàn trả</label>
-                                    <label className="col-sm-8 control-label">
-                                        <mark style={{ backgroundColor: '#ff0' }}>{formatCurrency(this.state.message.money_refunded)}</mark> VND
-                                        </label>
-                                </div>}
 
-                                {(this.state.message && this.state.message.money_refunded === 0 && this.state.message.request_offline_person && this.state.message.request_offline_person.helper) && <>
+                                {/* refunded */}
+                                {(this.state.status === 'refunded' && this.state.message) && <>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">Người Nhận tiền</label>
+                                        <label className="col-sm-4 control-label">Chú thích hủy tour</label>
                                         <label className="col-sm-8 control-label">
-                                            {this.state.message.request_offline_person.name}
+                                            {this.state.message.request_message !== '' ? this.state.message.request_message : 'không có'}
                                         </label>
                                     </div>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">CMND/Passport</label>
+                                        <label className="col-sm-4 control-label">Xác nhận</label>
                                         <label className="col-sm-8 control-label">
-                                            {this.state.message.request_offline_person.passport}
+                                            {moment(this.state.message.confirm_time).format('MM/DD/YYYY HH:MM')}
                                         </label>
                                     </div>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">Chú thích</label>
+                                        <label className="col-sm-4 control-label">Tiền hoàn trả</label>
                                         <label className="col-sm-8 control-label">
-                                            {this.state.message.request_offline_person.note}
+                                            <mark style={{ backgroundColor: '#ff0' }}>{formatCurrency(this.state.message.money_refunded)}</mark> VND
                                         </label>
-                                    </div> </>}
-
-                                {(this.state.message && this.state.message.money_refunded > 0 && this.state.message.refund_message && this.state.message.refund_message.helper) && <>
+                                    </div>
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Hạn hoàn tiền</label>
+                                        <label className="col-sm-6 control-label">
+                                            {moment(dateFns.addDays(new Date(this.state.message.confirm_time), 3)).format('MM/DD/YYYY')} đến {moment(this.state.message.refund_period).format('MM/DD/YYYY')}
+                                        </label>
+                                    </div>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Người Nhận tiền</label>
                                         <label className="col-sm-8 control-label">
@@ -775,52 +899,66 @@ class CreateTourTurnComponent extends Component {
                                             {this.state.message.refund_message.passport}
                                         </label>
                                     </div>
-                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    {this.state.message.refund_message.note !== '' && <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Chú thích</label>
                                         <label className="col-sm-8 control-label">
                                             {this.state.message.refund_message.note}
                                         </label>
-                                    </div> </>}
+                                    </div>}
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">Thời gian nhận tiền</label>
+                                        <label className="col-sm-8 control-label">
+                                            {moment(this.state.message.refunded_time).format('MM/DD/YYYY')}
+                                        </label>
+                                    </div>
+                                    </>}
 
-                                {this.state.message && <>
+                                {/* cancelled */}
+                                {(this.state.status === 'cancelled' && this.state.message) && <>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">Chú thích hủy tour</label>
+                                        <label className="col-sm-4 control-label">Người hủy</label>
                                         <label className="col-sm-8 control-label">
-                                            {this.state.message.request_message !== '' ? this.state.message.request_message : 'không có'}
+                                            {this.state.message.request_offline_person.name}
                                         </label>
                                     </div>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">Thời gian</label>
+                                        <label className="col-sm-4 control-label">CMND/Passport</label>
                                         <label className="col-sm-8 control-label">
-                                            {moment(this.state.message.request_time).format('DD/MM/YYYY HH:MM')}
+                                            {this.state.message.request_offline_person.passport}
                                         </label>
-                                    </div> </>}
-                                {this.state.status === 'confirm_cancel' && <>
+                                    </div>
+                                    {(this.state.message.request_offline_person.note && this.state.message.request_offline_person.note !== '') &&
+                                        <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                            <label className="col-sm-4 control-label">Chú thích</label>
+                                            <label className="col-sm-8 control-label">
+                                                {this.state.message.request_offline_person.note}
+                                            </label>
+                                        </div>}
+                                    </>}
+
+                                {/* finished */}
+                                {(this.state.status === 'finished' && this.state.messagePayment) && <>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">Xác nhận lúc</label>
+                                        <label className="col-sm-4 control-label">Người thanh toán</label>
                                         <label className="col-sm-8 control-label">
-                                            {moment(this.state.message.confirm_time).format('DD/MM/YYYY HH:MM')}
+                                            {this.state.messagePayment.name}
                                         </label>
                                     </div>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">Tiền hoàn trả</label>
+                                        <label className="col-sm-4 control-label">CMND/Passport</label>
                                         <label className="col-sm-8 control-label">
-                                            <mark style={{ backgroundColor: '#ff0' }}>{formatCurrency(this.state.message.money_refunded)}</mark> VND
+                                            {this.state.messagePayment.passport}
                                         </label>
                                     </div>
-                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">Hạn hoàn tiền</label>
-                                        <label className="col-sm-6 control-label">
-                                            {moment(this.state.message.refund_period).format('MM/DD/YYYY')}
-                                        </label>
-                                        <label className="col-sm-2">
-                                            <i
-                                                title="chỉnh sửa ngày hẹn"
-                                                onClick={this.handleOpenModalChangeDate}
-                                                style={{ cursor: 'pointer' }}
-                                                className="fa fa-pencil" />
-                                        </label>
-                                    </div> </>}
+                                    {(this.state.messagePayment.note && this.state.messagePayment.note !== '') &&
+                                        <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                            <label className="col-sm-4 control-label">Chú thích</label>
+                                            <label className="col-sm-8 control-label">
+                                                {this.state.messagePayment.note}
+                                            </label>
+                                        </div>}
+                                    </>}
+
                             </div>
                         </div>
                     </div>
@@ -834,6 +972,12 @@ class CreateTourTurnComponent extends Component {
                                             onClick={this.handleOpenModalPay}
                                             className="btn btn-xs btn-info custom-btn-infor" >
                                             Thanh Toán
+                                        </button>}
+                                        {this.state.status === 'pending_cancel' && <button
+                                            style={{ right: '130px' }}
+                                            onClick={this.handleOpenRemoveRequest}
+                                            className="btn btn-xs btn-info custom-btn-infor" >
+                                            Hủy Yêu Cầu
                                         </button>}
                                         {getCancelChecked(this.state.status) && <button
                                             onClick={this.handleOpenModalCancelRequest}
