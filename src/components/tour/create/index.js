@@ -454,10 +454,15 @@ class ListTypesComponent extends Component {
                                 <input id="upload-image" className="upload_image_create_tour" onChange={this.handleChangeImage} type="file" /><br />
                                 <div className="inputImage">
                                     {this.state.previewImage !== '' ?
-                                        <img src={this.state.previewImage} /> :
+                                        <div className="cover_image_of_tour">
+                                            <img src={this.state.previewImage} />
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                        </div>
+                                         :
                                         <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
                                     }
                                 </div>
+
                             </div>
                         </div>
                         <div className="right_row_1">

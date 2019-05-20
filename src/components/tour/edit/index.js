@@ -552,7 +552,11 @@ class ListTypesComponent extends Component {
                                     {this.state.featuredImgTemp !== '' ?
                                         <img src={this.state.featuredImgTemp} /> :
                                         (this.state.featuredImg !== '' ?
-                                            <img src={this.state.featuredImg} /> :
+                                            <div className="cover_image_of_tour">
+                                                <img src={this.state.featuredImg} />
+                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                            </div>
+                                             :
                                             <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
                                         )
                                     }
