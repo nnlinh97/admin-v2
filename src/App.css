@@ -268,3 +268,11 @@ section.content
 {
     color: #0a79df;
 }
+
+.col-lg-12.col-xs-12,
+.container,
+.box-body
+{
+    padding-right: 0px !important;
+    padding-left: 0px !important;
+} 
