@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../actions/index';
+import './index.css';
 
 class Header extends Component {
 
@@ -48,6 +49,16 @@ class Header extends Component {
                     <span onClick={this.handleToDashboard} className="logo-lg">
                         <b>Admin</b></span>
                 </a>
+                {/* <div class="dropdown">
+                    <a href="#" className="dropdown-toggle" data-toggle="dropdown">
+                        <img src="http://tinyurl.com/y6lnpbbx" className="user-image" alt="User Image" />
+                        <span className="hidden-xs">{this.state.username}</span>
+                    </a>
+                    <div class="dropdown-content">
+                        <a onClick={this.handleChangePassword} href="#" className="btn btn-default btn-flat">Đổi Mật Khẩu</a>
+                        <a onClick={this.handleLogout} href="#" className="btn btn-default btn-flat">Đăng Xuất</a>
+                    </div>
+                </div> */}
                 <nav className="navbar navbar-static-top">
                     <div className="navbar-custom-menu">
                         <ul className="nav navbar-nav">
@@ -56,38 +67,10 @@ class Header extends Component {
                                     <img src="http://tinyurl.com/y6lnpbbx" className="user-image" alt="User Image" />
                                     <span className="hidden-xs">{this.state.username}</span>
                                 </a>
-                                <ul className="dropdown-menu">
-                                    {/* <li className="user-header">
-                                        <img src="http://tinyurl.com/y6lnpbbx" className="img-circle" alt="User Image" />
-                                        <p>
-                                            {this.state.username} - Admin
-                                                    <small>Member since Nov. 2012</small>
-                                        </p>
-                                    </li>
-                                    <li className="user-body">
-                                        <div className="row">
-                                            <div className="col-xs-4 text-center">
-                                                <a href="#">Followers</a>
-                                            </div>
-                                            <div className="col-xs-4 text-center">
-                                                <a href="#">Sales</a>
-                                            </div>
-                                            <div className="col-xs-4 text-center">
-                                                <a href="#">Friends</a>
-                                            </div>
-                                        </div>
-                                    </li> */}
-                                    <li className="user-footer">
-                                        <div className="pull-left">
-                                            <a onClick={this.handleChangePassword} href="#" className="btn btn-default btn-flat">
-                                            Đổi Mật Khẩu
-                                            </a>
-                                        </div>
-                                        <div className="pull-right">
-                                            <a onClick={this.handleLogout} href="#" className="btn btn-default btn-flat">Đăng Xuất</a>
-                                        </div>
-                                    </li>
-                                </ul>
+                                <div class="dropdown-content">
+                                    <a onClick={this.handleChangePassword} href="#" className="btn btn-default btn-flat">Đổi Mật Khẩu</a>
+                                    <a onClick={this.handleLogout} href="#" className="btn btn-default btn-flat">Đăng Xuất</a>
+                                </div>
                             </li>
                         </ul>
                     </div>
