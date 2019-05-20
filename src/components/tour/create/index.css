@@ -358,6 +358,7 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
 .row_5 .header_row .mini_search_box .search_icon
 {
     width: 40px;
+    height: 40px;
 }
 .row_5 .header_row .mini_search_box .search_icon i
 {
