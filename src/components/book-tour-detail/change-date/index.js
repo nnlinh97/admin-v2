@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import dateFns from 'date-fns';
 import { apiPost } from '../../../services/api';
 
 class ChangeDate extends Component {
@@ -8,14 +9,16 @@ class ChangeDate extends Component {
         super(props);
         this.state = {
             id: '',
-            period: ''
+            period: '',
+            fromDate: ''
         }
     }
 
     componentDidMount = () => {
         this.setState({
             id: this.props.id,
-            period: this.props.period
+            period: this.props.period,
+            fromDate: moment( dateFns.addDays(new Date(this.props.fromDate), 3)).format('YYYY-MM-DD')
         });
     }
 
@@ -51,8 +54,17 @@ class ChangeDate extends Component {
                         <form onSubmit={this.handleChangeDate} className="form-horizontal">
                             <div className="box-body">
                                 <div className="form-group">
-                                    <label className="col-sm-3 control-label">Hạn hoàn tiền</label>
-                                    <div className="col-sm-8">
+                                    <label className="col-sm-2 control-label">Ngày hẹn</label>
+                                    <div className="col-sm-4">
+                                        <input
+                                            readOnly
+                                            type="date"
+                                            value={this.state.fromDate}
+                                            name="fullname"
+                                            className="form-control" />
+                                    </div>
+                                    <label className="col-sm-2 control-label">đến</label>
+                                    <div className="col-sm-4">
                                         <input
                                             type="date"
                                             onChange={this.handleChange}

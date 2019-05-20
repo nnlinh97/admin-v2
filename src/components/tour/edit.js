@@ -206,15 +206,11 @@ class ListTypesComponent extends Component {
     }
 
     hideFailAlert = () => {
-        this.setState({
-            error: false
-        });
+        this.setState({ error: false });
     }
     openModal = () => {
         this.addOpacityBody();
-        this.setState({
-            openModal: true
-        });
+        this.setState({ openModal: true });
     }
     closeModal = () => {
         this.removeOpacityBody();

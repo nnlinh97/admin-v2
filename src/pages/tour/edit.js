@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from '../../components/header/';
 import Footer from '../../components/footer/';
 import Sidebar from '../../components/sidebar/';
-import EditTourComponent from '../../components/tour/edit';
+import EditTourComponent from '../../components/tour/edit/index';
 
 
 class EditTourPage extends Component {

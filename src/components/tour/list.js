@@ -29,7 +29,7 @@ class ListTourComponent extends Component {
 
     handleCreatetour = (event) => {
         event.preventDefault();
-        this.props.history.push("/tour/create")
+        this.props.history.push("/tour/create");
     }
 
     handleEditTour = async (id) => {
@@ -61,7 +61,7 @@ class ListTourComponent extends Component {
             {
                 Header: "ID",
                 accessor: "id",
-                Cell: props => <i>#{props.original.id}</i>,
+                // Cell: props => <i>#{props.original.id}</i>,
                 style: { textAlign: 'center' },
                 width: 90,
                 maxWidth: 100,
@@ -70,7 +70,7 @@ class ListTourComponent extends Component {
             {
                 Header: "Tên",
                 accessor: "name",
-                style: { textAlign: 'center' },
+                style: { textAlign: 'center', whiteSpace: 'unset' },
             },
             {
                 Header: props => <i className="fa fa-pencil" />,
@@ -82,9 +82,23 @@ class ListTourComponent extends Component {
                     </button>;
                 },
                 style: { textAlign: 'center' },
-                width: 130,
-                maxWidth: 130,
-                minWidth: 130
+                width: 100,
+                maxWidth: 100,
+                minWidth: 100
+            },
+            {
+                Header: props => <i className="fa fa-files-o" />,
+                Cell: props => {
+                    return <button className="btn btn-xs btn-info"
+                        title="Copy địa điểm"
+                        onClick={() => this.props.history.push(`/tour/create?copyID=${props.original.id}`)} >
+                        <i className="fa fa-files-o" />
+                    </button >;
+                },
+                style: { textAlign: 'center' },
+                width: 100,
+                maxWidth: 100,
+                minWidth: 100
             }
         ];
         return (

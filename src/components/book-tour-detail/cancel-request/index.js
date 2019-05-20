@@ -84,7 +84,7 @@ class CancelRequestComponent extends Component {
             } catch (error) {
                 this.props.handleConfirmRequest(false);
             }
-        } else if (this.checkDate() && this.checkInputCancel() && this.checkInputReceiver() && this.props.status === 'paid') {
+        } else if (this.checkInputCancel() && this.checkInputReceiver() && this.props.status === 'paid') {
             const days = getNumberDays1(moment(new Date()).format('YYYY-MM-DD'), this.props.startDate);
             try {
                 await apiPost('/book_tour/confirmCancelBookTourOffline', {
