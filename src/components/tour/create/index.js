@@ -557,64 +557,7 @@ class ListTypesComponent extends Component {
                     <div className="row row_2">
                         <label className="title_row">Danh sách hình ảnh</label>
                         <input className="upload_image_create_tour" onChange={this.handleChangeListImages} type="file" multiple />
-                        <div className="slideshow">
-                            <div className="imageOfSlideshow">
-                                <img></img>
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </div>
-                            <div className="imageOfSlideshow">
-                                <img></img>
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </div>
-                            <div className="imageOfSlideshow">
-                                <img></img>
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </div>
-                            <div className="imageOfSlideshow">
-                                <img></img>
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </div>
-                            <div className="imageOfSlideshow">
-                                <img></img>
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </div>
-                            <div className="imageOfSlideshow">
-                                <img></img>
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </div>
-                            <div className="imageOfSlideshow">
-                                <img></img>
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </div>
-                            <div className="click_to_open_pop_up">
-                                <p onClick={this.handleOpenModalListImage}>Nhấn vào để xem hình</p>
-                            </div>
-                            {this.state.listImagesPreviview.length > 6 && <div className="">
-                                <i
-                                    onClick={this.previousImage}
-                                    style={{ cursor: 'pointer', fontSize: '50px' }}
-                                    className="fa fa-chevron-circle-left" aria-hidden="true">
-                                </i>
-                            </div>}
-                            {/* {this.state.listImagesPreviview.length > 0 &&
-                                this.getListImage(this.state.listImagesPreviview).map((item, index) => {
-                                    return <div key={index} className="imageOfSlideshow">
-                                        <img src={item.image}></img>
-                                        <i onClick={(event) => this.deletePreviewImage(event, item.id)} style={{ cursor: 'pointer' }} className="fa fa-times" aria-hidden="true"></i>
-                                    </div>
-                                })
-                            } */}
-                            {this.state.listImagesPreviview.length === 0 && <div className="imageOfSlideshow">
-                                <p onClick={this.handleOpenModalListImage} style={{ fontSize: '20px', marginTop: '40%' }}>không có dữ liệu...</p>
-                            </div>}
-                            {this.state.listImagesPreviview.length > 6 && <div className="">
-                                <i
-                                    onClick={this.nextImage}
-                                    style={{ cursor: 'pointer', fontSize: '50px' }}
-                                    className="fa fa-chevron-circle-right" aria-hidden="true">
-                                </i>
-                            </div>}
-                        </div>
+                        <i onClick={this.handleOpenModalListImage} class="fa fa-picture-o icon_show_pop_up" aria-hidden="true"></i>
                     </div>
                     <div className="row row_4">
                         <label className="title_row">Mô tả *</label>

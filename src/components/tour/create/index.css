@@ -323,32 +323,6 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
 .slideshow::-webkit-scrollbar-thumb:hover {
     background: #555; 
 }
-
-.click_to_open_pop_up
-{
-    margin-top: -200px;
-    position: absolute;
-    height: 220px;
-    width: 100%;
-    cursor: pointer;
-}
-.click_to_open_pop_up:hover
-{
-    background-color: rgba(0, 0, 0, 0.4);
-}
-.click_to_open_pop_up p
-{
-    font-size: 50px;
-    text-align: center;
-    margin-top: 70px;
-    font-weight: bolder;
-    color: #fff;
-    display: none;
-}
-.click_to_open_pop_up:hover p
-{
-    display: block;
-}
 /* Style Row 5 */
 .row_5
 {
@@ -414,4 +388,18 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
     /* float: right;
     margin-top: 23px;
     margin-bottom: 10px; */
+}
+.icon_show_pop_up
+{
+    position: absolute;
+    font-size: 35px;
+    margin-top: 20px;
+    font-weight: bolder;
+    margin-left: 20px;
+    color: #3C8DBC;
+    right: calc(5% - 12px);
+}
+.icon_show_pop_up:hover
+{
+    color: #357CA5;
 }
