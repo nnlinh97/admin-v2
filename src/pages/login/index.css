@@ -1,0 +1,9 @@
+.btn_login
+{
+    width: auto;
+}
+.wrong_login
+{
+    text-align: center;
+    color: red;
+}

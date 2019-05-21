@@ -390,7 +390,7 @@ section.content
 {
     position: absolute;
     width: 30%;
-    right: calc(5% - 6px);
+    right: calc(5% - 11px);
 }
 .row_1_dashboard .mini_search_box .search_icon
 {

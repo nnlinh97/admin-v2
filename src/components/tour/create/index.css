@@ -358,6 +358,7 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
 .row_5 .header_row .mini_search_box .search_icon
 {
     width: 40px;
+    height: 40px;
 }
 .row_5 .header_row .mini_search_box .search_icon i
 {
@@ -402,4 +403,26 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
 .icon_show_pop_up:hover
 {
     color: #357CA5;
+}
+.cover_image_of_tour
+{
+    position: relative;
+}
+.cover_image_of_tour img
+{
+    position: absolute;
+    object-fit:cover;
+}
+.cover_image_of_tour i
+{
+    position: absolute;
+    font-size: 30px;
+    color: #fff;
+    text-shadow: 0px 0px 3px rgba(0, 0, 0, 1);
+    top: 5px;
+    right: 7px;
+}
+.cover_image_of_tour i:hover
+{
+    font-size: 32px;
 }
