@@ -5,6 +5,7 @@ import {apiPost, apiGet} from '../../services/api';
 import * as actions from '../../actions/index';
 import { URL } from '../../constants/url';
 import axios from 'axios';
+import './index.css';
 
 class Login extends Component {
     constructor(props) {
@@ -82,10 +83,10 @@ class Login extends Component {
                                     required />
                                 <span className="glyphicon glyphicon-lock form-control-feedback" />
                             </div>
-                            <p>{this.state.error}</p>
+                            <p className="wrong_login">{this.state.error}</p>
                             <div className="row">
                                 <div className="col-md-4 col-md-offset-4 col-xs-4 col-xs-offset-4">
-                                    <button type="submit" className="btn btn-primary btn-block btn-flat">Đăng Nhập</button>
+                                    <button type="submit" className="btn btn-primary btn-block btn-flat btn_login">Đăng Nhập</button>
                                 </div>
                             </div>
                         </form>
