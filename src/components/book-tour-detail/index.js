@@ -244,7 +244,7 @@ class CreateTourTurnComponent extends Component {
     }
 
     handleCloseModalChangeRefundPeople = () => {
-        this.setState({modalChangeRefundPeopleIsOpen: false});
+        this.setState({ modalChangeRefundPeopleIsOpen: false });
     }
 
     hideSuccessAlert = () => {
@@ -319,6 +319,14 @@ class CreateTourTurnComponent extends Component {
     }
 
     handleChangeDate = (result) => {
+        if (result) {
+            this.setState({ success: true });
+        } else {
+            this.setState({ error: true });
+        }
+    }
+
+    handleChangeRefundPeople = (result) => {
         if (result) {
             this.setState({ success: true });
         } else {
@@ -577,6 +585,7 @@ class CreateTourTurnComponent extends Component {
                         handleChangeRefundPeople={this.handleChangeRefundPeople}
                         people={this.state.message.refund_message}
                         contactInfo={this.state.contactInfo}
+                        id={this.state.message.id}
                     />}
                 </Modal>
 
@@ -602,6 +611,7 @@ class CreateTourTurnComponent extends Component {
                         handleRefundMoney={this.handleRefundMoney}
                         code={this.state.code}
                         message={this.state.message}
+                        people={this.state.message.refund_message}
                         status={this.state.status}
                         startDate={this.state.tourTurn.start_date}
                         tour={this.state.tourTurn.tour.name}

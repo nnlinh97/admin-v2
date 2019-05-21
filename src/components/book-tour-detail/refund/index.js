@@ -17,13 +17,23 @@ class RefundComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            passport: this.props.contactInfo.passport,
-            name: this.props.contactInfo.fullname,
+            passport: '',
+            name: '',
             note: '',
-            person: 'op1',
+            person: '',
             policy: false
         }
     }
+
+    componentDidMount = () => {
+        this.setState({
+            name: this.props.people.name,
+            passport: this.props.people.passport,
+            note: this.props.people.note,
+            person: this.props.people.helper ? 'op2' : 'op1'
+        });
+    }
+
 
     getNumberDays = (date1, date2) => {
         date1 = date1.split('-');
@@ -79,12 +89,30 @@ class RefundComponent extends Component {
         this.setState({ [name]: value });
     }
 
+    // handleChangeRadio = ({ target }) => {
+    //     this.setState({
+    //         person: target.value,
+    //         passport: target.value === 'op1' ? this.props.contactInfo.passport : '',
+    //         name: target.value === 'op1' ? this.props.contactInfo.fullname : '',
+    //     });
+    // }
+
     handleChangeRadio = ({ target }) => {
-        this.setState({
-            person: target.value,
-            passport: target.value === 'op1' ? this.props.contactInfo.passport : '',
-            name: target.value === 'op1' ? this.props.contactInfo.fullname : '',
-        });
+        if (this.props.people.helper) {
+            this.setState({
+                person: target.value,
+                name: target.value === 'op1' ? this.props.contactInfo.fullname : this.props.people.name,
+                passport: target.value === 'op1' ? this.props.contactInfo.passport : this.props.people.passport,
+                note: target.value === 'op1' ? '' : this.props.people.note
+            });
+        } else {
+            this.setState({
+                person: target.value,
+                passport: target.value === 'op1' ? this.props.people.passport : '',
+                name: target.value === 'op1' ? this.props.people.name : '',
+                note: target.value === 'op1' ? this.props.people.note : '',
+            });
+        }
     }
 
     showPolicy = () => {
@@ -140,7 +168,7 @@ class RefundComponent extends Component {
                                     </div>}
                                     <div className="form-group">
                                         <div className="col-sm-12">
-                                            <strong style={{fontSize: '20px'}}>Thông tin</strong><br />
+                                            <strong style={{ fontSize: '20px' }}>Thông tin</strong><br />
                                         </div>
                                         <div className="col-sm-6">
                                             - Tour: <strong>{this.props.tour}</strong><br />

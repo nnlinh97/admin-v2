@@ -23,17 +23,26 @@ class CancelRequestComponent extends Component {
     }
 
 
-    handleConfirmRequest = async (event) => {
+    handleChangeRefundPeople = async (event) => {
         event.preventDefault();
-
-    }
-
-    checkInputCancel = () => {
-        const { nameCancel, passportCancel } = this.state;
-        if (nameCancel === '' || nameCancel === '') {
-            return false;
+        if (this.checkInputReceiver()) {
+            try {
+                await apiPost('/cancel_booking/updateRefundMessage', {
+                    idCancelBooking: this.props.id,
+                    refund_message: {
+                        name: this.state.nameReciever,
+                        passport: this.state.passportReciever,
+                        note: this.state.noteReciever,
+                        helper: this.state.optionReciever === 'op1' ? false : true
+                    }
+                });
+                this.props.handleChangeRefundPeople(true);
+            } catch (error) {
+                this.props.handleChangeRefundPeople(false);
+            }
+        } else {
+            this.props.handleChangeRefundPeople(false);
         }
-        return true;
     }
 
     checkInputReceiver = () => {
@@ -51,15 +60,24 @@ class CancelRequestComponent extends Component {
     }
 
     handleChangeRadioReciever = ({ target }) => {
-        this.setState({
-            optionReciever: target.value,
-            passportReciever: target.value === 'op1' ? this.props.contactInfo.passport : '',
-            nameReciever: target.value === 'op1' ? this.props.contactInfo.fullname : '',
-        });
+        if (this.props.people.helper) {
+            this.setState({
+                optionReciever: target.value,
+                nameReciever: target.value === 'op1' ? this.props.contactInfo.fullname : this.props.people.name,
+                passportReciever: target.value === 'op1' ? this.props.contactInfo.passport : this.props.people.passport,
+                noteReciever: target.value === 'op1' ? '' : this.props.people.note
+            });
+        } else {
+            this.setState({
+                optionReciever: target.value,
+                passportReciever: target.value === 'op1' ? this.props.people.passport : '',
+                nameReciever: target.value === 'op1' ? this.props.people.name : '',
+                noteReciever: target.value === 'op1' ? this.props.people.note : '',
+            });
+        }
     }
 
     render() {
-        console.log(this.props.people);
         return <div style={{ marginLeft: '0px' }} className="content-wrapper">
             <section style={{ marginBottom: "0px" }} className="content-header">
                 <h1>Thay Đổi Người Nhận Tiền</h1>
@@ -68,7 +86,7 @@ class CancelRequestComponent extends Component {
                 <div className="row">
                     <div className="col-lg-12 col-xs-12 ">
                         <div className="box box-info">
-                            <form onSubmit={this.handleConfirmRequestBooked} className="form-horizontal">
+                            <form onSubmit={this.handleChangeRefundPeople} className="form-horizontal">
                                 <div className="box-body">
                                     <div className="form-group">
                                     </div>
