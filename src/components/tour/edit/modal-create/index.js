@@ -74,6 +74,12 @@ class CreateRouteComponent extends Component {
         this.setState({ [name]: value });
     }
 
+    handleChangeTime = (event) => {
+        const value = event.target.value;
+        const name = event.target.name;
+        this.setState({ [name]: value + ':00' });
+    }
+
     handleCreateRoute = async (event) => {
         event.preventDefault();
         const { location, day, arriveTime, leaveTime, title, transport, detail } = this.state;
@@ -113,7 +119,7 @@ class CreateRouteComponent extends Component {
                                         <div className="col-sm-8">
                                             <input
                                                 type="time"
-                                                onChange={this.handleChange}
+                                                onChange={this.handleChangeTime}
                                                 value={this.state.arrive_time}
                                                 name="arrive_time"
                                                 className="form-control" />
@@ -124,7 +130,7 @@ class CreateRouteComponent extends Component {
                                         <div className="col-sm-8">
                                             <input
                                                 type="time"
-                                                onChange={this.handleChange}
+                                                onChange={this.handleChangeTime}
                                                 value={this.state.leave_time}
                                                 name="leave_time"
                                                 className="form-control" />

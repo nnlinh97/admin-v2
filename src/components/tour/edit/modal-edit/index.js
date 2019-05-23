@@ -10,15 +10,16 @@ class CreateRouteComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            arrive_time: this.props.route.arrive_time,
-            leave_time: this.props.route.leave_time,
+            arrive_time: '',
+            leave_time: '',
             location: this.props.route.location,
             locations: [],
             transports: [],
             transport: this.props.route.transport,
             detail: this.props.route.detail,
             day: this.props.route.day,
-            id: this.props.route.id
+            id: this.props.route.id,
+            index: this.props.route.index
         }
     }
 
@@ -49,7 +50,12 @@ class CreateRouteComponent extends Component {
     updateState = (listLocation, listTransport) => {
         listLocation.forEach(item => { item.label = item.name; });
         listTransport.forEach(item => { item.label = item.name_vn; });
-        this.setState({ locations: listLocation, transports: listTransport });
+        this.setState({ 
+            locations: listLocation, 
+            transports: listTransport,
+            arrive_time: this.props.route.arrive_time,
+            leave_time: this.props.route.leave_time,
+        });
     }
 
     checkRoute = () => {
@@ -72,6 +78,12 @@ class CreateRouteComponent extends Component {
         const value = event.target.value;
         const name = event.target.name;
         this.setState({ [name]: value });
+    }
+
+    handleChangeTime = (event) => {
+        const value = event.target.value;
+        const name = event.target.name;
+        this.setState({ [name]: value + ':00' });
     }
 
     handleEditRoute = async (event) => {
@@ -117,7 +129,7 @@ class CreateRouteComponent extends Component {
                                         <div className="col-sm-8">
                                             <input
                                                 type="time"
-                                                onChange={this.handleChange}
+                                                onChange={this.handleChangeTime}
                                                 value={this.state.arrive_time}
                                                 name="arrive_time"
                                                 className="form-control" />
@@ -128,7 +140,7 @@ class CreateRouteComponent extends Component {
                                         <div className="col-sm-8">
                                             <input
                                                 type="time"
-                                                onChange={this.handleChange}
+                                                onChange={this.handleChangeTime}
                                                 value={this.state.leave_time}
                                                 name="leave_time"
                                                 className="form-control" />

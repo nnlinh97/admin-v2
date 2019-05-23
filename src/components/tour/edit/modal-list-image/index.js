@@ -17,21 +17,21 @@ class ListImagesComponent extends Component {
                     {this.props.listImages.length > 0 &&
                         this.props.listImages.map((image, index) => {
                             return <div key={index} className="imageOfListImage">
-                                <img src={image.name}></img>
+                                <img src={image.name} alt='hinh anh' />
                                 <i
                                     onClick={() => this.deleteImage(index, 'old')}
                                     style={{ cursor: 'pointer' }}
-                                    class="fa fa-times" aria-hidden="true">
+                                    className="fa fa-times" aria-hidden="true">
                                 </i>
                             </div>;
                         })}
                     {this.props.listImagesPreviview.length > 0 &&
                         this.props.listImagesPreviview.map((img, i) => {
                             return <div key={i} className="imageOfListImage">
-                                <img src={img}></img>
+                                <img src={img} alt='hinh anh' />
                                 <i
                                     onClick={() => this.deleteImage(i, 'new')} style={{ cursor: 'pointer' }}
-                                    class="fa fa-times" aria-hidden="true">
+                                    className="fa fa-times" aria-hidden="true">
                                 </i>
                             </div>;
                         })}

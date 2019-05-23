@@ -109,7 +109,6 @@ class ListTypesComponent extends Component {
                 Header: "STT",
                 Cell: props => <p>{props.index + 1}</p>,
                 style: { textAlign: 'center' },
-                style: { textAlign: 'center' },
                 width: 80,
                 maxWidth: 80,
                 minWidth: 80

@@ -59,13 +59,7 @@ class RefundComponent extends Component {
         if (this.checkData()) {
             try {
                 await apiPost('/cancel_booking/refunded', {
-                    idCancelBooking: this.props.message.id,
-                    refund_message: {
-                        name: this.state.name,
-                        passport: this.state.passport,
-                        note: this.state.note,
-                        helper: this.state.person === 'op1' ? false : true
-                    }
+                    idCancelBooking: this.props.message.id
                 });
                 this.props.handleRefundMoney(true);
             } catch (error) {
@@ -144,7 +138,7 @@ class RefundComponent extends Component {
                                             </span>
                                         </div>
                                     </div>
-                                    {this.state.policy && <div style={{ marginBottom: '0px' }} className="form-group">
+                                    <div style={{ marginBottom: '0px' }} className="form-group">
                                         <div className="col-sm-6">
                                             <strong>Tour ngày thường:</strong><br />
                                             - Trước <strong>20</strong> ngày: hoàn trả <strong>100%</strong><br />
@@ -163,9 +157,9 @@ class RefundComponent extends Component {
                                             - Từ <strong>17</strong> đến <strong>19</strong> ngày: hoàn trả <strong>50%</strong> <br />
                                             - Từ <strong>08</strong> đến <strong>16</strong> ngày: hoàn trả <strong>30%</strong> <br />
                                             - Từ <strong>02</strong> đến <strong>07</strong> ngày: hoàn trả <strong>10%</strong> <br />
-                                            - Dưới <strong>02</strong> ngày: <strong>0%</strong> <br /><br />
+                                            - Dưới <strong>02</strong> ngày: <strong>0%</strong>
                                         </div>
-                                    </div>}
+                                    </div>
                                     <div className="form-group">
                                         <div className="col-sm-12">
                                             <strong style={{ fontSize: '20px' }}>Thông tin</strong><br />
@@ -181,77 +175,17 @@ class RefundComponent extends Component {
                                             - Phần trăm hoàn trả: <strong>{percentMoneyRefund(days, this.props.holiday)}</strong>%<br />
                                             - Số tiền hoàn trả: <strong>
                                                 {formatCurrency(this.props.totalPay * percentMoneyRefund(days, this.props.holiday) / 100)} VND
-                                            </strong><br /><br />
+                                            </strong>
                                         </div>
                                     </div>
                                     <div className="form-group">
                                         <div className="col-sm-12">
-                                            <div className="form-group">
-                                                <label className="col-sm-2 control-label">Nhận Tiền</label>
-                                                <div className="col-sm-10">
-                                                    <div className="col-sm-6 radio">
-                                                        <label>
-                                                            <input
-                                                                onChange={this.handleChangeRadio}
-                                                                type="radio"
-                                                                name="person"
-                                                                value="op1"
-                                                                checked={this.state.person === 'op1' ? true : false} />
-                                                            Người đặt tour
-                                                    </label>
-                                                    </div>
-                                                    <div className="col-sm-6 radio">
-                                                        <label>
-                                                            <input
-                                                                onChange={this.handleChangeRadio}
-                                                                type="radio"
-                                                                name="person"
-                                                                value="op2"
-                                                                checked={this.state.person === 'op2' ? true : false} />
-                                                            Người nhận hộ
-                                                    </label>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <strong style={{ fontSize: '20px' }}>Người Nhận Tiền</strong><br />
                                         </div>
-                                        <div className="col-sm-12">
-                                            <div className="form-group">
-                                                <label className="col-sm-2 control-label">Tên</label>
-                                                <div className="col-sm-10">
-                                                    <input
-                                                        value={this.state.name}
-                                                        type="text"
-                                                        name="name"
-                                                        className="form-control"
-                                                        readOnly
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="form-group">
-                                                <label className="col-sm-2 control-label">CMND</label>
-                                                <div className="col-sm-10">
-                                                    <input
-                                                        value={this.state.passport}
-                                                        type="text"
-                                                        name="passport"
-                                                        className="form-control"
-                                                        readOnly
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="form-group">
-                                                <label className="col-sm-2 control-label">Chú thích</label>
-                                                <div className="col-sm-10">
-                                                    <textarea
-                                                        value={this.state.note}
-                                                        type="text"
-                                                        name="note"
-                                                        className="form-control"
-                                                        row={3}
-                                                        readOnly
-                                                    />
-                                                </div>
-                                            </div>
+                                        <div className="col-sm-6">
+                                            - Tên: <strong>{this.props.people.name}</strong><br />
+                                            - CMND/Passport: <strong>{this.props.people.passport}</strong><br />
+                                            - Chú thích: <strong>{this.props.people.note}</strong><br />
                                         </div>
                                     </div>
                                 </div>
