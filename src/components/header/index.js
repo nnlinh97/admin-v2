@@ -67,7 +67,7 @@ class Header extends Component {
                                     <img src="http://tinyurl.com/y6lnpbbx" className="user-image" alt="User Image" />
                                     <span className="hidden-xs">{this.state.username}</span>
                                 </a>
-                                <div class="dropdown-content">
+                                <div className="dropdown-content">
                                     <a onClick={this.handleChangePassword} href="#" className="btn btn-default btn-flat">Đổi Mật Khẩu</a>
                                     <a onClick={this.handleLogout} href="#" className="btn btn-default btn-flat">Đăng Xuất</a>
                                 </div>

@@ -607,7 +607,7 @@ class CreateTourTurnComponent extends Component {
                     center
                     styles={{ 'modal': { width: '1280px' } }}
                     blockScroll={true} >
-                    {this.state.bookTourDetail && <Refund
+                    {this.state.message && <Refund
                         handleRefundMoney={this.handleRefundMoney}
                         code={this.state.code}
                         message={this.state.message}
@@ -675,16 +675,22 @@ class CreateTourTurnComponent extends Component {
                     </div>
                 </section>
                 <section className="content">
-                    <div className="row">
+                    {/* <div className="row">
                         <div className="col-lg-12 col-xs-12">
                             <h2>Thông Tin Người Đặt và Đặt Tour #{this.state.code}</h2>
                         </div>
-                    </div>
+                    </div> */}
                     <div className="row">
                         <div className="col-lg-12 col-xs-12">
                             <div className="col-lg-6 col-xs-6">
                                 <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                    <label className="col-sm-4 control-label">Tên</label>
+                                    <label className="col-sm-4 control-label">Mã đặt tour</label>
+                                    <label className="col-sm-8 control-label">
+                                        {this.state.code}
+                                    </label>
+                                </div>
+                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Người đặt tour</label>
                                     <label className="col-sm-6 control-label">
                                         {this.state.contactInfo ? this.state.contactInfo.fullname : ''}
                                     </label>
@@ -739,9 +745,9 @@ class CreateTourTurnComponent extends Component {
                                     </label>
                                 </div>
                                 <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                    <label className="col-sm-4 control-label">Giá/người</label>
+                                    <label className="col-sm-4 control-label">Giá ban đầu</label>
                                     <label className="col-sm-8 control-label">
-                                        <mark style={{ backgroundColor: '#ff0' }}>{this.state.tourTurn ? formatCurrency(this.state.tourTurn.price) : ''}</mark> VND
+                                        {this.state.tourTurn ? formatCurrency(this.state.tourTurn.price) : ''} VND
                                     </label>
                                 </div>
                                 <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
@@ -750,14 +756,28 @@ class CreateTourTurnComponent extends Component {
                                         {this.state.tourTurn ? this.state.tourTurn.discount : ''} %
                                     </label>
                                 </div>
+                                {this.state.typePassenger &&
+                                    this.state.typePassenger.map((type, index) => {
+                                        return <div key={index} style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                            <label className="col-sm-4 control-label">Giá {type.name_vi}</label>
+                                            <label className="col-sm-8 control-label">
+                                                {formatCurrency(type.price)} VND/Vé
+                                        </label>
+                                        </div>
+                                    })
+                                }
                             </div>
                             <div className="col-lg-6 col-xs-6">
-                                <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                    <label className="col-sm-4 control-label">Số người đi</label>
-                                    <label className="col-sm-8 control-label">
-                                        {this.state.numPassengers}
-                                    </label>
-                                </div>
+                                {this.state.typePassenger &&
+                                    this.state.typePassenger.map((type, i) => {
+                                        return <div key={i} style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                            <label className="col-sm-4 control-label">Số {type.name_vi}</label>
+                                            <label className="col-sm-8 control-label">
+                                                {type.num_passenger}
+                                            </label>
+                                        </div>
+                                    })
+                                }
                                 <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                     <label className="col-sm-4 control-label">Tổng tiền</label>
                                     <label className="col-sm-8 control-label">

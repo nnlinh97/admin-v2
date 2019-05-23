@@ -12,7 +12,7 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import { configEditor } from './../config';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
-import { helper } from '../../../helper';
+import { matchString } from '../../../helper';
 import ReactTable from 'react-table';
 import { apiGet, apiPost } from '../../../services/api';
 import CreateRouteComponent from './modal-create';
@@ -41,16 +41,17 @@ class ListTypesComponent extends Component {
             modalCreateRouteIsOpen: false,
             modalEditRouteIsOpen: false,
             modalListImageIsOpen: false,
-            routeEdit: null
+            routeEdit: null,
+            keySearch: ''
         }
     }
 
     async componentDidMount() {
         const id = this.getCode(window.location.search);
-        console.log(id);
         if (id) {
             try {
                 const tourDetail = await apiGet(`/tour/getById/${id}`);
+                console.log(tourDetail.data.data)
                 this.setState({ routes: tourDetail.data.data.routes });
             } catch (error) {
                 console.log(error);
@@ -79,8 +80,8 @@ class ListTypesComponent extends Component {
     }
 
     checkTour = () => {
-        const { name, desc, routes } = this.state;
-        if (name !== '' && desc !== '' && routes.length) {
+        const { name, desc, routes, image } = this.state;
+        if (name !== '' && desc !== '' && routes.length > 0 && image.length > 0) {
             return true;
         }
         return false;
@@ -88,23 +89,23 @@ class ListTypesComponent extends Component {
 
     handleCreateTour = async () => {
         if (this.checkTour()) {
-            const { name, image, detail, policy, desc, routes, listImages } = this.state;
-            let form = new FormData();
-            form.append('name', name);
-            form.append('detail', detail);
-            form.append('policy', policy);
-            form.append('routes', JSON.stringify(routes));
-            form.append('description', desc);
-            if (image.length) {
-                form.append('featured_image', image[0], 'name.jpg');
-            }
-            if (listImages.length) {
-                listImages.forEach((item) => {
-                    form.append('list_image', item.item);
-                });
-            }
             try {
-                await apiPost('/tour/createWithRoutesAndListImage', form);
+                const { name, image, policy, desc, routes, listImages, typeTour } = this.state;
+                let form = new FormData();
+                form.append('name', name);
+                form.append('policy', policy);
+                form.append('routes', JSON.stringify(this.changeRoutes(routes)));
+                form.append('description', desc);
+                form.append('fk_type_tour', typeTour);
+                if (image.length) {
+                    form.append('featured_image', image[0], 'name.jpg');
+                }
+                if (listImages.length > 0) {
+                    listImages.forEach((item) => {
+                        form.append('list_image', item);
+                    });
+                }
+                await apiPost('/tour/createWithRoutesAndListImage_v2', form);
                 this.setState({ success: true });
             } catch (error) {
                 this.setState({ error: true });
@@ -115,7 +116,8 @@ class ListTypesComponent extends Component {
     }
 
     handleHiddenSuccess = () => {
-        this.setState({ success: false, modalCreateRouteIsOpen: false });
+        this.props.history.push('/tour/list');
+        // this.setState({ success: false, modalCreateRouteIsOpen: false });
     }
 
     handleHiddenError = () => {
@@ -123,19 +125,21 @@ class ListTypesComponent extends Component {
     }
 
     handleDelete = (props) => {
-        const id = props.original.id;
-        const indexRoute = _.findIndex(this.state.routes, (item) => item.id === id);
-        if (indexRoute !== -1) {
-            this.state.routes.splice(indexRoute, 1);
-        }
+        this.state.routes.splice(props.index, 1);
         this.setState({
             tempRoutes: [...this.state.routes],
             routes: [...this.state.routes]
         });
     }
 
-    handleEdit = ({ original }) => {
-        this.setState({ routeEdit: original, modalEditRouteIsOpen: true });
+    handleEdit = (props) => {
+        this.setState({
+            routeEdit: {
+                ...this.state.routes[props.index],
+                index: props.index
+            },
+            modalEditRouteIsOpen: true
+        });
     }
 
     handleOpenModalListImage = () => {
@@ -145,8 +149,8 @@ class ListTypesComponent extends Component {
     handleChangeImage = (event) => {
         let file = event.target.files[0];
         let reader = new FileReader();
+        event.target.value = null;
         reader.onloadend = () => {
-            event.target = null;
             this.setState({
                 image: [file],
                 previewImage: reader.result
@@ -201,7 +205,7 @@ class ListTypesComponent extends Component {
     handleCreateRoute = (data) => {
         if (data) {
             this.setState({
-                routes: [...this.state.routes, { id: randomstring.generate(8), ...data }],
+                routes: [...this.state.routes, data],
                 modalCreateRouteIsOpen: false
             });
         } else {
@@ -212,9 +216,8 @@ class ListTypesComponent extends Component {
     handleEditRoute = (data) => {
         if (data) {
             let routes = [...this.state.routes];
-            const index = _.findIndex(routes, (route) => {
-                return route.id === data.id;
-            });
+            const index = data.index;
+            delete data.index;
             routes[index] = data;
             this.setState({
                 modalEditRouteIsOpen: false,
@@ -232,19 +235,62 @@ class ListTypesComponent extends Component {
     }
 
     handleUp = (props) => {
-        if (props.index === 0) {
-            return;
-        }
         let routes = [...this.state.routes];
         this.setState({ routes: this.swap(routes, props.index, props.index - 1) });
     }
 
     handleDown = (props) => {
-        if (props.index === this.state.routes.length - 1) {
-            return;
-        }
         let routes = [...this.state.routes];
         this.setState({ routes: this.swap(routes, props.index, props.index + 1) });
+    }
+
+    changeRoutes = (routes) => {
+        let result = [];
+        routes.forEach(item => {
+            item.fk_location = item.location.id;
+            item.fk_transport = item.transport.id;
+            item.day = parseInt(item.day);
+            let temp = { ...item };
+            delete temp.location;
+            delete temp.transport;
+            delete temp.id;
+            delete temp.title;
+            result.push(temp);
+        });
+        return result;
+    }
+
+    sortRoutes = async (routes) => {
+        const checkTime = (arrive, leave) => {
+            return Date.parse('01/01/2011 ' + arrive) < Date.parse('01/01/2011 ' + leave)
+        }
+        const compare2Route = (route1, route2) => {
+            if (parseInt(route1.day) === parseInt(route2.day)) {
+                if (route1.arrive_time === null)
+                    return -1;
+                if (checkTime(route1.arrive_time, route2.arrive_time)) {
+                    //route1 nhỏ hơn route2
+                    return -1;
+                }
+                else
+                    return 1;
+            }
+            return (parseInt(route1.day) > parseInt(route2.day) ? 1 : -1)
+        }
+        routes.sort(compare2Route);
+    }
+
+    handleSortRoutes = async (list) => {
+        let routes = [...list];
+        await this.sortRoutes(routes);
+        this.setState({ routes });
+    }
+
+    handleSearchRoutes = (listRoutes, keySearch) => {
+        if (keySearch !== '' && listRoutes.length > 0) {
+            return listRoutes.filter(route => matchString(route.location.name, keySearch) || matchString(route.location.id.toString(), keySearch));
+        }
+        return listRoutes;
     }
 
     render() {
@@ -336,12 +382,14 @@ class ListTypesComponent extends Component {
                         <button
                             style={{ position: 'absolute', marginLeft: '-12.5px', marginTop: '-2px', height: '17px', width: '20px' }}
                             className="btn btn-default"
+                            disabled={props.index === 0}
                             onClick={() => this.handleUp(props)} >
                             <i style={{ position: 'absolute', top: '5px', marginLeft: '-4px' }} className="fa fa-sort-asc" />
                         </button>
                         <button
                             style={{ position: 'absolute', marginLeft: '-12.5px', marginTop: '17px', height: '17px', width: '20px' }}
                             className="btn btn-default"
+                            disabled={props.index === this.state.routes.length - 1}
                             onClick={() => this.handleDown(props)} >
                             <i style={{ position: 'absolute', top: '-2px', marginLeft: '-4px' }} className="fa fa-sort-desc" />
                         </button>
@@ -453,14 +501,13 @@ class ListTypesComponent extends Component {
                                 <label className="title_row">Ảnh đại diện *</label>
                                 <input id="upload-image" className="upload_image_create_tour" onChange={this.handleChangeImage} type="file" /><br />
                                 <div className="inputImage">
-                                    {this.state.previewImage !== '' ?
-                                        <div className="cover_image_of_tour">
+                                    <div className="cover_image_of_tour">
+                                        {this.state.previewImage !== '' ?
                                             <img src={this.state.previewImage} />
-                                            <i class="fa fa-times" aria-hidden="true"></i>
-                                        </div>
-                                         :
-                                        <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
-                                    }
+                                            :
+                                            <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
+                                        }
+                                    </div>
                                 </div>
 
                             </div>
@@ -483,7 +530,7 @@ class ListTypesComponent extends Component {
                         <label className="title_row">Danh sách hình ảnh</label>
                         <input className="upload_image_create_tour" onChange={this.handleChangeListImages} type="file" multiple />
                         <i
-                            style={{ cursor: 'pointer' }}
+                            style={{ cursor: 'pointer', fontSize: '40px', marginTop: '10px' }}
                             onClick={this.handleOpenModalListImage}
                             className="fa fa-picture-o icon_show_pop_up"
                             title="Xem danh sách ảnh"
@@ -519,20 +566,26 @@ class ListTypesComponent extends Component {
                     </div>
                     <div className="row row_5">
                         <div className="header_row">
-                            <label className="title_row">Danh sách địa điểm</label>
+                            <label className="title_row">Danh sách địa điểm *</label>
                             <div style={{ top: '10px', right: '160px' }} className="mini_search_box">
                                 <div className="search_icon">
                                     <i className="fa fa-search"></i>
                                 </div>
                                 <input
                                     type="text"
-                                    onChange={this.handleChange}
+                                    onChange={this.onHandleChange}
                                     value={this.state.keySearch}
                                     name="keySearch"
                                     className="search_input"
                                     placeholder="Tìm kiếm..."
                                 />
                             </div>
+                            <button
+                                onClick={() => this.handleSortRoutes(this.state.routes)}
+                                type="button"
+                                className="btn btn-default pull-right addForTableCreateTour">
+                                <i className="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                            </button>
                             <button
                                 onClick={this.openModalRoute}
                                 type="button"
@@ -542,7 +595,7 @@ class ListTypesComponent extends Component {
                         <div className="table_row">
                             <ReactTable
                                 columns={columns}
-                                data={this.state.routes}
+                                data={this.handleSearchRoutes(this.state.routes, this.state.keySearch)}
                                 defaultPageSize={10}
                                 noDataText={'Không có dữ liệu...'} >
                             </ReactTable>

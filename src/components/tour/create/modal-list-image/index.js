@@ -13,12 +13,12 @@ class CreateRouteComponent extends Component {
                 <h1> Danh Sách Hình Ảnh </h1>
             </section>
             <section className="content">
-                <div style={{height: '550px', maxHeight: '565px'}} className="listImage">
+                <div style={{ height: '550px', maxHeight: '565px' }} className="listImage">
                     {this.props.listImage.length > 0 &&
                         this.props.listImage.map((image, index) => {
                             return <div key={index} className="imageOfListImage">
-                                <img src={image}></img>
-                                <i onClick={() => this.deletePreviewImage(index)} style={{ cursor: 'pointer' }} class="fa fa-times" aria-hidden="true"></i>
+                                <img src={image} alt='hinh anh' />
+                                <i onClick={() => this.deletePreviewImage(index)} style={{ cursor: 'pointer' }} className="fa fa-times" aria-hidden="true"></i>
                             </div>;
                         })}
                     {this.props.listImage.length === 0 && <div className="imageOfListImage">

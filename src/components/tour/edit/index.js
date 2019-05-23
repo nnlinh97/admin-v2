@@ -1,33 +1,23 @@
-import 'froala-editor/js/froala_editor.pkgd.min.js';
-import 'froala-editor/css/froala_style.min.css';
-import 'froala-editor/css/froala_editor.pkgd.min.css';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import 'react-table/react-table.css';
 import * as actions from './../../../actions/index';
 import _ from 'lodash';
-import moment from 'moment';
 import randomstring from 'randomstring';
-import DatePicker from "react-datepicker";
-import TimePicker from 'react-time-picker';
-import "react-datepicker/dist/react-datepicker.css";
-import 'font-awesome/css/font-awesome.css';
-import { NotificationContainer, NotificationManager } from 'react-notifications';
-
+import ReactTable from 'react-table';
 import FroalaEditor from 'react-froala-wysiwyg';
-import { useAlert } from "react-alert";
 import { configEditor } from './../config';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
-import { helper } from '../../../helper';
-import ReactTable from 'react-table';
+import { matchString } from '../../../helper';
 import { apiGet, apiPost } from '../../../services/api';
-import { sortRoute } from './../../../helper';
 import CreateRouteComponent from './modal-create';
 import EditRouteComponent from './modal-edit';
 import ListImageComponent from './modal-list-image';
-import stateManager from 'react-select/lib/stateManager';
+import 'froala-editor/js/froala_editor.pkgd.min.js';
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+import 'react-table/react-table.css';
 import './index.css';
 
 class ListTypesComponent extends Component {
@@ -46,13 +36,16 @@ class ListTypesComponent extends Component {
             featuredImg: '',
             featuredImgTemp: '',
             listImages: [],
+            deletedImages: [],
             listImagesNew: [],
             listImagesPreviview: [],
             typeTour: '',
             modalCreateRouteIsOpen: false,
             modalEditRouteIsOpen: false,
             modalListImageIsOpen: false,
-            routeEdit: null
+            routeEdit: null,
+            id: '',
+            keySearch: ''
         }
     }
 
@@ -67,7 +60,7 @@ class ListTypesComponent extends Component {
     }
 
     updateState = (tourDetail) => {
-        console.log(tourDetail);
+        // console.log(tourDetail);
         this.setState({
             name: tourDetail.name,
             typeTour: tourDetail.fk_type_tour,
@@ -97,116 +90,66 @@ class ListTypesComponent extends Component {
 
     checkTour = () => {
         const { name, desc, routes } = this.state;
-        if (name !== '' && desc !== '' && routes.length) {
+        if (name !== '' && desc !== '' && routes.length > 0) {
             return true;
         }
         return false;
     }
 
-    handleSave = async () => {
+    handleEditTour = async () => {
         if (this.checkTour()) {
-            const { name, image, detail, policy, desc, routes, listImages } = this.state;
-            let form = new FormData();
-            form.append('name', name);
-            form.append('detail', detail);
-            form.append('policy', policy);
-            form.append('routes', JSON.stringify(routes));
-            form.append('description', desc);
-            if (image.length) {
-                form.append('featured_image', image[0], 'name.jpg');
-            }
-            if (listImages.length) {
-                listImages.forEach((item) => {
-                    form.append('list_image', item.item);
-                });
-            }
             try {
-                let newTour = await apiPost('/tour/createWithRoutesAndListImage', form);
-                newTour = newTour.data;
-                if (!this.props.listTour) {
-                    try {
-                        let listTour = await apiGet('/tour/getAllWithoutPagination');
-                        await this.props.getListTour(listTour.data.data);
-                    } catch (error) {
-                        console.log(error);
-                    }
-                } else {
-                    await this.props.createTour({
-                        id: newTour.id,
-                        name: newTour.name,
+                const { id, name, image, policy, desc, routes, deletedImages, listImagesNew, typeTour } = this.state;
+                let form = new FormData();
+                form.append('id', id);
+                form.append('name', name);
+                form.append('policy', policy);
+                form.append('routes', JSON.stringify(this.changeRoutes(routes)));
+                form.append('fk_type_tour', typeTour);
+                form.append('description', desc);
+                if (image.length > 0) {
+                    form.append('featured_image', image[0], 'name.jpg');
+                }
+                if (deletedImages.length > 0) {
+                    form.append('deleted_images', JSON.stringify(deletedImages));
+                }
+                if (listImagesNew.length > 0) {
+                    listImagesNew.forEach((item) => {
+                        form.append('new_images', item);
                     });
                 }
-                this.setState({
-                    success: true
-                })
+                await apiPost('/tour/updateWithRoutesAndListImage_v2', form);
+                this.setState({ success: true });
             } catch (error) {
-                this.setState({
-                    error: true
-                });
+                this.setState({ error: true });
             }
         } else {
-            this.setState({
-                error: true
-            })
+            this.setState({ error: true })
         }
     }
 
     handleHiddenSuccess = () => {
-        this.setState({ success: false, modalCreateRouteIsOpen: false });
+        // this.setState({ success: false, modalCreateRouteIsOpen: false });
+        this.props.history.push('/tour/list')
     }
 
     handleHiddenError = () => {
         this.setState({ error: false });
     }
 
-    openModal = () => {
-        this.addOpacityBody();
-        this.setState({
-            openModal: true
-        });
-    }
-
-    closeModal = () => {
-        this.removeOpacityBody();
-        this.setState({
-            openModal: false,
-            tempRoutes: [...this.state.routes]
-        });
-    }
-
-    handleChangeSelect = (props) => {
-        const index = _.findIndex(this.state.tempRoutes, (item) => {
-            return item.id === props.original.id;
-        });
-        if (index !== -1) {
-            this.state.tempRoutes.splice(index, 1);
-        } else {
-            this.state.tempRoutes.push(props.original);
-        }
-        this.setState({
-            tempRoutes: [...this.state.tempRoutes]
-        });
-    }
-
-    handleSaveChanges = () => {
-        this.removeOpacityBody();
-        this.setState({
-            routes: [...this.state.tempRoutes],
-            openModal: false
-        })
-    }
-
     handleDelete = (props) => {
-        const id = props.original.id;
-        const indexRoute = _.findIndex(this.state.routes, (item) => item.id === id);
-        if (indexRoute !== -1) {
-            this.state.routes.splice(indexRoute, 1);
-        }
+        this.state.routes.splice(props.index, 1);
         this.setState({ routes: [...this.state.routes] });
     }
 
-    handleEdit = ({ original }) => {
-        this.setState({ routeEdit: original, modalEditRouteIsOpen: true });
+    handleEdit = (props) => {
+        this.setState({
+            routeEdit: {
+                ...this.state.routes[props.index],
+                index: props.index
+            },
+            modalEditRouteIsOpen: true
+        });
     }
 
     handleOpenModalListImage = () => {
@@ -216,8 +159,8 @@ class ListTypesComponent extends Component {
     handleChangeImage = (event) => {
         let file = event.target.files[0];
         let reader = new FileReader();
+        event.target.value = null;
         reader.onloadend = () => {
-            event.target = null;
             this.setState({
                 image: [file],
                 featuredImgTemp: reader.result
@@ -226,30 +169,15 @@ class ListTypesComponent extends Component {
         reader.readAsDataURL(file)
     }
 
-    openModalListImages = (event) => {
-        this.addOpacityBody();
-        event.preventDefault();
-        this.setState({
-            modalListImages: true
-        })
-    }
-
-    closeModalListImages = () => {
-        this.removeOpacityBody();
-        this.setState({
-            modalListImages: false
-        })
-    }
-
     handleChangeListImages = (event) => {
         let files = Array.from(event.target.files);
+        event.target.value = null;
         if (files.length) {
-            event.target.value = null;
             files.forEach(item => {
                 let reader = new FileReader();
                 reader.onloadend = () => {
                     this.setState({
-                        listImagesNew: [...this.state.listImages, item],
+                        listImagesNew: [...this.state.listImagesNew, item],
                         listImagesPreviview: [...this.state.listImagesPreviview, reader.result]
                     });
                 };
@@ -257,13 +185,6 @@ class ListTypesComponent extends Component {
             });
 
         }
-    }
-    addOpacityBody = () => {
-        document.body.classList.toggle('no-scroll');
-    }
-
-    removeOpacityBody = () => {
-        document.body.classList.remove('no-scroll');
     }
 
     deleteImage = (index, status) => {
@@ -275,8 +196,9 @@ class ListTypesComponent extends Component {
                 listImagesPreviview: [...this.state.listImagesPreviview]
             });
         } else {
+            const deletedImages = [...this.state.deletedImages, this.state.listImages[index]];
             this.state.listImages.splice(index, 1);
-            this.setState({ listImages: [...this.state.listImages] });
+            this.setState({ listImages: [...this.state.listImages], deletedImages: deletedImages });
         }
     }
 
@@ -299,7 +221,7 @@ class ListTypesComponent extends Component {
     handleCreateRoute = (data) => {
         if (data) {
             this.setState({
-                routes: [...this.state.routes, { id: randomstring.generate(8), ...data }],
+                routes: [...this.state.routes, data],
                 modalCreateRouteIsOpen: false
             });
         } else {
@@ -310,9 +232,8 @@ class ListTypesComponent extends Component {
     handleEditRoute = (data) => {
         if (data) {
             let routes = [...this.state.routes];
-            const index = _.findIndex(routes, (route) => {
-                return route.id === data.id;
-            });
+            const index = data.index;
+            delete data.index;
             routes[index] = data;
             this.setState({
                 modalEditRouteIsOpen: false,
@@ -330,19 +251,98 @@ class ListTypesComponent extends Component {
     }
 
     handleUp = (props) => {
-        if (props.index === 0) {
-            return;
-        }
         let routes = [...this.state.routes];
         this.setState({ routes: this.swap(routes, props.index, props.index - 1) });
     }
 
     handleDown = (props) => {
-        if (props.index === this.state.routes.length - 1) {
-            return;
-        }
         let routes = [...this.state.routes];
         this.setState({ routes: this.swap(routes, props.index, props.index + 1) });
+    }
+
+    handleDeleteAvatar = async () => {
+        const id = this.props.match.params.id;
+        try {
+            const tourDetail = await apiGet(`/tour/getById/${id}`);
+            this.updateStateRefresh(tourDetail.data.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    changeRoutes = (routes) => {
+        let result = [];
+        routes.forEach(item => {
+            item.fk_location = item.location.id;
+            item.fk_transport = item.transport.id;
+            item.day = parseInt(item.day);
+            let temp = { ...item };
+            delete temp.location;
+            delete temp.transport;
+            delete temp.id;
+            delete temp.title;
+            result.push(temp);
+        });
+        return result;
+    }
+
+    sortRoutes = async (routes) => {
+        const checkTime = (arrive, leave) => {
+            return Date.parse('01/01/2011 ' + arrive) < Date.parse('01/01/2011 ' + leave)
+        }
+        const compare2Route = (route1, route2) => {
+            if (parseInt(route1.day) === parseInt(route2.day)) {
+                if (route1.arrive_time === null)
+                    return -1;
+                if (checkTime(route1.arrive_time, route2.arrive_time)) {
+                    return -1;
+                }
+                else
+                    return 1;
+            }
+            return (parseInt(route1.day) > parseInt(route2.day) ? 1 : -1)
+        }
+        routes.sort(compare2Route);
+    }
+
+    handleSortRoutes = async (list) => {
+        let routes = [...list];
+        await this.sortRoutes(routes);
+        this.setState({ routes });
+    }
+
+    handleRefresh = async () => {
+        const id = this.props.match.params.id;
+        try {
+            const tourDetail = await apiGet(`/tour/getById/${id}`);
+            this.updateStateRefresh(tourDetail.data.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    updateStateRefresh = (tourDetail) => {
+        this.setState({
+            name: tourDetail.name,
+            typeTour: tourDetail.fk_type_tour,
+            id: tourDetail.id,
+            policy: tourDetail.policy ? tourDetail.policy : '',
+            featuredImg: tourDetail.featured_img,
+            listImages: tourDetail.tour_images,
+            desc: tourDetail.description,
+            routes: tourDetail.routes,
+            listImagesNew: [],
+            listImagesPreviview: [],
+            featuredImgTemp: '',
+            image: []
+        });
+    }
+
+    handleSearchRoutes = (listRoutes, keySearch) => {
+        if (keySearch !== '' && listRoutes.length > 0) {
+            return listRoutes.filter(route => matchString(route.location.name, keySearch) || matchString(route.location.id.toString(), keySearch));
+        }
+        return listRoutes;
     }
 
     render() {
@@ -434,12 +434,14 @@ class ListTypesComponent extends Component {
                         <button
                             style={{ position: 'absolute', marginLeft: '-12.5px', marginTop: '-2px', height: '17px', width: '20px' }}
                             className="btn btn-default"
+                            disabled={props.index === 0}
                             onClick={() => this.handleUp(props)} >
                             <i style={{ position: 'absolute', top: '5px', marginLeft: '-4px' }} className="fa fa-sort-asc" />
                         </button>
                         <button
                             style={{ position: 'absolute', marginLeft: '-12.5px', marginTop: '17px', height: '17px', width: '20px' }}
                             className="btn btn-default"
+                            disabled={props.index === this.state.routes.length - 1}
                             onClick={() => this.handleDown(props)} >
                             <i style={{ position: 'absolute', top: '-2px', marginLeft: '-4px' }} className="fa fa-sort-desc" />
                         </button>
@@ -524,10 +526,18 @@ class ListTypesComponent extends Component {
                     <h1>Chỉnh Sửa Tour</h1>
                     <div className="right_header">
                         <button
-                            onClick={this.handleCreateTour}
+                            onClick={this.handleEditTour}
                             style={{ marginBottom: '2px', marginRight: '15px' }}
                             type="button"
                             className="btn btn-success pull-right">Lưu Lại
+                        </button>
+                        <button
+                            onClick={this.handleRefresh}
+                            style={{ marginBottom: '2px', marginRight: '15px' }}
+                            type="button"
+                            title="làm mới"
+                            className="btn btn-default pull-right">
+                            <i className="fa fa-refresh" />
                         </button>
                     </div>
                 </section>
@@ -549,17 +559,19 @@ class ListTypesComponent extends Component {
                                 <label className="title_row">Ảnh đại diện *</label>
                                 <input id="upload-image" className="upload_image_create_tour" onChange={this.handleChangeImage} type="file" /><br />
                                 <div className="inputImage">
-                                    {this.state.featuredImgTemp !== '' ?
-                                        <img src={this.state.featuredImgTemp} /> :
-                                        (this.state.featuredImg !== '' ?
-                                            <div className="cover_image_of_tour">
-                                                <img src={this.state.featuredImg} />
-                                                <i class="fa fa-times" aria-hidden="true"></i>
-                                            </div>
-                                             :
-                                            <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
-                                        )
-                                    }
+                                    <div className="cover_image_of_tour">
+                                        {this.state.featuredImgTemp !== '' ?
+                                            <img src={this.state.featuredImgTemp} /> :
+                                            (this.state.featuredImg ?
+                                                <img src={this.state.featuredImg} /> :
+                                                <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
+                                            )}
+                                        {this.state.featuredImgTemp !== '' && <i
+                                            onClick={this.handleDeleteAvatar}
+                                            className="fa fa-times"
+                                            aria-hidden="true" />}
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -581,9 +593,9 @@ class ListTypesComponent extends Component {
                         <label className="title_row">Danh sách hình ảnh</label>
                         <input className="upload_image_create_tour" onChange={this.handleChangeListImages} type="file" multiple />
                         <i
-                            style={{ cursor: 'pointer' }}
+                            style={{ cursor: 'pointer', fontSize: '40px', marginTop: '10px' }}
                             onClick={this.handleOpenModalListImage}
-                            class="fa fa-picture-o icon_show_pop_up"
+                            className="fa fa-picture-o icon_show_pop_up"
                             title="Xem danh sách ảnh"
                             aria-hidden="true">
                         </i>
@@ -624,13 +636,19 @@ class ListTypesComponent extends Component {
                                 </div>
                                 <input
                                     type="text"
-                                    onChange={this.handleChange}
+                                    onChange={this.onHandleChange}
                                     value={this.state.keySearch}
                                     name="keySearch"
                                     className="search_input"
                                     placeholder="Tìm kiếm..."
                                 />
                             </div>
+                            <button
+                                onClick={() => this.handleSortRoutes(this.state.routes)}
+                                type="button"
+                                className="btn btn-default pull-right addForTableCreateTour">
+                                <i className="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                            </button>
                             <button
                                 onClick={this.openModalRoute}
                                 type="button"
@@ -640,192 +658,7 @@ class ListTypesComponent extends Component {
                         <div className="table_row">
                             <ReactTable
                                 columns={columns}
-                                data={this.state.routes}
-                                defaultPageSize={10}
-                                noDataText={'Không có dữ liệu...'} >
-                            </ReactTable>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        );
-        return (
-            <div className="content-wrapper">
-                {this.state.success && <SweetAlert
-                    success
-                    title="Lưu Thành Công"
-                    onConfirm={this.handleHiddenSuccess}>
-                    Tiếp Tục...
-                </SweetAlert>}
-
-                {this.state.error && <SweetAlert
-                    warning
-                    confirmBtnText="Hủy"
-                    confirmBtnBsStyle="default"
-                    title="Đã Có Lỗi Xảy Ra!"
-                    onConfirm={this.handleHiddenError}>
-                    Vui Lòng Kiểm Tra Lại...
-                </SweetAlert>}
-
-                <Modal
-                    open={this.state.modalCreateRouteIsOpen}
-                    onClose={this.closeModalRoute}
-                    center
-                    styles={{ 'modal': { width: '1280px' } }}
-                    blockScroll={true} >
-                    <CreateRouteComponent handleCreateRoute={this.handleCreateRoute} />
-                </Modal>
-
-                {/*<Modal
-                    open={this.state.modalEditRouteIsOpen}
-                    onClose={this.closeModalEditRoute}
-                    center
-                    styles={{ 'modal': { width: '1280px' } }}
-                    blockScroll={true} >
-                    {this.state.routeEdit && <EditRouteComponent
-                        route={this.state.routeEdit}
-                        handleEditRoute={this.handleEditRoute}
-                    />}
-                </Modal> */}
-
-                <Modal
-                    open={this.state.modalListImageIsOpen}
-                    onClose={this.closeModalListImage}
-                    center
-                    styles={{ 'modal': { width: '1280px', maxWidth: '1280px' } }}
-                    blockScroll={true} >
-                    <ListImageComponent
-                        listImage={this.state.listImages}
-                        deleteImage={this.deleteImage}
-                    />
-                </Modal>
-
-                <section className="content-header">
-                    <h1>Thêm Mới Tour</h1>
-                    <div className="right_header">
-                        <button
-                            onClick={this.handleSave}
-                            style={{
-                                marginBottom: '2px',
-                                marginRight: '15px'
-                            }}
-                            type="button"
-                            className="btn btn-success pull-right">Lưu Lại
-                        </button>
-                    </div>
-                </section>
-                <section className="content">
-                    <div className="row row_1">
-                        <div className="left_row_1">
-                            <div className="tour">
-                                <label className="title_row">Tour *</label>
-                                <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
-                            </div>
-                            <div className="type_tour">
-                                <label className="title_row">Loại tour *</label>
-                                <select value={this.state.typeTour} onChange={this.onHandleChange} name="typeTour" className="form-control">
-                                    <option value="1">Trong nước</option>
-                                    <option value="2">Quốc tế</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="title_row">Ảnh đại diện *</label>
-                                <input className="upload_image_create_tour" id="upload-image" onChange={this.handleChangeImage} type="file" /><br />
-                                <div className="inputImage">
-                                    {this.state.featuredImgTemp !== '' ?
-                                        <img src={this.state.featuredImgTemp} /> :
-                                        (this.state.featuredImg !== '' ?
-                                            <img src={this.state.featuredImg} /> :
-                                            <img src="http://localhost:5000/assets/images/locationFeatured/SaiGonCenter.jpg" />
-                                        )
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <div className="right_row_1">
-                            <label className="title_row">Qui định</label>
-                            <FroalaEditor
-                                config={{
-                                    placeholderText: '',
-                                    heightMin: 425,
-                                    heightMax: 425,
-                                    toolbarButtons: configEditor.policy,
-                                }}
-                                model={this.state.policy}
-                                onModelChange={this.handleChangePolicy}
-                            />
-                        </div>
-                    </div>
-                    <div className="row row_2">
-                        <label className="title_row">Danh sách hình ảnh</label>
-                        <input className="upload_image_create_tour" onChange={this.handleChangeListImages} type="file" multiple />
-                        <div className="slideshow">
-                            {/* {this.state.listImagesPreviview.length > 0 &&
-                                this.getListImage(this.state.listImagesPreviview).map((item, index) => {
-                                    return <div key={index} className="imageOfSlideshow">
-                                        <img src={item.image}></img>
-                                        <i onClick={(event) => this.deleteImage(event, item.id)} style={{ cursor: 'pointer' }} className="fa fa-times" aria-hidden="true"></i>
-                                    </div>
-                                })
-                            } */}
-                            <div className="imageOfSlideshow">
-                                <p onClick={this.handleOpenModalListImage} style={{ fontSize: '20px', marginTop: '40%' }}>không có dữ liệu...</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row row_4">
-                        <label className="title_row">Mô tả *</label>
-                        <FroalaEditor
-                            config={{
-                                heightMax: 362,
-                                heightMin: 362,
-                                placeholderText: '',
-                                toolbarButtons: configEditor.description,
-                                imageUploadParam: 'file',
-                                imageUploadURL: 'http://localhost:5000/admin/upload_image',
-                                imageUploadParams: { id: 'my_editor' },
-                                imageUploadMethod: 'POST',
-                                imageMaxSize: 5 * 1024 * 1024,
-                                imageAllowedTypes: ['jpeg', 'jpg', 'png'],
-                                events: {
-                                    'froalaEditor.image.uploaded': (e, editor, response) => {
-                                        response = JSON.parse(response);
-                                        editor.image.insert(`http://localhost:5000${response.link.replace('/public', '')}`, true, null, editor.image.get(), null)
-                                        return false
-                                    }
-                                }
-
-                            }}
-                            model={this.state.desc}
-                            onModelChange={this.handleChangeDesc}
-                        />
-                    </div>
-                    <div className="row row_5">
-                        <div className="header_row">
-                            <label className="title_row">Danh sách địa điểm</label>
-                            <div style={{ top: '10px', right: '160px' }} className="mini_search_box">
-                                <div className="search_icon">
-                                    <i className="fa fa-search"></i>
-                                </div>
-                                <input
-                                    type="text"
-                                    onChange={this.handleChange}
-                                    value={this.state.keySearch}
-                                    name="keySearch"
-                                    className="search_input"
-                                    placeholder="Tìm kiếm..."
-                                />
-                            </div>
-                            <button
-                                onClick={this.openModalRoute}
-                                type="button"
-                                className="btn btn-success pull-right addForTableCreateTour">Thêm Địa Điểm
-                            </button>
-                        </div>
-                        <div className="table_row">
-                            <ReactTable
-                                columns={columns}
-                                data={this.state.routes}
+                                data={this.handleSearchRoutes(this.state.routes, this.state.keySearch)}
                                 defaultPageSize={10}
                                 noDataText={'Không có dữ liệu...'} >
                             </ReactTable>
