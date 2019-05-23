@@ -567,7 +567,7 @@ class ListTypesComponent extends Component {
                     <div className="row row_5">
                         <div className="header_row">
                             <label className="title_row">Danh sách địa điểm *</label>
-                            <div style={{ top: '10px', right: '160px' }} className="mini_search_box">
+                            <div style={{ top: '10px' }} className="mini_search_box">
                                 <div className="search_icon">
                                     <i className="fa fa-search"></i>
                                 </div>
@@ -583,6 +583,7 @@ class ListTypesComponent extends Component {
                             <button
                                 onClick={() => this.handleSortRoutes(this.state.routes)}
                                 type="button"
+                                style={{ paddingBottom: '9px' }}
                                 className="btn btn-default pull-right addForTableCreateTour">
                                 <i className="fa fa-sort-amount-asc" aria-hidden="true"></i>
                             </button>
