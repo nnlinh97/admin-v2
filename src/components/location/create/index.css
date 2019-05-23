@@ -1,0 +1,13 @@
+.row_2_create_location .content
+{
+    margin: 0 !important;
+}
+.row_2_create_location .col-lg-4.col-xs-12
+{
+    padding: 0;
+}
+.row_2_create_location .col-lg-4.col-xs-12:nth-child(1),
+.row_2_create_location .col-lg-4.col-xs-12:nth-child(2)
+{
+    padding-right: 30px;
+}

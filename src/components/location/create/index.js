@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Form from './form';
 import MyMap from '../map';
+import './index.css';
 
 class CreateLocationComponent extends Component {
     
@@ -31,7 +32,7 @@ class CreateLocationComponent extends Component {
                             <MyMap locationInfo={this.state.location} handleChangeLocation={this.handleChangeLocation} />
                         </div>
                     </div>
-                    <div className="row">
+                    <div className="row row_2_create_location" style={{ padding: '40px 0' }}>
                         <div className="col-lg-12 col-xs-12">
                             <Form locationInfo={this.state.location} handleInputLocation={this.handleInputLocation} />
                         </div>
