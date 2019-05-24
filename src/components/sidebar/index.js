@@ -28,7 +28,7 @@ class Sidebar extends Component {
 
     render() {
         return (
-            <aside className="main-sidebar">
+            <aside className="main-sidebar" style={{ position: 'fixed' }} >
                 <section className="sidebar">
                     <ul className="sidebar-menu">
                         <li className="header">Version 1.0.0</li>

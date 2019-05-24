@@ -31,3 +31,8 @@
   
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {display: block;}
+.main-header
+{
+    position: fixed;
+    width: 100%;
+}
