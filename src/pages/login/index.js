@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import {apiPost, apiGet} from '../../services/api';
+import { apiPost, apiGet } from '../../services/api';
 import * as actions from '../../actions/index';
 import { URL } from '../../constants/url';
 import axios from 'axios';
@@ -35,15 +35,29 @@ class Login extends Component {
 
     handleLogin = async (event) => {
         event.preventDefault();
-        try {
-            let res = await apiPost('/admin/login', this.state);
-            localStorage.setItem('token', res.data.token);
-            this.props.login(res.data.profile)
-            this.props.history.push('/');
-        } catch (error) {
-            console.log(error)
-            this.setState({error: 'Tên đăng nhập hoặc mật khẩu chưa đúng!'})
+        if (this.checkData(this.state)) {
+            try {
+                let res = await apiPost('/admin/login', this.state);
+                localStorage.setItem('token', res.data.token);
+                this.props.login(res.data.profile)
+                this.props.history.push('/');
+            } catch (error) {
+                this.setState({ error: 'Tên đăng nhập hoặc mật khẩu chưa đúng!' });
+            }
+        } else {
+            this.setState({ error: 'Tên đăng nhập hoặc mật khẩu chưa đúng!' });
         }
+    }
+
+    checkData = (data) => {
+        const regex = /^(?!.*__.*)(?!.*\.\..*)[a-z0-9_.]+$/;
+        if (data.username === '' || !regex.test(data.username)) {
+            return false;
+        }
+        if (data.password === '' || !regex.test(data.password)) {
+            return false;
+        }
+        return true;
     }
 
     handleChange = (event) => {
@@ -68,7 +82,7 @@ class Login extends Component {
                                     value={this.state.username}
                                     type="text"
                                     className="form-control"
-                                    placeholder="Tên đăng nhập"
+                                    placeholder="Tên đăng nhập *"
                                     required />
                                 <span className="glyphicon glyphicon-user form-control-feedback" />
                             </div>
@@ -79,7 +93,7 @@ class Login extends Component {
                                     value={this.state.password}
                                     type="password"
                                     className="form-control"
-                                    placeholder="Mật khẩu"
+                                    placeholder="Mật khẩu *"
                                     required />
                                 <span className="glyphicon glyphicon-lock form-control-feedback" />
                             </div>
