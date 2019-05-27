@@ -44,7 +44,17 @@ class ChangePasswordComponent extends Component {
 
     checkChangePassword = () => {
         const { currentPassword, newPassword, confirmPassword } = this.state;
+        const regex = /^(?!.*__.*)(?!.*\.\..*)[a-z0-9_.]+$/;
         if (currentPassword === '' || newPassword === '' || confirmPassword === '') {
+            return false;
+        }
+        if (currentPassword === '' || !regex.test(currentPassword)) {
+            return false;
+        }
+        if (newPassword === '' || !regex.test(newPassword)) {
+            return false;
+        }
+        if (confirmPassword === '' || !regex.test(confirmPassword)) {
             return false;
         }
         return true;
@@ -52,6 +62,11 @@ class ChangePasswordComponent extends Component {
 
     handleCancel = () => {
         this.props.history.push('/');
+    }
+
+    checkRegexPassword = (password) => {
+        
+        return true;
     }
 
     handleSave = async (event) => {
