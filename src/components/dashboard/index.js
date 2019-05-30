@@ -44,7 +44,7 @@ class Dashboard extends Component {
             listBooking = listBooking.filter(booking => booking.isNeedCall);
         }
         if (keySearch !== '' && listBooking.length > 0) {
-            return listBooking.filter(booking => matchString(booking.code, keySearch) || matchString(booking.book_tour_contact_info.fullname, keySearch) || matchString(booking.tour_turn.tour.name, keySearch));
+            return listBooking.filter(booking => matchString(booking.code, keySearch) || matchString(booking.book_tour_contact_info.phone, keySearch) || matchString(booking.book_tour_contact_info.fullname, keySearch) || matchString(booking.tour_turn.tour.name, keySearch));
         }
         return listBooking;
     }
@@ -82,9 +82,17 @@ class Dashboard extends Component {
                 Header: "Người liên hệ",
                 accessor: "book_tour_contact_info.fullname",
                 style: { whiteSpace: 'unset' },
-                width: 220,
-                maxWidth: 220,
-                minWidth: 220
+                width: 200,
+                maxWidth: 200,
+                minWidth: 200
+            },
+            {
+                Header: "SĐT",
+                accessor: "book_tour_contact_info.phone",
+                style: { whiteSpace: 'unset', textAlign: 'center' },
+                width: 150,
+                maxWidth: 150,
+                minWidth: 150
             },
             {
                 Header: "Tour",

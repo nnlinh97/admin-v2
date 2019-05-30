@@ -135,13 +135,13 @@ class ChangePasswordComponent extends Component {
                                 <form onSubmit={this.handleSave} className="form-horizontal">
                                     <div className="box-body">
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Mật khẩu hiện tại</label>
+                                            <label className="col-sm-3 control-label">Mật khẩu hiện tại *</label>
                                             <div className="col-sm-8">
                                                 <input type="password" onChange={this.handleChange} value={this.state.currentPassword} name="currentPassword" className="form-control" />
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Mật khẩu mới</label>
+                                            <label className="col-sm-3 control-label">Mật khẩu mới *</label>
                                             <div className="col-sm-8">
                                                 <input type="password" onChange={this.handleChange} value={this.state.newPassword} name="newPassword" className="form-control" />
                                             </div>
@@ -149,7 +149,7 @@ class ChangePasswordComponent extends Component {
 
                                         </div>
                                         <div className="form-group">
-                                            <label className="col-sm-3 control-label">Nhập lại mật khẩu mới</label>
+                                            <label className="col-sm-3 control-label">Nhập lại mật khẩu mới *</label>
                                             <div className="col-sm-8">
                                                 <input type="password" onChange={this.handleChange} value={this.state.confirmPassword} name="confirmPassword" className="form-control" />
                                             </div>

@@ -112,8 +112,8 @@ class PaymentComponent extends Component {
                                         </div>
                                         <div className="col-sm-8">
                                             <div className="form-group">
-                                                <label className="col-sm-2 control-label">Tên</label>
-                                                <div className="col-sm-10">
+                                                <label className="col-sm-3 control-label">Tên *</label>
+                                                <div className="col-sm-9">
                                                     <input
                                                         onChange={this.handleChange}
                                                         value={this.state.name}
@@ -124,8 +124,8 @@ class PaymentComponent extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group">
-                                                <label className="col-sm-2 control-label">CMND</label>
-                                                <div className="col-sm-10">
+                                                <label className="col-sm-3 control-label">CMND *</label>
+                                                <div className="col-sm-9">
                                                     <input
                                                         onChange={this.handleChange}
                                                         value={this.state.passport}
@@ -136,8 +136,8 @@ class PaymentComponent extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group">
-                                                <label className="col-sm-2 control-label">Chú thích</label>
-                                                <div className="col-sm-10">
+                                                <label className="col-sm-3 control-label">Chú thích</label>
+                                                <div className="col-sm-9">
                                                     <textarea
                                                         onChange={this.handleChange}
                                                         value={this.state.note}

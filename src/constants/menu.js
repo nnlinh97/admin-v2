@@ -24,11 +24,11 @@ export const menus = [
         title: 'ĐỊA ĐIỂM',
         icon: 'fa fa-flag'
     },
-    {
-        path: '/route/list',
-        title: 'ĐIỂM LỘ TRÌNH',
-        icon: 'fa fa-map-pin'
-    },
+    // {
+    //     path: '/route/list',
+    //     title: 'ĐIỂM LỘ TRÌNH',
+    //     icon: 'fa fa-map-pin'
+    // },
     {
         path: '/tour/list',
         title: 'TOUR',
@@ -50,18 +50,18 @@ export const menus = [
         icon: 'fa fa-certificate'
     },
     {
-        path: '/user/list',
-        title: 'HÀNH KHÁCH',
-        icon: 'fa fa-user'
-    },
-    {
         path: '/book-tour/list',
         title: 'LỊCH SỬ ĐẶT TOUR',
         icon: 'fa fa-bookmark-o'
     },
     {
-        path: '/phone-call',
-        title: 'PHONE CALL',
-        icon: 'fa fa-phone'
+        path: '/admin/list',
+        title: 'ADMIN',
+        icon: 'fa fa-user'
     },
+    // {
+    //     path: '/phone-call',
+    //     title: 'PHONE CALL',
+    //     icon: 'fa fa-phone'
+    // },
 ];

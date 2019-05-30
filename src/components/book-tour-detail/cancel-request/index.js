@@ -395,10 +395,10 @@ class CancelRequestComponent extends Component {
                                                 </>}
                                             - Hủy tour trước ngày khởi hành: <strong>{days}</strong> ngày<br />
                                             - Phần trăm hoàn trả: <strong>{percentMoneyRefund(days, this.props.holiday)}%</strong><br />
-                                            - Tổng Tiền: <strong><mark style={{ backgroundColor: '#ff0' }}>{formatCurrency(this.props.totalPay)}</mark> VND</strong><br />
-                                            - Số tiền hoàn trả: <strong><mark style={{ backgroundColor: '#ff0' }}>
+                                            - Tổng Tiền: <strong>{formatCurrency(this.props.totalPay)} VND</strong><br />
+                                            - Số tiền hoàn trả: <strong>
                                                 {formatCurrency(this.props.totalPay * percentMoneyRefund(days, this.props.holiday) / 100)}
-                                            </mark> VND</strong><br /><br />
+                                                VND</strong><br /><br />
                                         </div>
                                     </div>
                                     {this.props.status === 'paid' && <div className="form-group">
@@ -566,7 +566,7 @@ class CancelRequestComponent extends Component {
                                         </div>}
                                 </div>
                                 {days >= 2 && <div className="box-footer col-sm-12">
-                                    <button style={{marginLeft: '5px'}} onClick={this.handleConfirmRequest} type="button" className="btn btn-danger pull-right">Xác Nhận Hủy</button>
+                                    <button style={{ marginLeft: '5px' }} onClick={this.handleConfirmRequest} type="button" className="btn btn-danger pull-right">Xác Nhận Hủy</button>
                                     <button onClick={this.handleConfirmRequest} type="button" className="btn btn-info pull-right">Hủy Yêu Cầu</button>
                                 </div>}
                                 {days < 2 && <div className="box-footer col-sm-12 no-money">

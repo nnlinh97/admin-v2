@@ -28,6 +28,7 @@ import PhoneCall from './pages/phone-call';
 import PrivateRoute from './components/private-route/';
 import BillCancelBooking from './components/book-tour-detail/bill-cancel';
 import BillPayment from './components/book-tour-detail/bill-payment';
+import ListAdmin from './pages/admin/list';
 import './App.css';
 
 class App extends Component {
@@ -93,6 +94,9 @@ class App extends Component {
 
           {/* phone call */}
           <PrivateRoute exact path='/phone-call' component={PhoneCall} />
+
+          {/* admin */}
+          <PrivateRoute exact path='/admin/list' component={ListAdmin} />
 
           {/* not found */}
           <PrivateRoute exact path='' component={NotFound} />

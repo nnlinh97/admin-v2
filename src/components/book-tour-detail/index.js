@@ -781,7 +781,7 @@ class CreateTourTurnComponent extends Component {
                                 <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                     <label className="col-sm-4 control-label">Tổng tiền</label>
                                     <label className="col-sm-8 control-label">
-                                        <mark style={{ backgroundColor: '#ff0' }}>{formatCurrency(this.state.totalPay)}</mark> VND
+                                        {formatCurrency(this.state.totalPay)} VND
                                     </label>
                                 </div>
                                 {this.state.paymentMethod && <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
@@ -825,7 +825,7 @@ class CreateTourTurnComponent extends Component {
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Tiền hoàn trả</label>
                                         <label className="col-sm-8 control-label">
-                                            <mark style={{ backgroundColor: '#ff0' }}>{formatCurrency(this.state.message.money_refunded)}</mark> VND
+                                            {formatCurrency(this.state.message.money_refunded)} VND
                                         </label>
                                     </div>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
@@ -908,39 +908,41 @@ class CreateTourTurnComponent extends Component {
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Tiền hoàn trả</label>
                                         <label className="col-sm-8 control-label">
-                                            <mark style={{ backgroundColor: '#ff0' }}>{formatCurrency(this.state.message.money_refunded)}</mark> VND
+                                            {formatCurrency(this.state.message.money_refunded)} VND
                                         </label>
                                     </div>
-                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    {/* <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Hạn hoàn tiền</label>
                                         <label className="col-sm-6 control-label">
                                             {moment(dateFns.addDays(new Date(this.state.message.confirm_time), 3)).format('MM/DD/YYYY')} đến {moment(this.state.message.refund_period).format('MM/DD/YYYY')}
                                         </label>
-                                    </div>
-                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    </div> */}
+                                    {this.state.message.refund_message && <> <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Người Nhận tiền</label>
                                         <label className="col-sm-8 control-label">
                                             {this.state.message.refund_message.name}
                                         </label>
                                     </div>
-                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">CMND/Passport</label>
-                                        <label className="col-sm-8 control-label">
-                                            {this.state.message.refund_message.passport}
-                                        </label>
-                                    </div>
-                                    {this.state.message.refund_message.note !== '' && <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">Chú thích</label>
-                                        <label className="col-sm-8 control-label">
-                                            {this.state.message.refund_message.note}
-                                        </label>
-                                    </div>}
-                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">Thời gian nhận tiền</label>
-                                        <label className="col-sm-8 control-label">
-                                            {moment(this.state.message.refunded_time).format('MM/DD/YYYY')}
-                                        </label>
-                                    </div>
+                                        <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                            <label className="col-sm-4 control-label">CMND/Passport</label>
+                                            <label className="col-sm-8 control-label">
+                                                {this.state.message.refund_message.passport}
+                                            </label>
+                                        </div>
+                                        <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                            <label className="col-sm-4 control-label">Thời gian nhận tiền</label>
+                                            <label className="col-sm-8 control-label">
+                                                {moment(this.state.message.refunded_time).format('MM/DD/YYYY')}
+                                            </label>
+                                        </div> </>
+                                        // {this.state.message.refund_message.note !== '' && <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        //     <label className="col-sm-4 control-label">Chú thích</label>
+                                        //     <label className="col-sm-8 control-label">
+                                        //         {this.state.message.refund_message.note}
+                                        //     </label>
+                                        // </div>} 
+                                    }
+
                                     </>}
 
                                 {/* cancelled */}
