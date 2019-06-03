@@ -118,28 +118,37 @@ class ListProvinceComponent extends Component {
                 Header: "STT",
                 Cell: props => <p>{props.index + 1}</p>,
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 80,
                 maxWidth: 80,
                 minWidth: 80
             },
-            {
-                Header: "ID",
-                accessor: "id",
-                Cell: props => <i>#{props.original.id}</i>,
-                style: { textAlign: 'center' },
-                width: 100,
-                maxWidth: 100,
-                minWidth: 100
-            },
+            // {
+            //     Header: "ID",
+            //     accessor: "id",
+            //     Cell: props => <i>#{props.original.id}</i>,
+            //     style: { textAlign: 'center' },
+            //     width: 100,
+            //     maxWidth: 100,
+            //     minWidth: 100
+            // },
             {
                 Header: "Tỉnh Thành",
                 accessor: "name",
-                style: { textAlign: 'center' }
+                style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
             },
             {
                 Header: "Quốc Gia",
                 accessor: "country.name",
-                style: { textAlign: 'center' }
+                style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
             },
             {
                 Header: props => <i className="fa fa-pencil" />,
@@ -151,9 +160,12 @@ class ListProvinceComponent extends Component {
                     </button>;
                 },
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 100,
                 maxWidth: 100,
-                minWidth: 100
+                minWidth: 100,
             }
         ];
         return <div style={{ minHeight: '100vh' }} className="content-wrapper">
@@ -239,8 +251,14 @@ class ListProvinceComponent extends Component {
                                             <ReactTable
                                                 columns={columns}
                                                 data={this.handleSearchProvince(this.props.listProvinces, this.state.keySearch)}
+                                                pageSizeOptions={[5, 10, 20, 25]}
                                                 defaultPageSize={10}
-                                                noDataText={'Please wait...'} >
+                                                noDataText={'Vui lòng đợi...'}
+                                                previousText={'Trang trước'}
+                                                nextText={'Trang sau'}
+                                                pageText={'Trang'}
+                                                ofText={'/'}
+                                                rowsText={'dòng'}  >
                                             </ReactTable>
                                         </div>
                                     </div>

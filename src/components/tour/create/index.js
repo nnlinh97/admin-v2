@@ -299,6 +299,8 @@ class ListTypesComponent extends Component {
                 Header: "STT",
                 Cell: props => <p>{props.index + 1}</p>,
                 style: { textAlign: 'center' },
+                sortable: false,
+                filterable: false,
                 width: 60,
                 maxWidth: 60,
                 minWidth: 60
@@ -597,8 +599,14 @@ class ListTypesComponent extends Component {
                             <ReactTable
                                 columns={columns}
                                 data={this.handleSearchRoutes(this.state.routes, this.state.keySearch)}
-                                defaultPageSize={10}
-                                noDataText={'Không có dữ liệu...'} >
+                                pageSizeOptions={[5, 10, 20, 25]}
+                                defaultPageSize={20}
+                                noDataText={'Không có dữ liệu...'}
+                                previousText={'Trang trước'}
+                                nextText={'Trang sau'}
+                                pageText={'Trang'}
+                                ofText={'/'}
+                                rowsText={'dòng'} >
                             </ReactTable>
                         </div>
                     </div>

@@ -41,6 +41,25 @@ class listBookTourConponent extends Component {
         }
     }
 
+    getDateMonthYear = (data) => {
+        const year = data.substring(0, 4);
+        const result = data.split('-');
+        return {
+            year: result[0],
+            month: result[1],
+            date: result[2]
+        };
+    }
+
+    FromDateTo = (date1, date2) => {
+        const data1 = this.getDateMonthYear(date1);
+        const data2 = this.getDateMonthYear(date2);
+        if (data1.year === data2.year) {
+            return `${data1.date}/${data1.month} - ${data2.date}/${data2.month}/${data2.year}`;
+        }
+        return `${data1.date}/${data1.month}/${data1.year} - ${data2.date}/${data2.month}/${data2.year}`;
+    }
+
 
     render() {
         const columns = [
@@ -48,7 +67,9 @@ class listBookTourConponent extends Component {
                 Header: "STT",
                 Cell: props => <p>{props.index + 1}</p>,
                 style: { textAlign: 'center' },
-                style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 80,
                 maxWidth: 80,
                 minWidth: 80
@@ -56,12 +77,15 @@ class listBookTourConponent extends Component {
             {
                 Header: "Mã chuyến đi",
                 accessor: "code",
-                Cell: props => <i
+                Cell: props => <p
                     style={{ cursor: 'pointer' }}
                     onClick={() => this.props.history.push(`/tour-turn/list?search=${props.original.code}`)}>
-                    #{props.original.code}
-                </i>,
-                style: { textAlign: 'center' },
+                    {props.original.code}
+                </p>,
+                style: { textAlign: 'left' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
@@ -69,44 +93,60 @@ class listBookTourConponent extends Component {
             {
                 Header: "Tour",
                 accessor: "tour.name",
-                // style: { textAlign: 'center' }
+                style: { textAlign: 'left', whiteSpace: 'unset' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
             },
             {
-                Header: "Ngày bắt đầu",
+                Header: "Thời gian",
                 accessor: "start_date",
                 Cell: props => {
-                    return (<p>{moment(props.original.start_date).format('DD/MM/YYYY')}</p>)
+                    return (<p>{this.FromDateTo(props.original.start_date, props.original.end_date)}</p>)
                 },
                 style: { textAlign: 'center' },
-                width: 140,
-                maxWidth: 140,
-                minWidth: 140
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
+                width: 220,
+                maxWidth: 220,
+                minWidth: 220
             },
+            // {
+            //     Header: "Ngày kết thúc",
+            //     accessor: "end_date",
+            //     Cell: props => {
+            //         return (<p>{moment(props.original.end_date).format('DD/MM/YYYY')}</p>)
+            //     },
+            //     style: { textAlign: 'center' },
+            //     sortable: false, 
+            //     resizable: false, 
+            //     filterable: false,
+            //     width: 140,
+            //     maxWidth: 140,
+            //     minWidth: 140
+            // },
+            // {
+            //     Header: "SL tối đa",
+            //     accessor: "num_max_people",
+            //     style: { textAlign: 'center' },
+            //     sortable: false, 
+            //     resizable: false, 
+            //     filterable: false,
+            //     width: 100,
+            //     maxWidth: 100,
+            //     minWidth: 100
+            // },
             {
-                Header: "Ngày kết thúc",
-                accessor: "end_date",
-                Cell: props => {
-                    return (<p>{moment(props.original.end_date).format('DD/MM/YYYY')}</p>)
-                },
-                style: { textAlign: 'center' },
-                width: 140,
-                maxWidth: 140,
-                minWidth: 140
-            },
-            {
-                Header: "SL tối đa",
-                accessor: "num_max_people",
-                style: {
-                    textAlign: 'center'
-                },
-                width: 100,
-                maxWidth: 100,
-                minWidth: 100
-            },
-            {
-                Header: "SL hiện tại",
+                Header: "Số lượng",
                 accessor: "num_current_people",
+                Cell: props => {
+                    return (<p>{props.original.num_current_people}/{props.original.num_max_people}</p>)
+                },
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
@@ -120,6 +160,9 @@ class listBookTourConponent extends Component {
                     </label>;
                 },
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 80,
                 maxWidth: 100,
                 minWidth: 80
@@ -133,6 +176,9 @@ class listBookTourConponent extends Component {
                     </button>
                 },
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 50,
                 maxWidth: 70,
                 minWidth: 50
@@ -170,9 +216,15 @@ class listBookTourConponent extends Component {
                                             <div className="col-xs-12 book_tour_history">
                                                 <ReactTable
                                                     data={this.state.listBookTour}
+                                                    columns={columns}
+                                                    pageSizeOptions={[5, 10, 20, 25]}
                                                     defaultPageSize={10}
-                                                    noDataText={'vui lòng chờ...'}
-                                                    columns={columns} >
+                                                    noDataText={'Vui lòng đợi...'}
+                                                    previousText={'Trang trước'}
+                                                    nextText={'Trang sau'}
+                                                    pageText={'Trang'}
+                                                    ofText={'/'}
+                                                    rowsText={'dòng'} >
                                                 </ReactTable>
                                             </div>
                                         </div>

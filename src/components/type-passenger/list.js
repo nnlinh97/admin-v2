@@ -122,15 +122,15 @@ class ListTypePassenger extends Component {
                 maxWidth: 80,
                 minWidth: 80
             },
-            {
-                Header: "ID",
-                accessor: "id",
-                Cell: props => <i>#{props.original.id}</i>,
-                style: { textAlign: 'center' },
-                width: 90,
-                maxWidth: 100,
-                minWidth: 80
-            },
+            // {
+            //     Header: "ID",
+            //     accessor: "id",
+            //     Cell: props => <i>#{props.original.id}</i>,
+            //     style: { textAlign: 'center' },
+            //     width: 90,
+            //     maxWidth: 100,
+            //     minWidth: 80
+            // },
             {
                 Header: "Loại hành khách (EN)",
                 accessor: "name",
@@ -237,8 +237,14 @@ class ListTypePassenger extends Component {
                                                 <ReactTable
                                                     columns={columns}
                                                     data={this.handleSearchTypePassenger(this.props.listTypePassenger, this.state.keySearch)}
-                                                    defaultPageSize={10}
-                                                    noDataText={'vui lòng đợi...'} >
+                                                    pageSizeOptions={[5, 10, 20, 25]}
+                                                    defaultPageSize={5}
+                                                    noDataText={'Vui lòng đợi...'}
+                                                    previousText={'Trang trước'}
+                                                    nextText={'Trang sau'}
+                                                    pageText={'Trang'}
+                                                    ofText={'/'}
+                                                    rowsText={'dòng'}  >
                                                 </ReactTable>
                                             </div>
                                         </div>

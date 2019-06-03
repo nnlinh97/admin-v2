@@ -51,24 +51,30 @@ class ListLocationComponent extends Component {
                 Header: "STT",
                 Cell: props => <p>{props.index + 1}</p>,
                 style: { textAlign: 'center' },
-                style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 80,
                 maxWidth: 80,
                 minWidth: 80
             },
-            {
-                Header: "ID",
-                accessor: "id",
-                Cell: props => <i>#{props.original.id}</i>,
-                style: { textAlign: 'center' },
-                width: 90,
-                maxWidth: 100,
-                minWidth: 80
-            },
+            // {
+            //     Header: "ID",
+            //     accessor: "id",
+            //     Cell: props => <i>#{props.original.id}</i>,
+            //     style: { textAlign: 'center' },
+            //     width: 90,
+            //     maxWidth: 100,
+            //     minWidth: 80
+            // },
             {
                 Header: "Tên Địa Điểm",
                 accessor: "name",
                 Cell: props => <p title={props.original.name}>{props.original.name}</p>,
+                style: { whiteSpace: 'unSet' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 320,
                 maxWidth: 320,
                 minWidth: 320
@@ -76,11 +82,20 @@ class ListLocationComponent extends Component {
             {
                 Header: "Địa Chỉ",
                 accessor: "address",
-                Cell: props => <p title={props.original.address}>{props.original.address.substring(0, 40)}...</p>,
+                // Cell: props => <p title={props.original.address}>{props.original.address.substring(0, 40)}...</p>,
+                style: { whiteSpace: 'unSet' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
+
             },
             {
                 Header: "Loại",
                 accessor: "type.name",
+                style: { whiteSpace: 'unSet' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 200,
                 maxWidth: 200,
                 minWidth: 200
@@ -96,12 +111,14 @@ class ListLocationComponent extends Component {
                         </h4>
                     );
                 },
-                style: { textAlign: 'center' },
+                style: { textAlign: 'left' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
             },
-
             {
                 Header: props => <i className="fa fa-pencil" />,
                 Cell: props => {
@@ -114,6 +131,9 @@ class ListLocationComponent extends Component {
                     )
                 },
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 60,
                 maxWidth: 80,
                 minWidth: 60
@@ -161,7 +181,14 @@ class ListLocationComponent extends Component {
                                                 <ReactTable
                                                     columns={columns}
                                                     data={this.handleSearchLocation(this.props.listLocation, this.state.keySearch)}
-                                                    defaultPageSize={10} >
+                                                    pageSizeOptions={[5, 10, 20, 25]}
+                                                    defaultPageSize={10}
+                                                    noDataText={'Vui lòng đợi...'}
+                                                    previousText={'Trang trước'}
+                                                    nextText={'Trang sau'}
+                                                    pageText={'Trang'}
+                                                    ofText={'/'}
+                                                    rowsText={'dòng'}  >
                                                 </ReactTable>
                                             </div>
                                         </div>

@@ -13,7 +13,7 @@ class Dashboard extends Component {
         this.state = {
             keySearch: '',
             listBooking: [],
-            status: 'all',
+            status: 'all'
         }
     }
 
@@ -21,7 +21,9 @@ class Dashboard extends Component {
         try {
             let request = await apiGet('/book_tour/getAllBookTourHistoryWithoutPagination');
             // console.log(request.data.data);
-            this.setState({ listBooking: request.data.data });
+            this.setState({
+                listBooking: request.data.data
+            });
         } catch (error) {
             console.log(error);
         }
@@ -58,6 +60,25 @@ class Dashboard extends Component {
         }
     }
 
+    getDateMonthYear = (data) => {
+        const year = data.substring(0, 4);
+        const result = data.split('-');
+        return {
+            year: result[0],
+            month: result[1],
+            date: result[2]
+        };
+    }
+
+    FromDateTo = (date1, date2) => {
+        const data1 = this.getDateMonthYear(date1);
+        const data2 = this.getDateMonthYear(date2);
+        if (data1.year === data2.year) {
+            return `${data1.date}/${data1.month} - ${data2.date}/${data2.month}/${data2.year}`;
+        }
+        return `${data1.date}/${data1.month}/${data1.year} - ${data2.date}/${data2.month}/${data2.year}`;
+    }
+
     render() {
         const columns = [
             {
@@ -65,6 +86,9 @@ class Dashboard extends Component {
                 accessor: "code",
                 Cell: props => <p>{props.index + 1}</p>,
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 50,
                 maxWidth: 50,
                 minWidth: 50
@@ -73,7 +97,10 @@ class Dashboard extends Component {
                 Header: "Mã đặt tour",
                 accessor: "book_tour_history.code",
                 Cell: props => <p>{props.original.code}</p>,
-                style: { textAlign: 'center' },
+                style: { textAlign: 'left' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 100,
                 maxWidth: 105,
                 minWidth: 95
@@ -82,6 +109,9 @@ class Dashboard extends Component {
                 Header: "Người liên hệ",
                 accessor: "book_tour_contact_info.fullname",
                 style: { whiteSpace: 'unset' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 200,
                 maxWidth: 200,
                 minWidth: 200
@@ -90,6 +120,9 @@ class Dashboard extends Component {
                 Header: "SĐT",
                 accessor: "book_tour_contact_info.phone",
                 style: { whiteSpace: 'unset', textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 150,
                 maxWidth: 150,
                 minWidth: 150
@@ -98,15 +131,21 @@ class Dashboard extends Component {
                 Header: "Tour",
                 accessor: "tour_turn.tour.name",
                 style: { whiteSpace: 'unset' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
             },
             {
-                Header: "Ngày khởi hành",
+                Header: "Thời gian",
                 accessor: "tour_turn.start_date",
-                Cell: props => <p> {moment(new Date(props.original.tour_turn.start_date)).format('MM/DD/YYYY')} </p>,
+                Cell: props => <p> {this.FromDateTo(props.original.tour_turn.start_date, props.original.tour_turn.end_date)} </p>,
                 style: { textAlign: 'center' },
-                width: 150,
-                maxWidth: 150,
-                minWidth: 150
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
+                width: 220,
+                maxWidth: 220,
+                minWidth: 220
             },
             {
                 Header: "Trạng thái",
@@ -117,7 +156,10 @@ class Dashboard extends Component {
                         {status.textStatus}
                     </span>
                 },
-                style: { textAlign: 'center' },
+                style: { textAlign: 'left' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 110,
                 maxWidth: 150,
                 minWidth: 110
@@ -133,6 +175,9 @@ class Dashboard extends Component {
                     </button>
                 },
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 60,
                 maxWidth: 60,
                 minWidth: 60
@@ -142,29 +187,29 @@ class Dashboard extends Component {
             <section className="content-header">
                 <h1> Trang Chủ </h1>
                 <div className="right_header">
-                        <i
-                            onClick={this.handleRefresh}
-                            style={{
-                                fontSize: '35px',
-                                marginBottom: '2px',
-                                marginRight: '20px',
-                                marginTop: '10px',
-                                color: '#3c8dbc',
-                                cursor: 'pointer'
-                            }}
-                            className="fa fa-refresh pull-right"
-                            title="cập nhật"
-                        />
-                    </div>
+                    <i
+                        onClick={this.handleRefresh}
+                        style={{
+                            fontSize: '35px',
+                            marginBottom: '2px',
+                            marginRight: '20px',
+                            marginTop: '10px',
+                            color: '#3c8dbc',
+                            cursor: 'pointer'
+                        }}
+                        className="fa fa-refresh pull-right"
+                        title="cập nhật"
+                    />
+                </div>
             </section>
             <section className="content">
                 <div className="row row_1_dashboard">
                     <select onChange={this.handleChangeFilter} value={this.state.status} name="status" className="form-control combobox">
                         <option value="all">--Tất cả--</option>
-                        <option value="pending_cancel">Yêu cầu hủy</option>
+                        <option value="pending_cancel">Chờ xác nhận hủy</option>
                         <option value="booked">Chưa thanh toán</option>
-                        <option value="call">Cần thanh toán</option>
-                        <option value="confirm_cancel">Xác nhận hủy</option>
+                        <option value="call">Cần thanh toán gấp</option>
+                        <option value="confirm_cancel">Chờ hoàn tiền</option>
                         <option value="paid">Đã thanh toán</option>
                         <option value="finished">Đã tham gia</option>
                         <option value="not_refunded">Không nhận tiền</option>
@@ -195,8 +240,15 @@ class Dashboard extends Component {
                                             <ReactTable
                                                 columns={columns}
                                                 data={this.handleSearchRequest(this.state.listBooking)}
+                                                // showPageSizeOptions={false}
+                                                pageSizeOptions={[5, 10, 20, 25]}
                                                 defaultPageSize={20}
-                                                noDataText={'Vui lòng đợi...'} >
+                                                noDataText={'Vui lòng đợi...'}
+                                                previousText={'Trang trước'}
+                                                nextText={'Trang sau'}
+                                                pageText={'Trang'}
+                                                ofText={'/'}
+                                                rowsText={'dòng'} >
                                             </ReactTable>
                                         </div>
                                     </div>

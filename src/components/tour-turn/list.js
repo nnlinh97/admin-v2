@@ -52,12 +52,34 @@ class ListTourTurnComponent extends Component {
         return listTourTurn;
     }
 
+    getDateMonthYear = (data) => {
+        const year = data.substring(0, 4);
+        const result = data.split('-');
+        return {
+            year: result[0],
+            month: result[1],
+            date: result[2]
+        };
+    }
+
+    FromDateTo = (date1, date2) => {
+        const data1 = this.getDateMonthYear(date1);
+        const data2 = this.getDateMonthYear(date2);
+        if (data1.year === data2.year) {
+            return `${data1.date}/${data1.month} - ${data2.date}/${data2.month}/${data2.year}`;
+        }
+        return `${data1.date}/${data1.month}/${data1.year} - ${data2.date}/${data2.month}/${data2.year}`;
+    }
+
     render() {
         const columns = [
             {
                 Header: "STT",
                 Cell: props => <p>{props.index + 1}</p>,
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 40,
                 maxWidth: 50,
                 minWidth: 40
@@ -65,8 +87,11 @@ class ListTourTurnComponent extends Component {
             {
                 Header: "Mã chuyến đi",
                 accessor: "code",
-                Cell: props => <i>#{props.original.code}</i>,
-                style: { textAlign: 'center' },
+                // Cell: props => <i>#{props.original.code}</i>,
+                style: { textAlign: 'left' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 105,
                 maxWidth: 115,
                 minWidth: 105
@@ -74,62 +99,76 @@ class ListTourTurnComponent extends Component {
             {
                 Header: "Tên",
                 accessor: "tour.name",
-                Cell: props => <p title={props.original.tour.name}>
-                    {props.original.tour.name.length > 15 ? `${props.original.tour.name.substring(0, 15)}...` : props.original.tour.name}
-                </p>,
-                style: { textAlign: 'center' }
+                style: { textAlign: 'left', whiteSpace: 'unset' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
             },
             {
-                Header: "Ngày Bắt Đầu",
+                Header: "Thời Gian",
                 accessor: "start_date",
-                Cell: props => <p>{moment(props.original.start_date).format('DD/MM/YYYY')}</p>,
+                Cell: props => <p>{this.FromDateTo(props.original.start_date, props.original.end_date)}</p>,
                 style: { textAlign: 'center' },
-                width: 100,
-                maxWidth: 100,
-                minWidth: 100
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
+                width: 200,
+                maxWidth: 200,
+                minWidth: 200
             },
-            {
-                Header: "Ngày Kết Thúc",
-                accessor: "end_date",
-                Cell: props => <p>{moment(props.original.end_date).format('DD/MM/YYYY')}</p>,
-                style: { textAlign: 'center' },
-                width: 105,
-                maxWidth: 105,
-                minWidth: 105
-            },
+            // {
+            //     Header: "Ngày Kết Thúc",
+            //     accessor: "end_date",
+            //     Cell: props => <p>{moment(props.original.start_date).format('DD/MM/YYYY')}</p>,
+            //     style: { textAlign: 'center' },
+            //     width: 105,
+            //     maxWidth: 105,
+            //     minWidth: 105
+            // },
             {
                 Header: "Giá Tiền/Người VND",
                 accessor: "price",
                 Cell: props => <p>{formatCurrency(props.original.price)}</p>,
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 140,
                 maxWidth: 140,
                 minWidth: 140
             },
             {
-                Header: "Giảm(%)",
+                Header: "Giảm",
                 accessor: "discount",
+                Cell: props => <p>{props.original.discount} %</p>,
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 80,
                 maxWidth: 80,
                 minWidth: 80
             },
             {
-                Header: "SL Tối Đa",
+                Header: "Số Lượng",
                 accessor: "num_max_people",
+                Cell: props => <p>{props.original.num_current_people}/{props.original.num_max_people}</p>,
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
             },
-            {
-                Header: "SL Hiện Tại",
-                accessor: "num_current_people",
-                style: { textAlign: 'center' },
-                width: 100,
-                maxWidth: 100,
-                minWidth: 100
-            },
+            // {
+            //     Header: "SL Hiện Tại",
+            //     accessor: "num_current_people",
+            //     style: { textAlign: 'center' },
+            //     width: 100,
+            //     maxWidth: 100,
+            //     minWidth: 100
+            // },
             {
                 Header: "Trạng Thái",
                 Cell: props => {
@@ -139,7 +178,10 @@ class ListTourTurnComponent extends Component {
                         {status === 'public' ? 'công khai' : 'ẩn'}
                     </label>;
                 },
-                style: { textAlign: 'center' },
+                style: { textAlign: 'left' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
@@ -152,7 +194,10 @@ class ListTourTurnComponent extends Component {
                         {status.status}
                     </label>;
                 },
-                style: { textAlign: 'center' },
+                style: { textAlign: 'left' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 80,
                 maxWidth: 100,
                 minWidth: 80
@@ -175,11 +220,20 @@ class ListTourTurnComponent extends Component {
                     </button>;
                 },
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 40,
                 maxWidth: 50,
                 minWidth: 40
             }
         ];
+
+        const expanderDefaults = {
+            sortable: false,
+            resizable: false,
+            filterable: false,
+        };
         return (
             <div style={{ minHeight: '100vh' }} className="content-wrapper">
                 <section className="content-header">
@@ -222,7 +276,14 @@ class ListTourTurnComponent extends Component {
                                                     data={this.handleSearchTourTurn(this.state.listTourTurn, this.state.keySearch)}
                                                     defaultPageSize={10}
                                                     noDataText={'vui lòng chờ...'}
-                                                    columns={columns} >
+                                                    columns={columns}
+                                                    expanderDefaults={expanderDefaults}
+                                                    previousText={'Trang trước'}
+                                                    nextText={'Trang sau'}
+                                                    pageText={'Trang'}
+                                                    ofText={'/'}
+                                                    rowsText={'dòng'}
+                                                >
                                                 </ReactTable>
                                             </div>
                                         </div>
@@ -232,7 +293,7 @@ class ListTourTurnComponent extends Component {
                         </div>
                     </div>
                 </section>
-            </div>
+            </div >
         );
     }
 }

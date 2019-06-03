@@ -107,9 +107,15 @@ class listAdmin extends Component {
                                             <div className="col-xs-12 book_tour_history">
                                                 <ReactTable
                                                     data={this.state.listAdmin}
-                                                    defaultPageSize={10}
-                                                    noDataText={'vui lòng chờ...'}
-                                                    columns={columns} >
+                                                    columns={columns}
+                                                    pageSizeOptions={[5, 10, 20, 25]}
+                                                    defaultPageSize={5}
+                                                    noDataText={'Vui lòng đợi...'}
+                                                    previousText={'Trang trước'}
+                                                    nextText={'Trang sau'}
+                                                    pageText={'Trang'}
+                                                    ofText={'/'}
+                                                    rowsText={'dòng'} >
                                                 </ReactTable>
                                             </div>
                                         </div>

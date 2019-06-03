@@ -109,28 +109,37 @@ class ListTypesComponent extends Component {
                 Header: "STT",
                 Cell: props => <p>{props.index + 1}</p>,
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 80,
                 maxWidth: 80,
                 minWidth: 80
             },
-            {
-                Header: "ID",
-                accessor: "id",
-                Cell: props => <i>#{props.original.id}</i>,
-                style: { textAlign: 'center' },
-                width: 100,
-                maxWidth: 100,
-                minWidth: 100
-            },
+            // {
+            //     Header: "ID",
+            //     accessor: "id",
+            //     Cell: props => <i>#{props.original.id}</i>,
+            //     style: { textAlign: 'center' },
+            //     width: 100,
+            //     maxWidth: 100,
+            //     minWidth: 100
+            // },
             {
                 Header: "Tên Tiếng Việt",
                 accessor: "name",
-                style: { textAlign: 'center' },
+                // style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
             },
             {
                 Header: "Tên Tiếng Anh",
                 accessor: "marker",
-                style: { textAlign: 'center' },
+                // style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 300,
                 maxWidth: 300,
                 minWidth: 300
@@ -147,6 +156,9 @@ class ListTypesComponent extends Component {
                     )
                 },
                 style: { textAlign: 'center' },
+                sortable: false, 
+                resizable: false, 
+                filterable: false,
                 width: 100,
                 maxWidth: 100,
                 minWidth: 100
@@ -229,8 +241,14 @@ class ListTypesComponent extends Component {
                                                 <ReactTable
                                                     columns={columns}
                                                     data={this.handleSearchTypeLocation(this.props.listTypeLocation, this.state.keySearch)}
+                                                    pageSizeOptions={[5, 10, 20, 25]}
                                                     defaultPageSize={10}
-                                                    noDataText={'Please wait...'} >
+                                                    noDataText={'Vui lòng đợi...'}
+                                                    previousText={'Trang trước'}
+                                                    nextText={'Trang sau'}
+                                                    pageText={'Trang'}
+                                                    ofText={'/'}
+                                                    rowsText={'dòng'}  >
                                                 </ReactTable>
                                             </div>
                                         </div>

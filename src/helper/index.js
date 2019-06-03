@@ -117,7 +117,7 @@ export function getStatusItem(status) {
     switch (status) {
         case 'pending_cancel':
             colorStatus = '#dd4b39';
-            textStatus = 'yêu cầu hủy';
+            textStatus = 'chờ xác nhận hủy';
             bgStatus = '#fff';
             break;
         case 'booked':
@@ -127,7 +127,7 @@ export function getStatusItem(status) {
             break;
         case 'confirm_cancel':
             colorStatus = '#A52A2A';
-            textStatus = 'xác nhận hủy';
+            textStatus = 'chờ hoàn tiền';
             bgStatus = '#fff';
             break;
         case 'paid':
