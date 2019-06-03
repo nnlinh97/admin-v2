@@ -473,17 +473,6 @@ class ListTypesComponent extends Component {
 
                 <section className="content-header">
                     <h1>Thêm Mới Tour</h1>
-                    <div className="right_header">
-                        <button
-                            onClick={this.handleCreateTour}
-                            style={{
-                                marginBottom: '2px',
-                                marginRight: '15px'
-                            }}
-                            type="button"
-                            className="btn btn-success pull-right">Lưu Lại
-                        </button>
-                    </div>
                 </section>
                 <section className="content">
                     <div className="row row_1">
@@ -609,6 +598,19 @@ class ListTypesComponent extends Component {
                                 rowsText={'dòng'} >
                             </ReactTable>
                         </div>
+                    </div>
+                </section>
+                <section className="content-final">
+                    <div className="right_final">
+                        <button
+                            onClick={this.handleCreateTour}
+                            style={{
+                                marginBottom: '2px',
+                                marginRight: '15px'
+                            }}
+                            type="button"
+                            className="btn btn-success pull-right">Lưu Lại
+                        </button>
                     </div>
                 </section>
             </div>

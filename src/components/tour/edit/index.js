@@ -524,22 +524,6 @@ class ListTypesComponent extends Component {
 
                 <section className="content-header">
                     <h1>Chỉnh Sửa Tour</h1>
-                    <div className="right_header">
-                        <button
-                            onClick={this.handleEditTour}
-                            style={{ marginBottom: '2px', marginRight: '15px' }}
-                            type="button"
-                            className="btn btn-success pull-right">Lưu Lại
-                        </button>
-                        <button
-                            onClick={this.handleRefresh}
-                            style={{ marginBottom: '2px', marginRight: '20px', border: 'none', padding: '0 10px', backgroundColor: '#fff', color: 'rgb(60, 141, 188)', fontSize: '36px', fontWeight: 'bold' }}
-                            type="button"
-                            title="làm mới"
-                            className="btn btn-default pull-right">
-                            <i className="fa fa-refresh" />
-                        </button>
-                    </div>
                 </section>
                 <section className="content">
                     <div className="row row_1">
@@ -664,6 +648,24 @@ class ListTypesComponent extends Component {
                                 noDataText={'Không có dữ liệu...'} >
                             </ReactTable>
                         </div>
+                    </div>
+                </section>
+                <section className="content-final">
+                    <div className="right_final">
+                        <button
+                            onClick={this.handleEditTour}
+                            style={{ marginBottom: '2px', marginRight: '15px' }}
+                            type="button"
+                            className="btn btn-success pull-right">Lưu Lại
+                        </button>
+                        <button
+                            onClick={this.handleRefresh}
+                            style={{ marginBottom: '2px', marginRight: '20px', border: 'none', padding: '0 10px', backgroundColor: '#fff', color: 'rgb(60, 141, 188)', fontSize: '36px', fontWeight: 'bold' }}
+                            type="button"
+                            title="làm mới"
+                            className="btn btn-default pull-right">
+                            <i className="fa fa-refresh" />
+                        </button>
                     </div>
                 </section>
             </div>
