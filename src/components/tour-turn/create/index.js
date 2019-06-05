@@ -9,7 +9,7 @@ import Select from 'react-select';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { apiGet, apiPost } from '../../../services/api';
 import * as actions from './../../../actions/index';
-import { getNumberDays } from '../../../helper';
+import { getNumberDays, formatCurrency } from '../../../helper';
 import './index.css';
 
 class CreateTourTurnComponent extends Component {
@@ -31,7 +31,11 @@ class CreateTourTurnComponent extends Component {
             idFocus: 0,
             bookingTerm: '',
             paymentTerm: '',
-            holiday: false
+            holiday: false,
+            adultPrice: 100,
+            adultChecked: true,
+            childrenPrice: 50,
+            childrenChecked: true
         }
         this.inputFocus = React.createRef();
     }
@@ -121,11 +125,12 @@ class CreateTourTurnComponent extends Component {
     handleCreateTourTurn = async (event) => {
         event.preventDefault();
         const typePassenger = this.getListTypePassenger();
+        console.log(typePassenger)
         if (this.checkTourTurn() && this.checkListTypePassenger(typePassenger) && this.checkTerm()) {
             const { discount, price, limitPeople, tour, startDate, endDate, status } = this.state;
             try {
                 await apiPost('/tour_turn/createWithPricePassenger', {
-                    idTour: tour.id,
+                    // idTour: tour.id,
                     start_date: moment(startDate).format('YYYY-MM-DD'),
                     end_date: moment(endDate).format('YYYY-MM-DD'),
                     discount,
@@ -173,10 +178,10 @@ class CreateTourTurnComponent extends Component {
         if (!Number.isInteger(bookingTerm) || !Number.isInteger(paymentTerm)) {
             return false;
         }
-        if(paymentTerm > bookingTerm) {
+        if (paymentTerm > bookingTerm) {
             return false;
         }
-        if(bookingTerm > days) {
+        if (bookingTerm > days) {
             return false;
         }
         return true;
@@ -213,6 +218,36 @@ class CreateTourTurnComponent extends Component {
         });
     }
 
+    getPrice = (price) => {
+        if (price === '') {
+            return null;
+        }
+        return formatCurrency(price) + ' VND';
+    }
+
+    getPriceDiscount = (price, discount) => {
+        if (price === '' || discount > 100 || discount <= 0) {
+            return null;
+        }
+        return 'Còn ' + formatCurrency((price * (100 - discount)) / 100) + ' VND';
+    }
+
+    getPeoplePrice = (price, discount, percent) => {
+        if (price === '' || discount > 100 || percent <= 0 || percent > 100) {
+            return null;
+        }
+        return formatCurrency(price * (100 - discount) * percent / 10000) + ' VND';
+    }
+
+    handleChangeAdultChecked = ({ target }) => {
+        console.log(target.value)
+        this.setState({ adultChecked: target.value });
+    }
+
+    handleChangeChildrenChecked = ({ target }) => {
+        this.setState({ childrenChecked: target.value });
+    }
+
     render() {
         const columns = [
             {
@@ -223,7 +258,7 @@ class CreateTourTurnComponent extends Component {
                     // });
                     return <div className="checkbox checkbox-modal">
                         <input
-                            style={{width: '15px', height: '15px', marginTop: '0px', marginLeft: '-7px'}}
+                            style={{ width: '15px', height: '15px', marginTop: '0px', marginLeft: '-7px' }}
                             className="input-modal"
                             type="checkbox"
                             name="choose"
@@ -334,9 +369,62 @@ class CreateTourTurnComponent extends Component {
                                                     name="price"
                                                     className="form-control" />
                                             </div>
+                                            <label className="col-sm-4 control-label">
+                                                <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '14px', left: '0', marginTop: '0' }}>
+                                                    {this.getPrice(this.state.price)}
+                                                </i>
+                                            </label>
                                         </div>
                                         <div className="form-group">
-                                            <label className="col-sm-2 control-label">Giảm giá</label>
+                                            <label className="col-sm-2 control-label">Giá người lớn (%)</label>
+                                            <div className="col-sm-6">
+                                                <input
+                                                    type="number"
+                                                    onChange={this.handleChange}
+                                                    value={this.state.adultPrice}
+                                                    name="adultPrice"
+                                                    className="form-control" />
+                                            </div>
+                                            <label className="col-sm-4 control-label">
+                                                <input
+                                                    style={{ width: '15px', height: '15px', marginTop: '0px', marginLeft: '-7px' }}
+                                                    className="input-modal"
+                                                    type="checkbox"
+                                                    name="adultChecked"
+                                                    onClick={this.handleChangeAdultChecked}
+                                                    defaultChecked={this.state.adultChecked ? true : false}
+                                                />
+                                                <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '14px', left: '0', marginTop: '0' }}>
+                                                    {this.getPeoplePrice(this.state.price, this.state.discount, this.state.adultPrice)}
+                                                </i>
+                                            </label>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">Giá trẻ em (%)</label>
+                                            <div className="col-sm-6">
+                                                <input
+                                                    type="number"
+                                                    onChange={this.handleChange}
+                                                    value={this.state.childrenPrice}
+                                                    name="childrenPrice"
+                                                    className="form-control" />
+                                            </div>
+                                            <label className="col-sm-4 control-label">
+                                                <input
+                                                    style={{ width: '15px', height: '15px', marginTop: '0px', marginLeft: '-7px' }}
+                                                    className="input-modal"
+                                                    type="checkbox"
+                                                    name="childrenChecked"
+                                                    onClick={this.handleChangeChildrenChecked}
+                                                    defaultChecked={this.state.childrenChecked ? true : false}
+                                                />
+                                                <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '14px', left: '0', marginTop: '0' }}>
+                                                    {this.getPeoplePrice(this.state.price, this.state.discount, this.state.childrenPrice)}
+                                                </i>
+                                            </label>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">Giảm giá (%)</label>
                                             <div className="col-sm-6">
                                                 <input
                                                     type="number"
@@ -345,6 +433,11 @@ class CreateTourTurnComponent extends Component {
                                                     name="discount"
                                                     className="form-control" />
                                             </div>
+                                            <label className="col-sm-4 control-label">
+                                                <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '14px', left: '0', marginTop: '0' }}>
+                                                    {this.getPriceDiscount(this.state.price, this.state.discount)}
+                                                </i>
+                                            </label>
                                         </div>
                                         <div className="form-group">
                                             <label className="col-sm-2 control-label">Ngày khởi hành (*)</label>
@@ -440,7 +533,7 @@ class CreateTourTurnComponent extends Component {
                                     </div>
                                 </div>
                             </form>
-                            <form style={{marginBottom: '20px'}} className="form-horizontal">
+                            <form style={{ marginBottom: '20px' }} className="form-horizontal">
                                 <div className="box-body book_tour_detail-book_tour_history">
                                     <div className="book_tour_detail-book_tour_history-title">
                                         <h2>Loại Hành Khách và Giá Tiền</h2>
@@ -471,9 +564,9 @@ class CreateTourTurnComponent extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{marginTop: '10px', marginBottom: '20px'}} className="footer">
+                                    <div style={{ marginTop: '10px', marginBottom: '20px' }} className="footer">
                                         <button onClick={this.handleCancel} type="button" className="btn btn-default pull-right">Hủy</button>
-                                        <button style={{marginRight: '10px'}} onClick={this.handleCreateTourTurn} type="button" className="btn btn-info pull-right">Lưu Thay Đổi</button>
+                                        <button style={{ marginRight: '10px' }} onClick={this.handleCreateTourTurn} type="button" className="btn btn-info pull-right">Lưu Thay Đổi</button>
                                     </div>
                                 </div>
                             </form>

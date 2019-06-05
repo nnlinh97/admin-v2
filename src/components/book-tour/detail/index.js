@@ -7,7 +7,6 @@ import moment from 'moment';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
 import Select from 'react-select';
-// import ReactPaginate from 'react-paginate';
 import * as actions from './../../../actions/index';
 import { apiGet, apiPost } from '../../../services/api';
 import {
@@ -16,12 +15,10 @@ import {
     formatCurrency,
     pagination,
     matchString,
-    getStatusItem
+    getStatusItem,
+    getStatusTourTurn,
 } from './../../../helper';
-// import ViewDetail from './../view-detail';
-// import PassengerUpdate from './../passenger-update';
-// import ContactInfoUpdate from './../contact-info';
-// import ItemBookHistory from './../item-book-history';
+import CancelBooking from '../cancel-booking';
 import 'font-awesome/css/font-awesome.css';
 import './index.css';
 
@@ -45,7 +42,9 @@ class CreateTourTurnComponent extends Component {
             refundCode: '',
             keySearch: '',
             cancelCode: '',
-            confirmCancelRequest: false
+            confirmCancelRequest: false,
+            modalCancelBookingIsOpen: false,
+            bookingCancel: null
         }
     }
 
@@ -198,10 +197,9 @@ class CreateTourTurnComponent extends Component {
     }
 
     hideSuccessAlert = () => {
-        this.handleOncloseModalPay();
-        this.handleCloseModalUpdatePassenger();
-        this.handleCloseModalUpdateContactInfo();
-        this.setState({ success: false })
+        this.handleCloseModalCancelBooking();
+        this.reRender();
+        this.setState({ success: false });
     }
 
     hideFailAlert = () => {
@@ -213,7 +211,6 @@ class CreateTourTurnComponent extends Component {
             const { id } = this.props.match.params;
             const detail = await apiGet(`/book_tour/getBookTourHistoryByTourTurn/${id}`);
             const bookTourTurnDetail = detail.data.data;
-            await this.props.getBookTourTurnById(bookTourTurnDetail);
             this.updateState(bookTourTurnDetail);
         } catch (error) {
             console.log(error);
@@ -257,7 +254,6 @@ class CreateTourTurnComponent extends Component {
     }
 
     handleRefund = (info) => {
-        console.log(info);
         this.setState({ confirmRefund: true, refundCode: info.code });
     }
 
@@ -294,23 +290,53 @@ class CreateTourTurnComponent extends Component {
     }
 
     handleSearch = (listBookHistory, keySearch) => {
-        console.log(listBookHistory[0])
         if (keySearch !== '' && listBookHistory.length > 0) {
             return listBookHistory.filter(item => matchString(item.code, keySearch) || matchString(item.book_tour_contact_info.phone, keySearch) || matchString(item.book_tour_contact_info.email, keySearch) || matchString(item.book_tour_contact_info.fullname, keySearch) || matchString(item.id.toString(), keySearch));
         }
         return listBookHistory;
     }
 
+    handleOpenModalCancelBooking = (booking) => {
+        this.setState({ modalCancelBookingIsOpen: true, bookingCancel: booking });
+    }
+
+    handleCloseModalCancelBooking = () => {
+        this.setState({ modalCancelBookingIsOpen: false, bookingCancel: null });
+    }
+
+    handleCancelBooking = (res) => {
+        if (res) {
+            this.setState({ success: true });
+        } else {
+            this.setState({ error: true });
+        }
+    }
+
     render() {
         const { bookTourHistory, tourTurn, tour } = this.state;
+        console.log('tourTurn', tourTurn)
         const columnHistory = [
+            {
+                Header: "STT",
+                Cell: props => <p>{props.index + 1}</p>,
+                style: { textAlign: 'center' },
+                sortable: false,
+                resizable: false,
+                filterable: false,
+                width: 50,
+                maxWidth: 50,
+                minWidth: 50
+            },
             {
                 Header: "Mã đặt tour",
                 accessor: "code",
-                Cell: props => {
-                    return <i>#{props.original.code}</i>
-                },
-                style: { textAlign: 'center' },
+                // Cell: props => {
+                //     return <i>#{props.original.code}</i>
+                // },
+                style: { textAlign: 'left' },
+                sortable: false,
+                resizable: false,
+                filterable: false,
                 width: 100,
                 maxWidth: 105,
                 minWidth: 95
@@ -318,25 +344,34 @@ class CreateTourTurnComponent extends Component {
             {
                 Header: "Người liên hệ",
                 accessor: "book_tour_contact_info.fullname",
-                // style: { textAlign: 'center' }
+                style: { textAlign: 'left', whiteSpace: 'unset' },
+                sortable: false,
+                resizable: false,
+                filterable: false,
             },
             {
                 Header: "Số điện thoại",
                 accessor: "book_tour_contact_info.phone",
                 style: { textAlign: 'center' },
+                sortable: false,
+                resizable: false,
+                filterable: false,
                 width: 130,
                 maxWidth: 130,
                 minWidth: 130
             },
-            {
-                Header: "Email",
-                accessor: "book_tour_contact_info.email",
-                // style: { textAlign: 'center' }
-            },
+            // {
+            //     Header: "Email",
+            //     accessor: "book_tour_contact_info.email",
+            //     style: { textAlign: 'left', whiteSpace: 'unset' }
+            // },
             {
                 Header: "Số lượng",
                 accessor: "num_passenger",
                 style: { textAlign: 'center' },
+                sortable: false,
+                resizable: false,
+                filterable: false,
                 width: 80,
                 maxWidth: 90,
                 minWidth: 70
@@ -348,6 +383,9 @@ class CreateTourTurnComponent extends Component {
                     return (<p>{formatCurrency(props.original.total_pay)}</p>)
                 },
                 style: { textAlign: 'center' },
+                sortable: false,
+                resizable: false,
+                filterable: false,
                 width: 110,
                 maxWidth: 110,
                 minWidth: 110
@@ -356,9 +394,12 @@ class CreateTourTurnComponent extends Component {
                 Header: "Thời gian đặt",
                 accessor: "book_time",
                 Cell: props => {
-                    return <p>{moment(props.original.book_time).format('DD/MM/YYYY HH:mm')}</p>
+                    return <p>{moment(props.original.book_time).format('DD/MM/YYYY')}</p>
                 },
                 style: { textAlign: 'center' },
+                sortable: false,
+                resizable: false,
+                filterable: false,
                 width: 130,
                 maxWidth: 130,
                 minWidth: 130
@@ -372,7 +413,10 @@ class CreateTourTurnComponent extends Component {
                         {status.textStatus}
                     </span>
                 },
-                style: { textAlign: 'center' },
+                style: { textAlign: 'left' },
+                sortable: false,
+                resizable: false,
+                filterable: false,
                 width: 110,
                 maxWidth: 150,
                 minWidth: 110
@@ -388,6 +432,40 @@ class CreateTourTurnComponent extends Component {
                     </button>
                 },
                 style: { textAlign: 'center' },
+                sortable: false,
+                resizable: false,
+                filterable: false,
+                width: 60,
+                maxWidth: 60,
+                minWidth: 60
+            },
+            {
+                Header: props => <i className="fa fa-ban" />,
+                Cell: props => {
+                    const { status } = props.original;
+                    if (this.state.tourTurn) {
+                        const statusTT = getStatusTourTurn(tourTurn.start_date, tourTurn.end_date);
+                        if ((status === 'pending_cancel' || status === 'paid' || status === 'booked') && statusTT.css === 'success') {
+                            return <button
+                                title="hủy booking"
+                                className="btn btn-xs btn-danger"
+                                onClick={() => this.handleOpenModalCancelBooking(props.original)} >
+                                <i className="fa fa-ban" />
+                            </button>;
+                        }
+                        return <button
+                            title="hủy booking"
+                            className="btn btn-xs btn-danger"
+                            disabled >
+                            <i className="fa fa-ban" />
+                        </button>;
+                    }
+                    return null;
+                },
+                style: { textAlign: 'center' },
+                sortable: false,
+                resizable: false,
+                filterable: false,
                 width: 60,
                 maxWidth: 60,
                 minWidth: 60
@@ -502,6 +580,21 @@ class CreateTourTurnComponent extends Component {
                     onCancel={this.handleCancelReq} >
                     Vui lòng kiểm tra cẩn thận!!!
                 </SweetAlert>}
+
+                <Modal
+                    open={this.state.modalCancelBookingIsOpen}
+                    onClose={this.handleCloseModalCancelBooking}
+                    center
+                    styles={{ 'modal': { width: '1280px' } }}
+                    blockScroll={true} >
+                    {this.state.modalCancelBookingIsOpen && <CancelBooking
+                        tourTurn={this.state.tourTurn}
+                        booking={this.state.bookingCancel}
+                        tour={this.state.tour}
+                        handleCancelBooking={this.handleCancelBooking}
+                    />}
+                </Modal>
+
                 <section className="content-header">
                     <h1> Thông Tin & Danh Sách Đặt Tour <i>#{this.props.match.params.id}</i> </h1>
                     <div className="right_header">
@@ -525,25 +618,25 @@ class CreateTourTurnComponent extends Component {
                         <div className="col-lg-12 col-xs-12">
                             <form className="form-horizontal">
                                 <div className="box-body book_tour_detail-information">
-                                    <h2>Thông Tin Chuyến Đi #{tourTurn ? tourTurn.code : ''}</h2>
+                                    <h2>Thông Tin Chuyến Đi</h2>
                                     <div className="box-body-main">
                                         <div className="box-body-left">
                                             <div className="">Tour</div>
+                                            <div className="">Mã chuyến đi</div>
                                             <div className="">Giá</div>
                                             <div className="">Giảm</div>
                                             <div className="">Ngày bắt đầu</div>
                                             <div className="">Ngày kết thúc</div>
-                                            <div className="">SL tối đa</div>
-                                            <div className="">SL hiện tại</div>
+                                            <div className="">Số lượng</div>
                                         </div>
                                         <div className="box-body-right">
                                             <div className="">{tour ? tour.name : ''}</div>
+                                            <div className="">{tourTurn ? tourTurn.code : ''}</div>
                                             <div className="">{tourTurn ? formatCurrency(tourTurn.price.toString()) + ' VND' : ''}</div>
                                             <div className="">{tourTurn ? tourTurn.discount : ''} %</div>
                                             <div className="">{tourTurn ? moment(tourTurn.start_date).format('DD/MM/YYYY') : ''}</div>
                                             <div className="">{tourTurn ? moment(tourTurn.end_date).format('DD/MM/YYYY') : ''}</div>
-                                            <div className="">{tourTurn ? tourTurn.num_max_people : ''}</div>
-                                            <div className="">{tourTurn ? tourTurn.num_current_people : ''}</div>
+                                            <div className="">{tourTurn ? tourTurn.num_current_people : ''}/{tourTurn ? tourTurn.num_max_people : ''}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -572,9 +665,14 @@ class CreateTourTurnComponent extends Component {
                                                 <ReactTable
                                                     columns={columnHistory}
                                                     data={this.handleSearch(this.state.bookTourHistory, this.state.keySearch)}
+                                                    pageSizeOptions={[5, 10, 20, 25]}
                                                     defaultPageSize={5}
                                                     noDataText={'Vui lòng đợi...'}
-                                                >
+                                                    previousText={'Trang trước'}
+                                                    nextText={'Trang sau'}
+                                                    pageText={'Trang'}
+                                                    ofText={'/'}
+                                                    rowsText={'dòng'} >
                                                 </ReactTable>
                                             </div>
                                         </div>

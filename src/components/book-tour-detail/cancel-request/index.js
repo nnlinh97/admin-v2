@@ -84,20 +84,14 @@ class CancelRequestComponent extends Component {
             } catch (error) {
                 this.props.handleConfirmRequest(false);
             }
-        } else if (this.checkInputCancel() && this.checkInputReceiver() && this.props.status === 'paid') {
+        } else if (this.checkInputReceiver() && this.props.status === 'paid') {
             const days = getNumberDays1(moment(new Date()).format('YYYY-MM-DD'), this.props.startDate);
             try {
-                await apiPost('/book_tour/confirmCancelBookTourOffline', {
+                await apiPost('/book_tour/CancelBookTourOffline', {
                     code: this.props.code,
-                    refund_period: moment(this.state.toDate).format('YYYY-MM-DD'),
                     money_refunded: this.props.totalPay * percentMoneyRefund(days, this.props.holiday) / 100,
-                    request_message: this.state.noteCancel,
+                    request_message: this.state.noteReciever,
                     request_offline_person: {
-                        name: this.state.nameCancel,
-                        passport: this.state.passportCancel,
-                        helper: this.state.optionCancel === 'op1' ? false : true
-                    },
-                    refund_message: {
                         name: this.state.nameReciever,
                         passport: this.state.passportReciever,
                         note: this.state.noteReciever,
@@ -106,11 +100,16 @@ class CancelRequestComponent extends Component {
                 });
                 this.props.handleConfirmRequest(true);
             } catch (error) {
+                console.log(error)
                 this.props.handleConfirmRequest(false);
             }
         } else {
             this.props.handleConfirmRequest(false);
         }
+    }
+
+    handleRevertCancel = () => {
+        console.log('object')
     }
 
     handleConfirmRequestBooked = async (event) => {
@@ -341,57 +340,22 @@ class CancelRequestComponent extends Component {
                         <div className="box box-info">
                             <form onSubmit={this.handleConfirmRequest} className="form-horizontal">
                                 <div className="box-body">
-                                    <div className="form-group">
-                                        <div className="col-sm-6">
-                                            <strong onClick={this.showPolicy} style={{ fontSize: '20px', cursor: 'pointer' }}>Quy định hủy tour</strong>
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <span><i
-                                                onClick={this.showPolicy}
-                                                title={this.state.policy ? 'Ẩn quy định hủy tour' : 'Hiện quy định hủy tour'}
-                                                style={{ marginTop: '5px', fontSize: '20px', cursor: 'pointer' }}
-                                                className={`fa fa-angle-${this.state.policy ? 'down' : 'left'} pull-right`} />
-                                            </span>
-                                        </div>
-                                    </div>
-                                    {(this.props.status === 'paid' || this.props.status === 'pending_cancel') && this.state.policy &&
-                                        <div className="form-group">
-                                            <div className="col-sm-6">
-                                                <strong>Tour ngày thường:</strong><br />
-                                                - Trước <strong>20</strong> ngày: hoàn trả <strong>100%</strong><br />
-                                                - Từ <strong>15</strong> đến <strong>19</strong> ngày: hoàn trả <strong>85%</strong><br />
-                                                - Từ <strong>12</strong> đến <strong>14</strong> ngày: hoàn trả <strong>70%</strong><br />
-                                                - Từ <strong>08</strong> đến <strong>11</strong> ngày: hoàn trả <strong>50%</strong><br />
-                                                - Từ <strong>05</strong> đến <strong>07</strong> ngày: hoàn trả <strong>30%</strong><br />
-                                                - Từ <strong>02</strong> đến <strong>04</strong> ngày: hoàn trả <strong>10%</strong><br />
-                                                - Dưới <strong>02</strong> ngày: <strong>0%</strong><br /><br />
-                                            </div>
-                                            <div className="col-sm-6">
-                                                <strong>Tour ngày lễ, tết:</strong><br />
-                                                - Trước <strong>30</strong> ngày: hoàn trả <strong>100%</strong><br />
-                                                - Từ <strong>25</strong> đến <strong>29</strong> ngày: hoàn trả <strong>85%</strong><br />
-                                                - Từ <strong>22</strong> đến <strong>24</strong> ngày: hoàn trả <strong>70%</strong> <br />
-                                                - Từ <strong>17</strong> đến <strong>19</strong> ngày: hoàn trả <strong>50%</strong> <br />
-                                                - Từ <strong>08</strong> đến <strong>16</strong> ngày: hoàn trả <strong>30%</strong> <br />
-                                                - Từ <strong>02</strong> đến <strong>07</strong> ngày: hoàn trả <strong>10%</strong> <br />
-                                                - Dưới <strong>02</strong> ngày: <strong>0%</strong> <br /><br />
-                                            </div>
-                                        </div>}
+
                                     <div className="form-group">
                                         <div className="col-sm-12">
                                             <strong style={{ fontSize: '20px' }}>Thông tin</strong><br />
                                         </div>
                                         <div className="col-sm-6">
                                             - Tour: <strong>{this.props.tour}</strong><br />
-                                            - Ngày khởi hành: <strong>{moment(this.props.startDate).format('MM/DD/YYYY')}</strong><br />
+                                            - Ngày khởi hành: <strong>{moment(this.props.startDate).format('DD/MM/YYYY')}</strong><br />
                                             - Thời điểm: <strong>{this.props.holiday ? 'Ngày lễ, tết' : 'Ngày thường'}</strong><br />
                                         </div>
                                         <div className="col-sm-6">
                                             {this.props.status === 'pending_cancel' && <>
-                                                - Thời gian hủy tour: <strong>{moment(this.props.message.request_time).format('MM/DD/YYYY HH:MM')}</strong><br />
+                                                - Thời gian hủy tour: <strong>{moment(this.props.message.request_time).format('DD/MM/YYYY HH:MM')}</strong><br />
                                                 </>}
                                             {this.props.status === 'paid' && <>
-                                                - Thời gian hủy tour: <strong>{moment(new Date()).format('MM/DD/YYYY HH:MM')}</strong><br />
+                                                - Thời gian hủy tour: <strong>{moment(new Date()).format('DD/MM/YYYY HH:MM')}</strong><br />
                                                 </>}
                                             - Hủy tour trước ngày khởi hành: <strong>{days}</strong> ngày<br />
                                             - Phần trăm hoàn trả: <strong>{percentMoneyRefund(days, this.props.holiday)}%</strong><br />
@@ -401,7 +365,7 @@ class CancelRequestComponent extends Component {
                                                 VND</strong><br /><br />
                                         </div>
                                     </div>
-                                    {this.props.status === 'paid' && <div className="form-group">
+                                    {/* {this.props.status === 'paid' && <div className="form-group">
                                         <div className="col-sm-12">
                                             <div className="form-group">
                                                 <label className="col-sm-2 control-label">Hủy tour</label>
@@ -470,7 +434,7 @@ class CancelRequestComponent extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>}
+                                    </div>} */}
                                     {(this.props.status === 'paid' || this.props.status === 'pending_cancel') && days >= 2 &&
                                         <div className="form-group">
                                             <div className="col-sm-12">
@@ -540,7 +504,7 @@ class CancelRequestComponent extends Component {
                                                         />
                                                     </div>
                                                 </div>
-                                                {days >= 2 && <div className="form-group">
+                                                {(days >= 2 && this.props.status === 'pending_cancel') && <div className="form-group">
                                                     <label className="col-sm-2 control-label">Ngày hẹn</label>
                                                     <div className="col-sm-4">
                                                         <input
@@ -565,9 +529,45 @@ class CancelRequestComponent extends Component {
                                             </div>
                                         </div>}
                                 </div>
+                                <div className="form-group">
+                                    <div className="col-sm-6">
+                                        <strong onClick={this.showPolicy} style={{ fontSize: '20px', cursor: 'pointer' }}>Quy định hủy tour</strong>
+                                    </div>
+                                    <div className="col-sm-6">
+                                        <span><i
+                                            onClick={this.showPolicy}
+                                            title={this.state.policy ? 'Ẩn quy định hủy tour' : 'Hiện quy định hủy tour'}
+                                            style={{ marginTop: '5px', fontSize: '20px', cursor: 'pointer' }}
+                                            className={`fa fa-angle-${this.state.policy ? 'down' : 'left'} pull-right`} />
+                                        </span>
+                                    </div>
+                                </div>
+                                {(this.props.status === 'paid' || this.props.status === 'pending_cancel') && this.state.policy &&
+                                    <div className="form-group">
+                                        <div className="col-sm-6">
+                                            <strong>Tour ngày thường:</strong><br />
+                                            - Trước <strong>20</strong> ngày: hoàn trả <strong>100%</strong><br />
+                                            - Từ <strong>15</strong> đến <strong>19</strong> ngày: hoàn trả <strong>85%</strong><br />
+                                            - Từ <strong>12</strong> đến <strong>14</strong> ngày: hoàn trả <strong>70%</strong><br />
+                                            - Từ <strong>08</strong> đến <strong>11</strong> ngày: hoàn trả <strong>50%</strong><br />
+                                            - Từ <strong>05</strong> đến <strong>07</strong> ngày: hoàn trả <strong>30%</strong><br />
+                                            - Từ <strong>02</strong> đến <strong>04</strong> ngày: hoàn trả <strong>10%</strong><br />
+                                            - Dưới <strong>02</strong> ngày: <strong>0%</strong><br /><br />
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <strong>Tour ngày lễ, tết:</strong><br />
+                                            - Trước <strong>30</strong> ngày: hoàn trả <strong>100%</strong><br />
+                                            - Từ <strong>25</strong> đến <strong>29</strong> ngày: hoàn trả <strong>85%</strong><br />
+                                            - Từ <strong>22</strong> đến <strong>24</strong> ngày: hoàn trả <strong>70%</strong> <br />
+                                            - Từ <strong>17</strong> đến <strong>19</strong> ngày: hoàn trả <strong>50%</strong> <br />
+                                            - Từ <strong>08</strong> đến <strong>16</strong> ngày: hoàn trả <strong>30%</strong> <br />
+                                            - Từ <strong>02</strong> đến <strong>07</strong> ngày: hoàn trả <strong>10%</strong> <br />
+                                            - Dưới <strong>02</strong> ngày: <strong>0%</strong> <br /><br />
+                                        </div>
+                                    </div>}
                                 {days >= 2 && <div className="box-footer col-sm-12">
                                     <button style={{ marginLeft: '5px' }} onClick={this.handleConfirmRequest} type="button" className="btn btn-danger pull-right">Xác Nhận Hủy</button>
-                                    <button onClick={this.handleConfirmRequest} type="button" className="btn btn-info pull-right">Hủy Yêu Cầu</button>
+                                    {/* {this.state.status === 'pending_cancel' && <button onClick={this.handleRevertCancel} type="button" className="btn btn-info pull-right">Hủy Yêu Cầu</button>} */}
                                 </div>}
                                 {days < 2 && <div className="box-footer col-sm-12 no-money">
                                     <button onClick={this.handleConfirmRequestNoMoney} type="button" className="btn btn-danger pull-right">Xác Nhận Hủy</button>

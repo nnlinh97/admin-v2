@@ -946,7 +946,14 @@ class CreateTourTurnComponent extends Component {
                                     </>}
 
                                 {/* cancelled */}
-                                {(this.state.status === 'cancelled' && this.state.message) && <>
+                                {(this.state.status === 'cancelled' && this.state.message && this.state.message.request_message) && <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                    <label className="col-sm-4 control-label">Chú thích</label>
+                                    <label className="col-sm-8 control-label">
+                                        {this.state.message.request_message}
+                                    </label>
+                                </div>}
+                                {(this.state.status === 'cancelled' && this.state.message && this.state.message.request_offline_person) && <>
+
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Người hủy</label>
                                         <label className="col-sm-8 control-label">
