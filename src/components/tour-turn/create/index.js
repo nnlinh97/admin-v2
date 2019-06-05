@@ -108,11 +108,27 @@ class CreateTourTurnComponent extends Component {
     }
 
     getListTypePassenger = () => {
-        return this.state.typePassenger.filter(item => item.checked);
+        const { adultPrice, adultChecked, childrenPrice, childrenChecked } = this.state;
+        console.log(adultPrice, adultChecked, childrenPrice, childrenChecked)
+        let type = [];
+        if(adultChecked) {
+            type.push({
+                id: 1,
+                percent: adultPrice
+            });
+        }
+        if(childrenChecked){
+            type.push({
+                id: 2,
+                percent: childrenPrice
+            });
+        }
+        return type;
+        // return this.state.typePassenger.filter(item => item.checked);
     }
 
     checkListTypePassenger = (typePassenger) => {
-        typePassenger.filter(type => type.checked);
+        // typePassenger.filter(type => type.checked);
         typePassenger.forEach(item => {
             const percent = parseInt(item.percent);
             if (item.percent === '' || !Number.isInteger(percent) || percent < 0 || percent > 100) {
@@ -125,12 +141,11 @@ class CreateTourTurnComponent extends Component {
     handleCreateTourTurn = async (event) => {
         event.preventDefault();
         const typePassenger = this.getListTypePassenger();
-        console.log(typePassenger)
         if (this.checkTourTurn() && this.checkListTypePassenger(typePassenger) && this.checkTerm()) {
             const { discount, price, limitPeople, tour, startDate, endDate, status } = this.state;
             try {
                 await apiPost('/tour_turn/createWithPricePassenger', {
-                    // idTour: tour.id,
+                    idTour: tour.id,
                     start_date: moment(startDate).format('YYYY-MM-DD'),
                     end_date: moment(endDate).format('YYYY-MM-DD'),
                     discount,
@@ -240,12 +255,11 @@ class CreateTourTurnComponent extends Component {
     }
 
     handleChangeAdultChecked = ({ target }) => {
-        console.log(target.value)
-        this.setState({ adultChecked: target.value });
+        this.setState({ adultChecked: !this.state.adultChecked });
     }
 
     handleChangeChildrenChecked = ({ target }) => {
-        this.setState({ childrenChecked: target.value });
+        this.setState({ childrenChecked: !this.state.childrenChecked });
     }
 
     render() {
@@ -535,12 +549,12 @@ class CreateTourTurnComponent extends Component {
                             </form>
                             <form style={{ marginBottom: '20px' }} className="form-horizontal">
                                 <div className="box-body book_tour_detail-book_tour_history">
-                                    <div className="book_tour_detail-book_tour_history-title">
+                                    {/* <div className="book_tour_detail-book_tour_history-title">
                                         <h2>Loại Hành Khách và Giá Tiền</h2>
                                         <div style={{ top: '10px' }} className="search_box">
-                                            {/* <div className="search_icon">
+                                            <div className="search_icon">
                                                 <i className="fa fa-search"></i>
-                                            </div> */}
+                                            </div>
                                             <input
                                                 type="text"
                                                 onChange={this.handleChange}
@@ -550,8 +564,8 @@ class CreateTourTurnComponent extends Component {
                                                 placeholder="Tìm kiếm..."
                                             />
                                         </div>
-                                    </div>
-                                    <div className="container">
+                                    </div> */}
+                                    {/* <div className="container">
                                         <div className="row">
                                             <div className="col-xs-12 book_tour_history">
                                                 <ReactTable
@@ -563,7 +577,7 @@ class CreateTourTurnComponent extends Component {
                                                 </ReactTable>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div style={{ marginTop: '10px', marginBottom: '20px' }} className="footer">
                                         <button onClick={this.handleCancel} type="button" className="btn btn-default pull-right">Hủy</button>
                                         <button style={{ marginRight: '10px' }} onClick={this.handleCreateTourTurn} type="button" className="btn btn-info pull-right">Lưu Thay Đổi</button>
