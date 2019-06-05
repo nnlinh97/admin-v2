@@ -385,9 +385,9 @@ class CreateTourTurnComponent extends Component {
                                                     name="adultPrice"
                                                     className="form-control" />
                                             </div>
-                                            <label className="col-sm-4 control-label">
+                                            <label className="col-sm-2 control-label">
                                                 <input
-                                                    style={{ width: '15px', height: '15px', marginTop: '0px', marginLeft: '-7px' }}
+                                                    style={{ width: '15px', height: '15px', marginTop: '0px' }}
                                                     className="input-modal"
                                                     type="checkbox"
                                                     name="adultChecked"
@@ -409,9 +409,9 @@ class CreateTourTurnComponent extends Component {
                                                     name="childrenPrice"
                                                     className="form-control" />
                                             </div>
-                                            <label className="col-sm-4 control-label">
+                                            <label className="col-sm-2 control-label">
                                                 <input
-                                                    style={{ width: '15px', height: '15px', marginTop: '0px', marginLeft: '-7px' }}
+                                                    style={{ width: '15px', height: '15px', marginTop: '0px' }}
                                                     className="input-modal"
                                                     type="checkbox"
                                                     name="childrenChecked"
