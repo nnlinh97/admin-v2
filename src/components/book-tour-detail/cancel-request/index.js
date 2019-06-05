@@ -362,7 +362,7 @@ class CancelRequestComponent extends Component {
                                             - Tổng Tiền: <strong>{formatCurrency(this.props.totalPay)} VND</strong><br />
                                             - Số tiền hoàn trả: <strong>
                                                 {formatCurrency(this.props.totalPay * percentMoneyRefund(days, this.props.holiday) / 100)}
-                                                VND</strong><br /><br />
+                                                VND</strong><br />
                                         </div>
                                     </div>
                                     {/* {this.props.status === 'paid' && <div className="form-group">
@@ -515,8 +515,8 @@ class CancelRequestComponent extends Component {
                                                             readOnly
                                                         />
                                                     </div>
-                                                    <label className="col-sm-2 control-label">đến</label>
-                                                    <div className="col-sm-4">
+                                                    <label className="col-sm-1 control-label">Đến</label>
+                                                    <div className="col-sm-5">
                                                         <input
                                                             onChange={this.handleChangeDate}
                                                             value={this.state.toDate}

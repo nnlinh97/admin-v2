@@ -364,7 +364,7 @@ class CreateTourTurnComponent extends Component {
                     Vui Lòng Kiểm Tra Lại...
                 </SweetAlert>}
 
-                <section className="content-header">
+                <section className="content-header content-header-page">
                     <h1> Chỉnh Sửa Chuyến Đi <i>#{this.state.id}</i> </h1>
                 </section>
                 <section className="content">

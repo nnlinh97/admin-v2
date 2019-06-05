@@ -194,7 +194,7 @@ class ListTypePassenger extends Component {
                         name_vi={this.state.name_vi} />
                 </Modal>
 
-                <section className="content-header">
+                <section className="content-header content-header-page">
                     <h1> Danh Sách Loại Hành Khách </h1>
                     <div className="right_header">
                         <button

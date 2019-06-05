@@ -621,7 +621,7 @@ class CreateTourTurnComponent extends Component {
                     />}
                 </Modal>
 
-                <section className="content-header">
+                <section className="content-header content-header-page">
                     <div style={{
                         position: 'absolute',
                         top: '0',

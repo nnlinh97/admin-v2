@@ -201,7 +201,7 @@ class ListTypesComponent extends Component {
                     <EditComponent handleEditTypeLocation={this.handleEditTypeLocation} type={this.state.type} />
                 </Modal>
 
-                <section className="content-header">
+                <section className="content-header content-header-page">
                     <h1> Danh Sách Loại Địa Điểm </h1>
                     <div className="right_header">
                         <button
