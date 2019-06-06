@@ -213,7 +213,7 @@ class ListTypesComponent extends Component {
                 <EditComponent handleEditTransport={this.handleEditTransport} transport={this.state.transport} />
             </Modal>
 
-            <section className="content-header">
+            <section className="content-header content-header-page">
                 <h1> Danh Sách Phương tiện Di Chuyển </h1>
                 <div className="right_header">
                     <button

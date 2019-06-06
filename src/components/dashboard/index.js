@@ -184,7 +184,7 @@ class Dashboard extends Component {
             }
         ];
         return <div style={{ minHeight: '100vh' }} className="content-wrapper">
-            <section className="content-header">
+            <section className="content-header content-header-page">
                 <h1> Trang Chủ </h1>
                 <div className="right_header">
                     <i

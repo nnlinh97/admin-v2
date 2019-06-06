@@ -187,7 +187,7 @@ class listBookTourConponent extends Component {
         ];
         return (
             <div style={{ minHeight: '100vh' }} className="content-wrapper">
-                <section className="content-header">
+                <section className="content-header content-header-page">
                     <h1> Danh Sách Chuyến Đi Đã Được Đặt </h1>
                 </section>
                 <section className="content">

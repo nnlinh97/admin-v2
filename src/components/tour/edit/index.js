@@ -522,7 +522,7 @@ class ListTypesComponent extends Component {
                     />
                 </Modal>
 
-                <section className="content-header">
+                <section className="content-header content-header-page">
                     <h1>Chỉnh Sửa Tour</h1>
                 </section>
                 <section className="content">

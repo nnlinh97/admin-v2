@@ -23,7 +23,7 @@ class CreateLocationComponent extends Component {
     render() {
         return (
             <div className="content-wrapper">
-                <section className="content-header">
+                <section className="content-header content-header-page">
                     <h1> Thêm Mới Địa Điểm</h1>
                 </section>
                 <section className="content">

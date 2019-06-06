@@ -236,7 +236,7 @@ class ListTourTurnComponent extends Component {
         };
         return (
             <div style={{ minHeight: '100vh' }} className="content-wrapper">
-                <section className="content-header">
+                <section className="content-header content-header-page">
                     <h1> Danh Sách Chuyến Đi </h1>
                     <div className="right_header">
                         <button

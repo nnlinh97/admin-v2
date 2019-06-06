@@ -23,7 +23,7 @@ class EditLocationComponent extends Component {
 
     render() {
         return <div className="content-wrapper">
-            <section className="content-header">
+            <section className="content-header content-header-page">
                 <h1> Chỉnh Sửa Địa Điểm <i>#{this.props.match.params.id}</i></h1>
             </section>
             <section className="content">

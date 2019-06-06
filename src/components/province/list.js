@@ -211,7 +211,7 @@ class ListProvinceComponent extends Component {
                 />
             </Modal>
 
-            <section className="content-header">
+            <section className="content-header content-header-page">
                 <h1> Danh Sách Tỉnh Thành </h1>
                 <div className="right_header">
                     <button

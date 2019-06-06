@@ -595,7 +595,7 @@ class CreateTourTurnComponent extends Component {
                     />}
                 </Modal>
 
-                <section className="content-header">
+                <section className="content-header content-header-page">
                     <h1> Thông Tin & Danh Sách Đặt Tour <i>#{this.props.match.params.id}</i> </h1>
                     <div className="right_header">
                         <i

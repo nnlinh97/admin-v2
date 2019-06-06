@@ -560,7 +560,7 @@ class ListTypesComponent extends Component {
                         Please check carefully!
                     </SweetAlert>
                 }
-                <section className="content-header">
+                <section className="content-header content-header-page">
                     <h1> Chỉnh Sửa Tour <i>#{this.props.match.params.id}</i> </h1>
                 </section>
                 <section className={`content ${(this.state.openModal || this.state.modalListImages) ? 'opacity-05' : ''}`}>
