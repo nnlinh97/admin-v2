@@ -385,16 +385,16 @@ class CreateTourTurnComponent extends Component {
                                                     name="adultPrice"
                                                     className="form-control" />
                                             </div>
-                                            <label className="col-sm-2 control-label">
+                                            <label className="col-sm-4 control-label">
                                                 <input
-                                                    style={{ width: '15px', height: '15px', marginTop: '0px' }}
+                                                    style={{ width: '35px', height: '35px', marginTop: '-7px', marginLeft: '-20px', float: 'left' }}
                                                     className="input-modal"
                                                     type="checkbox"
                                                     name="adultChecked"
                                                     onClick={this.handleChangeAdultChecked}
                                                     defaultChecked={this.state.adultChecked ? true : false}
                                                 />
-                                                <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '14px', left: '0', marginTop: '0' }}>
+                                                <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '14px', left: '40px', marginTop: '0', float: 'left' }}>
                                                     {this.getPeoplePrice(this.state.price, this.state.discount, this.state.adultPrice)}
                                                 </i>
                                             </label>
@@ -409,16 +409,16 @@ class CreateTourTurnComponent extends Component {
                                                     name="childrenPrice"
                                                     className="form-control" />
                                             </div>
-                                            <label className="col-sm-2 control-label">
+                                            <label className="col-sm-4 control-label">
                                                 <input
-                                                    style={{ width: '15px', height: '15px', marginTop: '0px' }}
+                                                    style={{ width: '35px', height: '35px', marginTop: '-7px', marginLeft: '-20px', float: 'left' }}
                                                     className="input-modal"
                                                     type="checkbox"
                                                     name="childrenChecked"
                                                     onClick={this.handleChangeChildrenChecked}
                                                     defaultChecked={this.state.childrenChecked ? true : false}
                                                 />
-                                                <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '14px', left: '0', marginTop: '0' }}>
+                                                <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '14px', left: '40px', marginTop: '0' }}>
                                                     {this.getPeoplePrice(this.state.price, this.state.discount, this.state.childrenPrice)}
                                                 </i>
                                             </label>
