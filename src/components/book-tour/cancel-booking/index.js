@@ -77,7 +77,7 @@ class CancelBooking extends Component {
         event.preventDefault();
         if (this.checkInput()) {
             try {
-                await apiPost('', {
+                await apiPost('/cancel_booking/cancelTourTurn_ConfirmCancelBookTour', {
                     code: this.props.booking.code,
                     money_refunded: this.props.booking.total_pay,
                     refund_period: moment(this.state.toDate).format('YYYY-MM-DD'),
@@ -89,6 +89,7 @@ class CancelBooking extends Component {
                     },
                     request_message: this.state.reason
                 });
+                this.props.handleCancelBooking(true);
             } catch (error) {
                 this.props.handleCancelBooking(false);
             }

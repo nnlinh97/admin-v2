@@ -109,7 +109,6 @@ class CreateTourTurnComponent extends Component {
 
     getListTypePassenger = () => {
         const { adultPrice, adultChecked, childrenPrice, childrenChecked } = this.state;
-        console.log(adultPrice, adultChecked, childrenPrice, childrenChecked)
         let type = [];
         if(adultChecked) {
             type.push({
@@ -390,6 +389,22 @@ class CreateTourTurnComponent extends Component {
                                             </label>
                                         </div>
                                         <div className="form-group">
+                                            <label className="col-sm-2 control-label">Giảm giá (%)</label>
+                                            <div className="col-sm-6">
+                                                <input
+                                                    type="number"
+                                                    onChange={this.handleChange}
+                                                    value={this.state.discount}
+                                                    name="discount"
+                                                    className="form-control" />
+                                            </div>
+                                            <label className="col-sm-4 control-label">
+                                                <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '14px', left: '0', marginTop: '0' }}>
+                                                    {this.getPriceDiscount(this.state.price, this.state.discount)}
+                                                </i>
+                                            </label>
+                                        </div>
+                                        <div className="form-group">
                                             <label className="col-sm-2 control-label">Giá người lớn (%)</label>
                                             <div className="col-sm-6">
                                                 <input
@@ -401,7 +416,7 @@ class CreateTourTurnComponent extends Component {
                                             </div>
                                             <label className="col-sm-4 control-label">
                                                 <input
-                                                    style={{ width: '35px', height: '35px', marginTop: '-7px', marginLeft: '-20px', float: 'left' }}
+                                                    style={{ width: '22px', height: '35px', marginTop: '-7px', marginLeft: '-20px', float: 'left' }}
                                                     className="input-modal"
                                                     type="checkbox"
                                                     name="adultChecked"
@@ -425,7 +440,7 @@ class CreateTourTurnComponent extends Component {
                                             </div>
                                             <label className="col-sm-4 control-label">
                                                 <input
-                                                    style={{ width: '35px', height: '35px', marginTop: '-7px', marginLeft: '-20px', float: 'left' }}
+                                                    style={{ width: '22px', height: '35px', marginTop: '-7px', marginLeft: '-20px', float: 'left' }}
                                                     className="input-modal"
                                                     type="checkbox"
                                                     name="childrenChecked"
@@ -434,22 +449,6 @@ class CreateTourTurnComponent extends Component {
                                                 />
                                                 <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '14px', left: '40px', marginTop: '0' }}>
                                                     {this.getPeoplePrice(this.state.price, this.state.discount, this.state.childrenPrice)}
-                                                </i>
-                                            </label>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="col-sm-2 control-label">Giảm giá (%)</label>
-                                            <div className="col-sm-6">
-                                                <input
-                                                    type="number"
-                                                    onChange={this.handleChange}
-                                                    value={this.state.discount}
-                                                    name="discount"
-                                                    className="form-control" />
-                                            </div>
-                                            <label className="col-sm-4 control-label">
-                                                <i style={{ textAlign: 'left', fontWeight: '400', fontSize: '14px', left: '0', marginTop: '0' }}>
-                                                    {this.getPriceDiscount(this.state.price, this.state.discount)}
                                                 </i>
                                             </label>
                                         </div>
