@@ -21,6 +21,7 @@ class ListTourComponent extends Component {
         let listTour = []
         try {
             listTour = await apiGet('/tour/getAllWithoutPagination');
+            console.log(listTour.data.data)
             this.props.getListTour(listTour.data.data);
         } catch (error) {
             console.log(error);

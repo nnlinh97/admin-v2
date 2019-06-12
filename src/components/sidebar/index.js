@@ -1,24 +1,32 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import _ from 'lodash';
-import { menus } from './../../constants/menu';
+import { menus, menuManger } from './../../constants/menu';
 
 class Sidebar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            indexActive: ''
+            indexActive: '',
+            menus: []
         };
     }
 
     componentDidMount = () => {
         const path = window.location.pathname;
-        let index = _.findIndex(menus, (menu) => {
-            return menu.path === path;
-        });
-        if (index !== -1) {
-            this.setState({ indexActive: index });
+        const { profile } = this.props;
+        if (profile.fk_role === 1) {
+            this.setState({ menus: menuManger });
+        } else {
+            this.setState({ menus: menus });
         }
+        // let index = _.findIndex(menus, (menu) => {
+        //     return menu.path === path;
+        // });
+        // if (index !== -1) {
+        //     this.setState({ indexActive: index });
+        // }
     }
 
     redirectPath = (event, path) => {
@@ -32,7 +40,7 @@ class Sidebar extends Component {
                 <section className="sidebar">
                     <ul className="sidebar-menu">
                         <li className="header">Version 1.0.0</li>
-                        {menus.map((menu, index) => {
+                        {this.state.menus.map((menu, index) => {
                             return (
                                 <li key={index} className={index === this.state.indexActive ? 'active' : ''}>
                                     <a onClick={(event) => this.redirectPath(event, menu.path)} href="">
@@ -49,4 +57,12 @@ class Sidebar extends Component {
     }
 }
 
-export default withRouter(Sidebar);
+const mapStateToProps = (state) => {
+    return {
+        profile: state.profile
+    };
+}
+
+export default withRouter(connect(mapStateToProps, null)(Sidebar));
+
+// export default withRouter(Sidebar);

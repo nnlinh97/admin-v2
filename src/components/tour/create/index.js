@@ -18,6 +18,7 @@ import { apiGet, apiPost } from '../../../services/api';
 import CreateRouteComponent from './modal-create';
 import EditRouteComponent from './modal-edit';
 import ListImageComponent from './modal-list-image';
+import { policy } from './policy';
 import './index.css';
 
 class ListTypesComponent extends Component {
@@ -28,7 +29,7 @@ class ListTypesComponent extends Component {
             routes: [],
             name: '',
             desc: '',
-            policy: '',
+            policy: policy,
             success: false,
             error: false,
             image: [],
@@ -42,7 +43,8 @@ class ListTypesComponent extends Component {
             modalEditRouteIsOpen: false,
             modalListImageIsOpen: false,
             routeEdit: null,
-            keySearch: ''
+            keySearch: '',
+            numDay: 1
         }
     }
 
@@ -80,8 +82,8 @@ class ListTypesComponent extends Component {
     }
 
     checkTour = () => {
-        const { name, desc, routes, image } = this.state;
-        if (name !== '' && desc !== '' && routes.length > 0 && image.length > 0) {
+        const { name, desc, routes, image, numDay } = this.state;
+        if (name !== '' && desc !== '' && routes.length > 0 && image.length > 0 && numDay > 0) {
             return true;
         }
         return false;
@@ -90,13 +92,14 @@ class ListTypesComponent extends Component {
     handleCreateTour = async () => {
         if (this.checkTour()) {
             try {
-                const { name, image, policy, desc, routes, listImages, typeTour } = this.state;
+                const { name, image, policy, desc, routes, listImages, typeTour, numDay } = this.state;
                 let form = new FormData();
                 form.append('name', name);
                 form.append('policy', policy);
                 form.append('routes', JSON.stringify(this.changeRoutes(routes)));
                 form.append('description', desc);
                 form.append('fk_type_tour', typeTour);
+                form.append('num_days', numDay);
                 if (image.length) {
                     form.append('featured_image', image[0], 'name.jpg');
                 }
@@ -481,6 +484,10 @@ class ListTypesComponent extends Component {
                                 <label className="title_row">Tour *</label>
                                 <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
                             </div>
+                            <div className="tour">
+                                <label className="title_row">Số ngày *</label>
+                                <input onChange={this.onHandleChange} value={this.state.numDay} name="numDay" type="number" className="form-control" />
+                            </div>
                             <div className="type_tour">
                                 <label className="title_row">Loại tour *</label>
                                 <select value={this.state.typeTour} onChange={this.onHandleChange} name="typeTour" className="form-control">
@@ -589,7 +596,7 @@ class ListTypesComponent extends Component {
                                 columns={columns}
                                 data={this.handleSearchRoutes(this.state.routes, this.state.keySearch)}
                                 pageSizeOptions={[5, 10, 20, 25]}
-                                defaultPageSize={20}
+                                defaultPageSize={10}
                                 noDataText={'Không có dữ liệu...'}
                                 previousText={'Trang trước'}
                                 nextText={'Trang sau'}

@@ -26,9 +26,11 @@ import PrintListPassenger from './components/book-tour/print';
 import BookTourDetail from './pages/book-tour-detail';
 import PhoneCall from './pages/phone-call';
 import PrivateRoute from './components/private-route/';
+import PrivateRouteManager from './components/private-route-manager';
 import BillCancelBooking from './components/book-tour-detail/bill-cancel';
 import BillPayment from './components/book-tour-detail/bill-payment';
 import ListAdmin from './pages/admin/list';
+import ListRole from './pages/role/list';
 import './App.css';
 
 class App extends Component {
@@ -97,6 +99,9 @@ class App extends Component {
 
           {/* admin */}
           <PrivateRoute exact path='/admin/list' component={ListAdmin} />
+
+          {/* admin */}
+          <PrivateRoute exact path='/role/list' component={ListRole} />
 
           {/* not found */}
           <PrivateRoute exact path='' component={NotFound} />

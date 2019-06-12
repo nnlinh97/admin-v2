@@ -45,7 +45,8 @@ class ListTypesComponent extends Component {
             modalListImageIsOpen: false,
             routeEdit: null,
             id: '',
-            keySearch: ''
+            keySearch: '',
+            numDay: ''
         }
     }
 
@@ -53,6 +54,7 @@ class ListTypesComponent extends Component {
         const id = this.props.match.params.id;
         try {
             const tourDetail = await apiGet(`/tour/getById/${id}`);
+            console.log(tourDetail.data.data)
             this.updateState(tourDetail.data.data);
         } catch (error) {
             console.log(error);
@@ -69,7 +71,8 @@ class ListTypesComponent extends Component {
             featuredImg: tourDetail.featured_img,
             listImages: tourDetail.tour_images,
             desc: tourDetail.description,
-            routes: tourDetail.routes
+            routes: tourDetail.routes,
+            numDay: tourDetail.num_days
         });
     }
 
@@ -89,8 +92,8 @@ class ListTypesComponent extends Component {
     }
 
     checkTour = () => {
-        const { name, desc, routes } = this.state;
-        if (name !== '' && desc !== '' && routes.length > 0) {
+        const { name, desc, routes, numDay } = this.state;
+        if (name !== '' && desc !== '' && routes.length > 0 && numDay > 0) {
             return true;
         }
         return false;
@@ -99,7 +102,7 @@ class ListTypesComponent extends Component {
     handleEditTour = async () => {
         if (this.checkTour()) {
             try {
-                const { id, name, image, policy, desc, routes, deletedImages, listImagesNew, typeTour } = this.state;
+                const { id, name, image, policy, desc, routes, deletedImages, listImagesNew, typeTour, numDay } = this.state;
                 let form = new FormData();
                 form.append('id', id);
                 form.append('name', name);
@@ -107,6 +110,7 @@ class ListTypesComponent extends Component {
                 form.append('routes', JSON.stringify(this.changeRoutes(routes)));
                 form.append('fk_type_tour', typeTour);
                 form.append('description', desc);
+                form.append('num_days', numDay);
                 if (image.length > 0) {
                     form.append('featured_image', image[0], 'name.jpg');
                 }
@@ -531,6 +535,10 @@ class ListTypesComponent extends Component {
                             <div className="tour">
                                 <label className="title_row">Tour *</label>
                                 <input onChange={this.onHandleChange} value={this.state.name} name="name" type="text" className="form-control" />
+                            </div>
+                            <div className="tour">
+                                <label className="title_row">Số ngày *</label>
+                                <input onChange={this.onHandleChange} value={this.state.numDay} name="numDay" type="number" className="form-control" />
                             </div>
                             <div className="type_tour">
                                 <label className="title_row">Loại tour *</label>
