@@ -77,7 +77,9 @@ class CreateTourTurnComponent extends Component {
             message: null,
             bookTourDetail: null,
             code: '',
-            messagePayment: null
+            messagePayment: null,
+            paymentStaff: null,
+            refundStaff: null
         }
     }
 
@@ -110,7 +112,8 @@ class CreateTourTurnComponent extends Component {
             message: bookTourDetail.cancel_bookings.length > 0 ? bookTourDetail.cancel_bookings[0] : null,
             bookTourDetail: bookTourDetail,
             code: bookTourDetail.code,
-            messagePayment: bookTourDetail.message_pay
+            messagePayment: bookTourDetail.message_pay,
+            paymentStaff: bookTourDetail.payment_staff,
         });
     }
 
@@ -889,6 +892,12 @@ class CreateTourTurnComponent extends Component {
                                             {this.state.messagePayment.note}
                                         </label>
                                     </div>}
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">NV thanh toán</label>
+                                        <label className="col-sm-8 control-label">
+                                            {this.state.paymentStaff.name}
+                                        </label>
+                                    </div>
                                     </>}
 
                                 {/* refunded */}
@@ -917,12 +926,13 @@ class CreateTourTurnComponent extends Component {
                                             {moment(dateFns.addDays(new Date(this.state.message.confirm_time), 3)).format('MM/DD/YYYY')} đến {moment(this.state.message.refund_period).format('MM/DD/YYYY')}
                                         </label>
                                     </div> */}
-                                    {this.state.message.refund_message && <> <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
-                                        <label className="col-sm-4 control-label">Người Nhận tiền</label>
-                                        <label className="col-sm-8 control-label">
-                                            {this.state.message.refund_message.name}
-                                        </label>
-                                    </div>
+                                    {this.state.message.refund_message && <>
+                                        <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                            <label className="col-sm-4 control-label">Người Nhận tiền</label>
+                                            <label className="col-sm-8 control-label">
+                                                {this.state.message.refund_message.name}
+                                            </label>
+                                        </div>
                                         <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                             <label className="col-sm-4 control-label">CMND/Passport</label>
                                             <label className="col-sm-8 control-label">
@@ -934,7 +944,10 @@ class CreateTourTurnComponent extends Component {
                                             <label className="col-sm-8 control-label">
                                                 {moment(this.state.message.refunded_time).format('MM/DD/YYYY')}
                                             </label>
-                                        </div> </>
+                                        </div>
+
+                                        </>
+
                                         // {this.state.message.refund_message.note !== '' && <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         //     <label className="col-sm-4 control-label">Chú thích</label>
                                         //     <label className="col-sm-8 control-label">
@@ -942,7 +955,19 @@ class CreateTourTurnComponent extends Component {
                                         //     </label>
                                         // </div>} 
                                     }
-
+                                    <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                        <label className="col-sm-4 control-label">NV thanh toán</label>
+                                        <label className="col-sm-8 control-label">
+                                            {this.state.paymentStaff.name}
+                                        </label>
+                                    </div>
+                                    {(this.state.message && this.state.message.refund_staff) &&
+                                        <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
+                                            <label className="col-sm-4 control-label">NV hoàn tiền</label>
+                                            <label className="col-sm-8 control-label">
+                                            {this.state.message.refund_staff.name}
+                                            </label>
+                                        </div> }
                                     </>}
 
                                 {/* cancelled */}

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import ReactTable from 'react-table';
+import Modal from 'react-responsive-modal';
+import SweetAlert from 'react-bootstrap-sweetalert';
+import CreateComponent from '../create';
 import * as actions from './../../../actions/index';
 import { apiGet, apiPost } from '../../../services/api';
 import { matchString, getStatusTourTurn } from '../../../helper';
@@ -13,7 +16,12 @@ class listAdmin extends Component {
         super(props);
         this.state = {
             listAdmin: [],
-            keySearch: ''
+            keySearch: '',
+            modalCreateIsOpen: false,
+            modalEditIsOpen: false,
+            adminEditing: null,
+            success: false,
+            error: false
         }
     }
 
@@ -27,6 +35,27 @@ class listAdmin extends Component {
         }
     }
 
+    handleOpenCreateModal = () => {
+        this.setState({ modalCreateIsOpen: true });
+    }
+
+    handleCloseCreateModal = () => {
+        this.setState({ modalCreateIsOpen: false });
+    }
+
+    handleCreateAdmin = (res) => {
+        if (res) {
+            this.setState({ success: true });
+        } else {
+            this.setState({ error: true });
+        }
+    }
+
+    hideSuccessAlert = () => {
+        this.handleCloseCreateModal();
+        this.componentDidMount();
+        this.setState({ success: false });
+    }
 
     render() {
         const columns = [
@@ -34,19 +63,10 @@ class listAdmin extends Component {
                 Header: "STT",
                 Cell: props => <p>{props.index + 1}</p>,
                 style: { textAlign: 'center' },
-                style: { textAlign: 'center' },
                 width: 80,
                 maxWidth: 80,
                 minWidth: 80
             },
-            // {
-            //     Header: "ID",
-            //     accessor: "id",
-            //     style: { textAlign: 'center' },
-            //     width: 100,
-            //     maxWidth: 100,
-            //     minWidth: 100
-            // },
             {
                 Header: "Tên đăng nhập",
                 accessor: "username",
@@ -62,24 +82,75 @@ class listAdmin extends Component {
                 accessor: "roles_admin.name",
                 style: { textAlign: 'left' },
             },
-            {
-                Header: props => <i className="fa fa-pencil" />,
-                Cell: props => {
-                    return <button className='btn btn-xs btn-success'
-                        onClick={() => this.props.history.push(`/book-tour/${props.original.id}`)} >
-                        <i className="fa fa-pencil" />
-                    </button>
-                },
-                style: { textAlign: 'center' },
-                width: 50,
-                maxWidth: 70,
-                minWidth: 50
-            }
+            // {
+            //     Header: props => <i className="fa fa-pencil" />,
+            //     Cell: props => {
+            //         return <button className='btn btn-xs btn-success'
+            //             onClick={() => this.props.history.push(`/book-tour/${props.original.id}`)} >
+            //             <i className="fa fa-pencil" />
+            //         </button>
+            //     },
+            //     style: { textAlign: 'center' },
+            //     width: 50,
+            //     maxWidth: 70,
+            //     minWidth: 50
+            // }
         ];
         return (
             <div style={{ minHeight: '100vh' }} className="content-wrapper">
+
+                {this.state.success && <SweetAlert
+                    success
+                    title="Lưu Thành Công"
+                    onConfirm={this.hideSuccessAlert}>
+                    Tiếp Tục...
+                    </SweetAlert>}
+
+                {this.state.error && <SweetAlert
+                    warning
+                    confirmBtnText="Hủy"
+                    confirmBtnBsStyle="default"
+                    title="Đã Có Lỗi Xảy Ra!"
+                    onConfirm={this.hideFailAlert}>
+                    Vui Lòng Kiểm Tra Lại...
+                    </SweetAlert>}
+
+                <Modal
+                    open={this.state.modalCreateIsOpen}
+                    onClose={this.handleCloseCreateModal}
+                    center
+                    styles={{ 'modal': { width: '1280px' } }}
+                    blockScroll={true} >
+                    <CreateComponent handleCreateAdmin={this.handleCreateAdmin} />
+                </Modal>
+
+                {/* <Modal
+                    open={this.state.modalEditIspOpen}
+                    onClose={this.handleCloseEditModal}
+                    center
+                    styles={{ 'modal': { width: '1280px' } }}
+                    blockScroll={true} >
+                    {this.state.roleEditing && <EditComponent
+                        role={this.state.roleEditing}
+                        handleEditRole={this.handleEditRole}
+                    />}
+                </Modal> */}
+
                 <section className="content-header content-header-page">
                     <h1> Danh Sách Admin </h1>
+                    <div className="right_header">
+                        <button
+                            onClick={this.handleOpenCreateModal}
+                            style={{
+                                marginBottom: '2px',
+                                marginRight: '15px'
+                            }}
+                            type="button"
+                            title="thêm mới"
+                            className="btn btn-success pull-right">
+                            <i className="fa fa-plus" />&nbsp;Thêm
+                        </button>
+                    </div>
                 </section>
                 <section className="content">
                     <div className="row">
@@ -109,7 +180,7 @@ class listAdmin extends Component {
                                                     data={this.state.listAdmin}
                                                     columns={columns}
                                                     pageSizeOptions={[5, 10, 20, 25]}
-                                                    defaultPageSize={5}
+                                                    defaultPageSize={10}
                                                     noDataText={'Vui lòng đợi...'}
                                                     previousText={'Trang trước'}
                                                     nextText={'Trang sau'}

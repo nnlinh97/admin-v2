@@ -191,7 +191,7 @@ class listAdmin extends Component {
                                                     data={this.state.roles}
                                                     columns={columns}
                                                     pageSizeOptions={[5, 10, 20, 25]}
-                                                    defaultPageSize={5}
+                                                    defaultPageSize={10}
                                                     noDataText={'Vui lòng đợi...'}
                                                     previousText={'Trang trước'}
                                                     nextText={'Trang sau'}

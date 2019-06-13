@@ -93,7 +93,7 @@ class CreateTourTurnComponent extends Component {
             this.setState({
                 tour: selected,
                 numDay: selected.num_days,
-                endDate: getDays(this.state.startDate, selected.num_days),
+                endDate: getDays(this.state.startDate, selected.num_days - 1),
                 bookingTerm: getDays(this.state.startDate, bookingTerm),
                 paymentTerm: getDays(this.state.startDate, paymentTerm),
             });
@@ -117,7 +117,7 @@ class CreateTourTurnComponent extends Component {
         if (this.state.numDay !== '') {
             this.setState({ 
                 [name]: value, 
-                endDate: getDays(value, this.state.numDay),
+                endDate: getDays(value, this.state.numDay - 1),
                 bookingTerm: getDays(value, bookingTerm),
                 paymentTerm: getDays(value, paymentTerm),
             })

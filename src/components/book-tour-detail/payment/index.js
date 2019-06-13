@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { formatCurrency } from './../../../helper';
-import { apiPost } from '../../../services/api';
+import { connect } from 'react-redux';
+import { apiPost, apiPostAdmin } from '../../../services/api';
 import './index.css';
 
 class PaymentComponent extends Component {
@@ -13,13 +14,16 @@ class PaymentComponent extends Component {
             passport: '',
             note: '',
             person: 'op1',
+            staff: null
         }
     }
 
     componentDidMount = () => {
+        // console.log('profile: ', this.props.profile)
         this.setState({
             name: this.props.contactInfo.fullname,
             passport: this.props.contactInfo.passport,
+            staff: this.props.profile
         });
     }
 
@@ -28,7 +32,7 @@ class PaymentComponent extends Component {
         event.preventDefault();
         if (this.checkData()) {
             try {
-                await apiPost('/book_tour/payBookTour', {
+                await apiPostAdmin('/book_tour/payBookTour', {
                     code: this.props.code,
                     message_pay: {
                         name: this.state.name,
@@ -148,6 +152,18 @@ class PaymentComponent extends Component {
                                                     />
                                                 </div>
                                             </div>
+                                            <div className="form-group">
+                                                <label className="col-sm-3 control-label">NV thanh toán</label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        value={this.state.staff ? this.state.staff.name : ''}
+                                                        readOnly
+                                                        type="text"
+                                                        name="passport"
+                                                        className="form-control"
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -163,4 +179,17 @@ class PaymentComponent extends Component {
     }
 }
 
-export default PaymentComponent;
+// export default PaymentComponent;
+const mapStateToProps = (state) => {
+    return {
+        profile: state.profile
+    };
+}
+
+const mapDispatchToProps = (dispatch, action) => {
+    return {
+        
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PaymentComponent);
