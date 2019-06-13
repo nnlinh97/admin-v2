@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import {
     formatCurrency,
@@ -9,7 +10,7 @@ import {
     getNumberDays1,
     percentMoneyRefund
 } from './../../../helper';
-import { apiPost } from '../../../services/api';
+import { apiPost, apiPostAdmin } from '../../../services/api';
 import './index.css';
 
 class RefundComponent extends Component {
@@ -21,7 +22,8 @@ class RefundComponent extends Component {
             name: '',
             note: '',
             person: '',
-            policy: false
+            policy: false,
+            staff: null
         }
     }
 
@@ -30,7 +32,8 @@ class RefundComponent extends Component {
             name: this.props.people.name,
             passport: this.props.people.passport,
             note: this.props.people.note,
-            person: this.props.people.helper ? 'op2' : 'op1'
+            person: this.props.people.helper ? 'op2' : 'op1',
+            staff: this.props.profile
         });
     }
 
@@ -58,7 +61,7 @@ class RefundComponent extends Component {
         event.preventDefault();
         if (this.checkData()) {
             try {
-                await apiPost('/cancel_booking/refunded', {
+                await apiPostAdmin('/cancel_booking/refunded', {
                     idCancelBooking: this.props.message.id
                 });
                 this.props.handleRefundMoney(true);
@@ -126,6 +129,35 @@ class RefundComponent extends Component {
                             <form onSubmit={this.handleRefundMoney} className="form-horizontal">
                                 <div className="box-body">
                                     <div className="form-group">
+                                        <div className="col-sm-12">
+                                            <strong style={{ fontSize: '20px' }}>Thông tin</strong><br />
+                                        </div>
+                                        <div className="col-sm-6">
+                                            - Tour: <strong>{this.props.tour}</strong><br />
+                                            - Ngày khởi hành: <strong>{moment(this.props.startDate).format('MM/DD/YYYY')}</strong><br />
+                                            - Thời điểm: <strong>{this.props.holiday ? 'Ngày lễ, tết' : 'Ngày thường'}</strong><br />
+                                            - NV hoàn tiền: <strong>{this.state.staff ? this.state.staff.name : ''}</strong><br />
+                                        </div>
+                                        <div className="col-sm-6">
+                                            - Thời gian hủy tour: <strong>{moment(this.props.message.request_time).format('MM/DD/YYYY HH:MM')}</strong><br />
+                                            - Hủy tour trước ngày khởi hành: <strong>{days}</strong> ngày<br />
+                                            - Phần trăm hoàn trả: <strong>{percentMoneyRefund(days, this.props.holiday)}</strong>%<br />
+                                            - Số tiền hoàn trả: <strong>
+                                                {formatCurrency(this.props.totalPay * percentMoneyRefund(days, this.props.holiday) / 100)} VND
+                                            </strong>
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <div className="col-sm-12">
+                                            <strong style={{ fontSize: '20px' }}>Người Nhận Tiền</strong><br />
+                                        </div>
+                                        <div className="col-sm-6">
+                                            - Tên: <strong>{this.props.people.name}</strong><br />
+                                            - CMND/Passport: <strong>{this.props.people.passport}</strong><br />
+                                            - Chú thích: <strong>{this.props.people.note}</strong><br />
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
                                         <div className="col-sm-6">
                                             <strong onClick={this.showPolicy} style={{ fontSize: '20px', cursor: 'pointer' }}>Quy định hủy tour</strong>
                                         </div>
@@ -160,34 +192,6 @@ class RefundComponent extends Component {
                                             - Dưới <strong>02</strong> ngày: <strong>0%</strong>
                                         </div>
                                     </div>
-                                    <div className="form-group">
-                                        <div className="col-sm-12">
-                                            <strong style={{ fontSize: '20px' }}>Thông tin</strong><br />
-                                        </div>
-                                        <div className="col-sm-6">
-                                            - Tour: <strong>{this.props.tour}</strong><br />
-                                            - Ngày khởi hành: <strong>{moment(this.props.startDate).format('MM/DD/YYYY')}</strong><br />
-                                            - Thời điểm: <strong>{this.props.holiday ? 'Ngày lễ, tết' : 'Ngày thường'}</strong><br />
-                                        </div>
-                                        <div className="col-sm-6">
-                                            - Thời gian hủy tour: <strong>{moment(this.props.message.request_time).format('MM/DD/YYYY HH:MM')}</strong><br />
-                                            - Hủy tour trước ngày khởi hành: <strong>{days}</strong> ngày<br />
-                                            - Phần trăm hoàn trả: <strong>{percentMoneyRefund(days, this.props.holiday)}</strong>%<br />
-                                            - Số tiền hoàn trả: <strong>
-                                                {formatCurrency(this.props.totalPay * percentMoneyRefund(days, this.props.holiday) / 100)} VND
-                                            </strong>
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <div className="col-sm-12">
-                                            <strong style={{ fontSize: '20px' }}>Người Nhận Tiền</strong><br />
-                                        </div>
-                                        <div className="col-sm-6">
-                                            - Tên: <strong>{this.props.people.name}</strong><br />
-                                            - CMND/Passport: <strong>{this.props.people.passport}</strong><br />
-                                            - Chú thích: <strong>{this.props.people.note}</strong><br />
-                                        </div>
-                                    </div>
                                 </div>
                                 <div className="box-footer col-sm-12">
                                     <button type="submit" className="btn btn-danger pull-right">Xác Nhận Hoàn Tiền</button>
@@ -201,4 +205,17 @@ class RefundComponent extends Component {
     }
 }
 
-export default RefundComponent;
+// export default RefundComponent;
+const mapStateToProps = (state) => {
+    return {
+        profile: state.profile
+    };
+}
+
+const mapDispatchToProps = (dispatch, action) => {
+    return {
+
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RefundComponent);
