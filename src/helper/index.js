@@ -311,6 +311,11 @@ export function getDateAfter(days) {
     return moment(date).format('YYYY-MM-DD');
 }
 
+export function getDays(days, numDay) {
+    const date = dateFns.addDays(new Date(days), numDay);
+    return moment(date).format('YYYY-MM-DD');
+}
+
 export function getNumberDays1(date1, date2) {
     return dateFns.differenceInCalendarDays(date2, date1);
 }
