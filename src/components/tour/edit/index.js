@@ -547,6 +547,20 @@ class ListTypesComponent extends Component {
                                     <option value="2">Quốc tế</option>
                                 </select>
                             </div>
+                            <div className="list_image_tour">
+                                <label className="title_row">Danh sách hình ảnh</label>
+                                <input className="upload_image_create_tour" onChange={this.handleChangeListImages} type="file" multiple />
+                                <i
+                                    style={{ cursor: 'pointer', fontSize: '40px', marginTop: '10px' }}
+                                    onClick={this.handleOpenModalListImage}
+                                    className="fa fa-picture-o icon_show_pop_up"
+                                    title="Xem danh sách ảnh"
+                                    aria-hidden="true">
+                                </i>
+                            </div>
+
+                        </div>
+                        <div className="right_row_1">
                             <div>
                                 <label className="title_row">Ảnh đại diện *</label>
                                 <input id="upload-image" className="upload_image_create_tour" onChange={this.handleChangeImage} type="file" /><br />
@@ -567,59 +581,8 @@ class ListTypesComponent extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="right_row_1">
-                            <label className="title_row">Qui định</label>
-                            <FroalaEditor
-                                config={{
-                                    placeholderText: '',
-                                    heightMin: 425,
-                                    heightMax: 425,
-                                    toolbarButtons: configEditor.policy,
-                                }}
-                                model={this.state.policy}
-                                onModelChange={this.handleChangePolicy}
-                            />
-                        </div>
                     </div>
                     <div className="row row_2">
-                        <label className="title_row">Danh sách hình ảnh</label>
-                        <input className="upload_image_create_tour" onChange={this.handleChangeListImages} type="file" multiple />
-                        <i
-                            style={{ cursor: 'pointer', fontSize: '40px', marginTop: '10px' }}
-                            onClick={this.handleOpenModalListImage}
-                            className="fa fa-picture-o icon_show_pop_up"
-                            title="Xem danh sách ảnh"
-                            aria-hidden="true">
-                        </i>
-                    </div>
-                    <div className="row row_4">
-                        <label className="title_row">Mô tả *</label>
-                        <FroalaEditor
-                            config={{
-                                heightMax: 362,
-                                heightMin: 362,
-                                placeholderText: '',
-                                toolbarButtons: configEditor.description,
-                                imageUploadParam: 'file',
-                                imageUploadURL: 'http://localhost:5000/admin/upload_image',
-                                imageUploadParams: { id: 'my_editor' },
-                                imageUploadMethod: 'POST',
-                                imageMaxSize: 5 * 1024 * 1024,
-                                imageAllowedTypes: ['jpeg', 'jpg', 'png'],
-                                events: {
-                                    'froalaEditor.image.uploaded': (e, editor, response) => {
-                                        response = JSON.parse(response);
-                                        editor.image.insert(`http://localhost:5000${response.link.replace('/public', '')}`, true, null, editor.image.get(), null)
-                                        return false
-                                    }
-                                }
-
-                            }}
-                            model={this.state.desc}
-                            onModelChange={this.handleChangeDesc}
-                        />
-                    </div>
-                    <div className="row row_5">
                         <div className="header_row">
                             <label className="title_row">Danh sách địa điểm</label>
                             <div style={{ top: '10px' }} className="mini_search_box">
@@ -656,6 +619,46 @@ class ListTypesComponent extends Component {
                                 noDataText={'Không có dữ liệu...'} >
                             </ReactTable>
                         </div>
+                    </div>
+                    <div className="row row_3">
+                        <label className="title_row">Qui định</label>
+                            <FroalaEditor
+                                config={{
+                                    placeholderText: '',
+                                    heightMin: 425,
+                                    heightMax: 425,
+                                    toolbarButtons: configEditor.policy,
+                                }}
+                                model={this.state.policy}
+                                onModelChange={this.handleChangePolicy}
+                            />
+                    </div>
+                    <div className="row row_4">
+                        <label className="title_row">Mô tả *</label>
+                        <FroalaEditor
+                            config={{
+                                heightMax: 362,
+                                heightMin: 362,
+                                placeholderText: '',
+                                toolbarButtons: configEditor.description,
+                                imageUploadParam: 'file',
+                                imageUploadURL: 'http://localhost:5000/admin/upload_image',
+                                imageUploadParams: { id: 'my_editor' },
+                                imageUploadMethod: 'POST',
+                                imageMaxSize: 5 * 1024 * 1024,
+                                imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+                                events: {
+                                    'froalaEditor.image.uploaded': (e, editor, response) => {
+                                        response = JSON.parse(response);
+                                        editor.image.insert(`http://localhost:5000${response.link.replace('/public', '')}`, true, null, editor.image.get(), null)
+                                        return false
+                                    }
+                                }
+
+                            }}
+                            model={this.state.desc}
+                            onModelChange={this.handleChangeDesc}
+                        />
                     </div>
                 </section>
                 <section className="content-final">
