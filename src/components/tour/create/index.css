@@ -325,11 +325,16 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
     background: #555; 
 }
 /* Style Row 5 */
-.row_5
+.row_3,
+.row_4
+{
+    padding-top: 20px;
+}
+.row_4
 {
     padding-bottom: 40px;
 }
-.row_5 .header_row
+.row_2 .header_row
 {
     position: relative;
     width: 100%;
@@ -337,31 +342,31 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
     margin-top: 20px;
     margin-bottom: 10px;
 }
-.row_5 .header_row .title_row
+.row_2 .header_row .title_row
 {
     position: absolute;
     width: 54%;
     margin-top: 20px;
 }
-.row_5 .header_row .mini_search_box
+.row_2 .header_row .mini_search_box
 {
     position: absolute;
     width: 30%;
     right: 200px !important;
 }
-.row_5 .header_row button
+.row_2 .header_row button
 {
     position: absolute;
     margin-bottom: 0 !important;
     font-size: 17px !important;
     margin-top: 10px !important;
 }
-.row_5 .header_row .mini_search_box .search_icon
+.row_2 .header_row .mini_search_box .search_icon
 {
     width: 40px;
     height: 40px;
 }
-.row_5 .header_row .mini_search_box .search_icon i
+.row_2 .header_row .mini_search_box .search_icon i
 {
     width: 20px;
     height: 20px;
@@ -369,7 +374,7 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
     font-size: 20px;
 
 }
-.row_5 .header_row .mini_search_box .search_input
+.row_2 .header_row .mini_search_box .search_input
 {
     padding: 10px 15px 10px 50px;
     width: 100%;
@@ -379,7 +384,7 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
     color: #555;
     border: 1px solid rgba(0,0,0,0.1);
 }
-.row_5 .table_row .ReactTable
+.row_2 .table_row .ReactTable
 {
     width: 100%;
 }
@@ -391,15 +396,19 @@ html body #root div div div section.content div.row div.col-lg-5.col-xs-5 div.bo
     margin-top: 23px;
     margin-bottom: 10px; */
 }
+.list_image_tour
+{
+    position: relative;
+}
 .icon_show_pop_up
 {
     position: absolute;
     font-size: 35px;
-    margin-top: 20px;
+    margin-top: 15px !important;
     font-weight: bolder;
     margin-left: 20px;
     color: #3C8DBC;
-    right: calc(5% - 12px);
+    right: 0%;
 }
 .icon_show_pop_up:hover
 {
