@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
+import randomString from 'randomstring';
 import { apiGet, apiPost } from '../../../services/api';
+import { getUsername } from '../../../helper';
 
 class CreateRoleComponent extends Component {
 
@@ -9,7 +11,10 @@ class CreateRoleComponent extends Component {
         this.state = {
             name: '',
             roles: [],
-            role: null
+            role: null,
+            birthday: '',
+            username: '',
+            password: randomString.generate(8)
         }
     }
 
@@ -27,8 +32,8 @@ class CreateRoleComponent extends Component {
     }
 
     checkAdmin = () => {
-        const { name, username, password, role } = this.state;
-        if(name === '' || username === '' || password === '' || role === null) {
+        const { name, username, password, role, birthday } = this.state;
+        if (name === '' || username === '' || password === '' || role === null, birthday === '') {
             return false;
         }
         return true;
@@ -36,14 +41,15 @@ class CreateRoleComponent extends Component {
 
     handleCreate = async (event) => {
         event.preventDefault();
-        const { name, username, password, role } = this.state;
+        const { name, username, password, role, birthday } = this.state;
         if (this.checkAdmin()) {
             try {
                 await apiPost('/admin/register', {
                     name,
                     username,
                     password,
-                    fk_role: role.id
+                    fk_role: role.id,
+                    birthday
                 });
                 this.props.handleCreateAdmin(true);
             } catch (error) {
@@ -61,10 +67,17 @@ class CreateRoleComponent extends Component {
         this.setState({ [name]: value });
     }
 
+    handleChangeName = ({ target }) => {
+        this.setState({ name: target.value, username: this.getUsername(target.value) });
+    }
 
 
     handleChangeRole = (selected) => {
         this.setState({ role: selected });
+    }
+
+    getUsername = (username) => {
+        return username.replace(/ /g, '').toLowerCase();
     }
 
     render() {
@@ -79,7 +92,7 @@ class CreateRoleComponent extends Component {
                             <form onSubmit={this.handleCreate} className="form-horizontal">
                                 <div className="box-body">
                                     <div className="form-group">
-                                        <label className="col-sm-3 control-label">Loại nhân viên</label>
+                                        <label className="col-sm-3 control-label">Loại nhân viên *</label>
                                         <div className="col-sm-8">
                                             <Select
                                                 onChange={this.handleChangeRole}
@@ -97,11 +110,11 @@ class CreateRoleComponent extends Component {
                                 </div>
                                 <div className="box-body">
                                     <div className="form-group">
-                                        <label className="col-sm-3 control-label">Tên nhân viên</label>
+                                        <label className="col-sm-3 control-label">Tên nhân viên *</label>
                                         <div className="col-sm-8">
                                             <input
                                                 type="text"
-                                                onChange={this.handleChange}
+                                                onChange={this.handleChangeName}
                                                 value={this.state.name}
                                                 name="name"
                                                 className="form-control" />
@@ -110,7 +123,20 @@ class CreateRoleComponent extends Component {
                                 </div>
                                 <div className="box-body">
                                     <div className="form-group">
-                                        <label className="col-sm-3 control-label">Tên đăng nhập</label>
+                                        <label className="col-sm-3 control-label">Ngày sinh *</label>
+                                        <div className="col-sm-8">
+                                            <input
+                                                type="date"
+                                                onChange={this.handleChange}
+                                                value={this.state.birthday}
+                                                name="birthday"
+                                                className="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="box-body">
+                                    <div className="form-group">
+                                        <label className="col-sm-3 control-label">Tên đăng nhập *</label>
                                         <div className="col-sm-8">
                                             <input
                                                 type="text"
@@ -123,10 +149,10 @@ class CreateRoleComponent extends Component {
                                 </div>
                                 <div className="box-body">
                                     <div className="form-group">
-                                        <label className="col-sm-3 control-label">Mật khẩu</label>
+                                        <label className="col-sm-3 control-label">Mật khẩu *</label>
                                         <div className="col-sm-8">
                                             <input
-                                                type="password"
+                                                type="text"
                                                 onChange={this.handleChange}
                                                 value={this.state.password}
                                                 name="password"

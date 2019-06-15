@@ -4,6 +4,7 @@ import ReactTable from 'react-table';
 import Modal from 'react-responsive-modal';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import CreateComponent from '../create';
+import EditComponent from '../edit';
 import * as actions from './../../../actions/index';
 import { apiGet, apiPost } from '../../../services/api';
 import { matchString, getStatusTourTurn } from '../../../helper';
@@ -21,7 +22,9 @@ class listAdmin extends Component {
             modalEditIsOpen: false,
             adminEditing: null,
             success: false,
-            error: false
+            error: false,
+            resetPassword: false,
+            adminReset: null
         }
     }
 
@@ -43,7 +46,37 @@ class listAdmin extends Component {
         this.setState({ modalCreateIsOpen: false });
     }
 
+    handleOpenEditModal = ({ original }) => {
+        this.setState({ modalEditIsOpen: true, adminEditing: original });
+    }
+
+    handleCloseEditModal = () => {
+        this.setState({ modalEditIsOpen: false, adminEditing: null });
+    }
+
+    handleOpenModalResetPassword = ({ original }) => {
+        this.setState({ resetPassword: true, adminReset: original });
+    }
+
+    handleResetPassword = async () => {
+        const { id } = this.state.adminReset;
+        try {
+            apiPost('', { id });
+            this.setState({ success: true, resetPassword: false, adminReset: null });
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     handleCreateAdmin = (res) => {
+        if (res) {
+            this.setState({ success: true });
+        } else {
+            this.setState({ error: true });
+        }
+    }
+
+    handleEditAdmin = (res) => {
         if (res) {
             this.setState({ success: true });
         } else {
@@ -53,8 +86,17 @@ class listAdmin extends Component {
 
     hideSuccessAlert = () => {
         this.handleCloseCreateModal();
+        this.handleCloseEditModal();
         this.componentDidMount();
         this.setState({ success: false });
+    }
+
+    hideFailAlert = () => {
+        this.setState({ error: false });
+    }
+
+    hideFailAlertReset = () => {
+        this.setState({ resetPassword: false, adminReset: null });
     }
 
     render() {
@@ -78,23 +120,45 @@ class listAdmin extends Component {
                 style: { textAlign: 'left' }
             },
             {
+                Header: "Ngày sinh",
+                accessor: "birthday",
+                style: { textAlign: 'left' }
+            },
+            {
                 Header: "Loại nhân viên",
                 accessor: "roles_admin.name",
                 style: { textAlign: 'left' },
             },
-            // {
-            //     Header: props => <i className="fa fa-pencil" />,
-            //     Cell: props => {
-            //         return <button className='btn btn-xs btn-success'
-            //             onClick={() => this.props.history.push(`/book-tour/${props.original.id}`)} >
-            //             <i className="fa fa-pencil" />
-            //         </button>
-            //     },
-            //     style: { textAlign: 'center' },
-            //     width: 50,
-            //     maxWidth: 70,
-            //     minWidth: 50
-            // }
+            {
+                Header: props => <i className="fa fa-pencil" />,
+                Cell: props => {
+                    return <button
+                        className='btn btn-xs btn-success'
+                        title="chỉnh sửa thông tin"
+                        onClick={() => this.handleOpenEditModal(props)} >
+                        <i className="fa fa-pencil" />
+                    </button>
+                },
+                style: { textAlign: 'center' },
+                width: 50,
+                maxWidth: 70,
+                minWidth: 50
+            },
+            {
+                Header: props => <i className="fa fa-refresh" />,
+                Cell: props => {
+                    return <button
+                        className='btn btn-xs btn-danger'
+                        title="reset mật khẩu"
+                        onClick={() => this.handleOpenModalResetPassword(props)} >
+                        <i className="fa fa-refresh" />
+                    </button>
+                },
+                style: { textAlign: 'center' },
+                width: 50,
+                maxWidth: 70,
+                minWidth: 50
+            }
         ];
         return (
             <div style={{ minHeight: '100vh' }} className="content-wrapper">
@@ -108,12 +172,40 @@ class listAdmin extends Component {
 
                 {this.state.error && <SweetAlert
                     warning
-                    confirmBtnText="Hủy"
+                    showCancel
+                    // confirmBtnText="Hủy"
+                    confirmBtnText="Reset"
+                    confirmBtnBsStyle="danger"
                     confirmBtnBsStyle="default"
                     title="Đã Có Lỗi Xảy Ra!"
-                    onConfirm={this.hideFailAlert}>
+                    onCancel={this.hideFailAlert}
+                    onConfirm={this.deleteFile}>
                     Vui Lòng Kiểm Tra Lại...
                     </SweetAlert>}
+
+                {/* {this.state.resetPassword && <SweetAlert
+                    warning
+                    confirmBtnText="Hủy"
+                    confirmBtnBsStyle="default"
+                    title="Reset mật khẩu!!!"
+                    onConfirm={this.hideFailAlertReset}>
+                    Nhân viên: {this.state.adminReset.username}
+                </SweetAlert>} */}
+
+                {this.state.resetPassword && <SweetAlert
+                    warning
+                    showCancel
+                    confirmBtnText="Reset"
+                    cancelBtnText="Hủy"
+                    confirmBtnBsStyle="danger"
+                    cancelBtnBsStyle="default"
+                    // customIcon="thumbs-up.jpg"
+                    title="Reset mật khẩu!!!"
+                    onConfirm={this.handleResetPassword}
+                    onCancel={this.hideFailAlertReset}
+                >
+                    Nhân viên: {this.state.adminReset.username}
+                </SweetAlert>}
 
                 <Modal
                     open={this.state.modalCreateIsOpen}
@@ -124,17 +216,17 @@ class listAdmin extends Component {
                     <CreateComponent handleCreateAdmin={this.handleCreateAdmin} />
                 </Modal>
 
-                {/* <Modal
-                    open={this.state.modalEditIspOpen}
+                <Modal
+                    open={this.state.modalEditIsOpen}
                     onClose={this.handleCloseEditModal}
                     center
                     styles={{ 'modal': { width: '1280px' } }}
                     blockScroll={true} >
-                    {this.state.roleEditing && <EditComponent
-                        role={this.state.roleEditing}
-                        handleEditRole={this.handleEditRole}
+                    {this.state.adminEditing && <EditComponent
+                        admin={this.state.adminEditing}
+                        handleEditAdmin={this.handleEditAdmin}
                     />}
-                </Modal> */}
+                </Modal>
 
                 <section className="content-header content-header-page">
                     <h1> Danh Sách Admin </h1>

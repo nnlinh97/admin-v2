@@ -9,48 +9,58 @@ class EditAdminComponent extends Component {
         this.state = {
             name: '',
             roles: [],
-            role: null
+            role: null,
+            username: '',
+            birthday: ''
         }
     }
 
     async componentDidMount() {
+        console.log(this.props.admin)
         try {
             let roles = await apiGet('/roles_admin/getAll');
             roles = roles.data.data;
             roles.forEach((item) => {
                 item.label = item.name;
             });
-            this.setState({ roles });
+            const { admin } = this.props;
+            this.setState({
+                roles,
+                name: admin.name,
+                birthday: admin.birthday,
+                username: admin.username,
+                role: admin.roles_admin
+            });
         } catch (error) {
             console.log(error);
         }
     }
 
     checkAdmin = () => {
-        const { name, username, password, role } = this.state;
-        if(name === '' || username === '' || password === '' || role === null) {
+        const { name, birthday, role } = this.state;
+        if (name === '' || role === null || birthday === '') {
             return false;
         }
         return true;
     }
 
-    handleCreate = async (event) => {
+    handleEditAdmin = async (event) => {
         event.preventDefault();
-        const { name, username, password, role } = this.state;
+        const { name, birthday, role } = this.state;
         if (this.checkAdmin()) {
             try {
-                await apiPost('/admin/register', {
+                await apiPost('', {
+                    id: this.props.admin.id,
                     name,
-                    username,
-                    password,
+                    birthday,
                     fk_role: role.id
                 });
-                this.props.handleCreateAdmin(true);
+                this.props.handleEditAdmin(true);
             } catch (error) {
-                this.props.handleCreateAdmin(false);
+                this.props.handleEditAdmin(false);
             }
         } else {
-            this.props.handleCreateAdmin(false);
+            this.props.handleEditAdmin(false);
         }
     }
 
@@ -76,22 +86,26 @@ class EditAdminComponent extends Component {
                 <div className="row">
                     <div className="col-lg-12 col-xs-12 ">
                         <div className="box box-info">
-                            <form onSubmit={this.handleCreate} className="form-horizontal">
+                            <form onSubmit={this.handleEditAdmin} className="form-horizontal">
                                 <div className="box-body">
                                     <div className="form-group">
                                         <label className="col-sm-3 control-label">Loại nhân viên</label>
                                         <div className="col-sm-8">
-                                            <Select
+                                            {/* <Select
                                                 onChange={this.handleChangeRole}
                                                 options={this.state.roles}
                                                 placeholder=""
-                                            />
-                                            {/* <input
-                                                type="text"
-                                                onChange={this.handleChange}
-                                                value={this.state.name}
-                                                name="name"
-                                                className="form-control" /> */}
+                                            /> */}
+                                            {this.state.role && <Select
+                                                onChange={this.handleChangeRole}
+                                                options={this.state.roles}
+                                                defaultValue={{
+                                                    label: this.state.role ? this.state.role.name : '',
+                                                    value: this.state.role ? this.state.role.id : ''
+                                                }}
+                                                maxMenuHeight={200}
+                                                placeholder=""
+                                            />}
                                         </div>
                                     </div>
                                 </div>
@@ -110,26 +124,26 @@ class EditAdminComponent extends Component {
                                 </div>
                                 <div className="box-body">
                                     <div className="form-group">
-                                        <label className="col-sm-3 control-label">Tên đăng nhập</label>
+                                        <label className="col-sm-3 control-label">Ngày sinh *</label>
                                         <div className="col-sm-8">
                                             <input
-                                                type="text"
+                                                type="date"
                                                 onChange={this.handleChange}
-                                                value={this.state.username}
-                                                name="username"
+                                                value={this.state.birthday}
+                                                name="birthday"
                                                 className="form-control" />
                                         </div>
                                     </div>
                                 </div>
                                 <div className="box-body">
                                     <div className="form-group">
-                                        <label className="col-sm-3 control-label">Mật khẩu</label>
+                                        <label className="col-sm-3 control-label">Tên đăng nhập *</label>
                                         <div className="col-sm-8">
                                             <input
-                                                type="password"
-                                                onChange={this.handleChange}
-                                                value={this.state.password}
-                                                name="password"
+                                                type="text"
+                                                value={this.state.username}
+                                                readOnly
+                                                name="username"
                                                 className="form-control" />
                                         </div>
                                     </div>

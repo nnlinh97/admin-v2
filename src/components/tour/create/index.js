@@ -475,7 +475,7 @@ class ListTypesComponent extends Component {
                 </Modal>
 
                 <section className="content-header content-header-page">
-                    <h1>Thêm Mới Tour</h1>
+                    <h1 style={{height: '8vh'}}>Thêm Mới Tour</h1>
                 </section>
                 <section className="content">
                     <div className="row row_1">
@@ -510,7 +510,12 @@ class ListTypesComponent extends Component {
                         <div className="right_row_1">
                             <div>
                                 <label className="title_row">Ảnh đại diện *</label>
-                                <input id="upload-image" className="upload_image_create_tour" onChange={this.handleChangeImage} type="file" /><br />
+                                <input
+                                    onChange={this.handleChangeImage}
+                                    // id="upload-image"
+                                    className="upload_image_create_tour"
+                                    type="file" />
+                                <br />
                                 <div className="inputImage">
                                     <div className="cover_image_of_tour">
                                         {this.state.previewImage !== '' ?
@@ -569,16 +574,16 @@ class ListTypesComponent extends Component {
                     </div>
                     <div className="row row_3">
                         <label className="title_row">Qui định</label>
-                            <FroalaEditor
-                                config={{
-                                    placeholderText: '',
-                                    heightMin: 425,
-                                    heightMax: 425,
-                                    toolbarButtons: configEditor.policy,
-                                }}
-                                model={this.state.policy}
-                                onModelChange={this.handleChangePolicy}
-                            />
+                        <FroalaEditor
+                            config={{
+                                placeholderText: '',
+                                heightMin: 425,
+                                heightMax: 425,
+                                toolbarButtons: configEditor.policy,
+                            }}
+                            model={this.state.policy}
+                            onModelChange={this.handleChangePolicy}
+                        />
                     </div>
                     <div className="row row_4">
                         <label className="title_row">Mô tả *</label>

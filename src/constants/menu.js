@@ -94,14 +94,14 @@ export const menuManger = [
     },
     {
         path: '/admin/list',
-        title: 'ADMIN',
+        title: 'NHÂN VIÊN',
         icon: 'fa fa-user'
     },
-    {
-        path: '/role/list',
-        title: 'LOẠI NHÂN VIÊN',
-        icon: 'fa fa-address-card'
-    },
+    // {
+    //     path: '/role/list',
+    //     title: 'LOẠI NHÂN VIÊN',
+    //     icon: 'fa fa-address-card'
+    // },
     {
         path: '/statistical',
         title: 'THỐNG KÊ',

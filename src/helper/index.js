@@ -354,3 +354,13 @@ export function getPaymentType(type) {
     }
     return result;
 }
+
+export function getUsername(username) {
+    username = username.replace(/\s\s+/g, ' ');
+    const temp = username.split(' ');
+    let result = '';
+    temp.forEach(item => {
+        result += item[0].toLowerCase();
+    });
+    return result;
+}
