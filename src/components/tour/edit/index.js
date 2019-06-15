@@ -527,7 +527,7 @@ class ListTypesComponent extends Component {
                 </Modal>
 
                 <section className="content-header content-header-page">
-                    <h1>Chỉnh Sửa Tour</h1>
+                    <h1 style={{height: '8vh'}}>Chỉnh Sửa Tour</h1>
                 </section>
                 <section className="content">
                     <div className="row row_1">
