@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { apiGet, apiPost } from '../../../services/api';
+import { apiGet, apiPost, apiPostAdmin } from '../../../services/api';
 
 class EditAdminComponent extends Component {
 
@@ -11,12 +11,11 @@ class EditAdminComponent extends Component {
             roles: [],
             role: null,
             username: '',
-            birthday: ''
+            birthdate: ''
         }
     }
 
     async componentDidMount() {
-        console.log(this.props.admin)
         try {
             let roles = await apiGet('/roles_admin/getAll');
             roles = roles.data.data;
@@ -27,7 +26,7 @@ class EditAdminComponent extends Component {
             this.setState({
                 roles,
                 name: admin.name,
-                birthday: admin.birthday,
+                birthdate: admin.birthdate,
                 username: admin.username,
                 role: admin.roles_admin
             });
@@ -37,8 +36,8 @@ class EditAdminComponent extends Component {
     }
 
     checkAdmin = () => {
-        const { name, birthday, role } = this.state;
-        if (name === '' || role === null || birthday === '') {
+        const { name, birthdate, role } = this.state;
+        if (name === '' || role === null || birthdate === '') {
             return false;
         }
         return true;
@@ -46,13 +45,13 @@ class EditAdminComponent extends Component {
 
     handleEditAdmin = async (event) => {
         event.preventDefault();
-        const { name, birthday, role } = this.state;
+        const { name, birthdate, role } = this.state;
         if (this.checkAdmin()) {
             try {
-                await apiPost('', {
-                    id: this.props.admin.id,
+                await apiPostAdmin('/admin/update', {
+                    adminId: this.props.admin.id,
                     name,
-                    birthday,
+                    birthdate,
                     fk_role: role.id
                 });
                 this.props.handleEditAdmin(true);
@@ -70,8 +69,6 @@ class EditAdminComponent extends Component {
         let value = target.value;
         this.setState({ [name]: value });
     }
-
-
 
     handleChangeRole = (selected) => {
         this.setState({ role: selected });
@@ -129,8 +126,8 @@ class EditAdminComponent extends Component {
                                             <input
                                                 type="date"
                                                 onChange={this.handleChange}
-                                                value={this.state.birthday}
-                                                name="birthday"
+                                                value={this.state.birthdate}
+                                                name="birthdate"
                                                 className="form-control" />
                                         </div>
                                     </div>

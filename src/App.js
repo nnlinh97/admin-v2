@@ -31,6 +31,7 @@ import BillCancelBooking from './components/book-tour-detail/bill-cancel';
 import BillPayment from './components/book-tour-detail/bill-payment';
 import ListAdmin from './pages/admin/list';
 import ListRole from './pages/role/list';
+import Chart from './pages/chart';
 import './App.css';
 
 class App extends Component {
@@ -100,8 +101,11 @@ class App extends Component {
           {/* admin */}
           <PrivateRoute exact path='/admin/list' component={ListAdmin} />
 
-          {/* admin */}
+          {/* role */}
           <PrivateRoute exact path='/role/list' component={ListRole} />
+
+          {/* chart */}
+          <PrivateRoute exact path='/statistical' component={Chart} />
 
           {/* not found */}
           <PrivateRoute exact path='' component={NotFound} />

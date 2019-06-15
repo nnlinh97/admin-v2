@@ -3,10 +3,11 @@ import { withRouter } from 'react-router-dom';
 import ReactTable from 'react-table';
 import Modal from 'react-responsive-modal';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import moment from 'moment';
 import CreateComponent from '../create';
 import EditComponent from '../edit';
 import * as actions from './../../../actions/index';
-import { apiGet, apiPost } from '../../../services/api';
+import { apiGet, apiPost, apiPostAdmin } from '../../../services/api';
 import { matchString, getStatusTourTurn } from '../../../helper';
 import 'react-table/react-table.css';
 import './index.css';
@@ -24,7 +25,8 @@ class listAdmin extends Component {
             success: false,
             error: false,
             resetPassword: false,
-            adminReset: null
+            adminReset: null,
+            keySearch: ''
         }
     }
 
@@ -61,7 +63,7 @@ class listAdmin extends Component {
     handleResetPassword = async () => {
         const { id } = this.state.adminReset;
         try {
-            apiPost('', { id });
+            await apiPostAdmin('/admin/resetPassword', { adminId: id });
             this.setState({ success: true, resetPassword: false, adminReset: null });
         } catch (error) {
             console.log(error)
@@ -99,6 +101,17 @@ class listAdmin extends Component {
         this.setState({ resetPassword: false, adminReset: null });
     }
 
+    handleSearchAdmin = (listAdmins, keySearch) => {
+        if (keySearch !== '' && listAdmins.length > 0) {
+            return listAdmins.filter(admin => matchString(admin.name, keySearch) || matchString(admin.username, keySearch));
+        }
+        return listAdmins;
+    }
+
+    handleChange = ({ target }) => {
+        this.setState({ keySearch: target.value });
+    }
+
     render() {
         const columns = [
             {
@@ -121,7 +134,8 @@ class listAdmin extends Component {
             },
             {
                 Header: "Ngày sinh",
-                accessor: "birthday",
+                accessor: "birthdate",
+                Cell: props => <p> {moment(props.original.birthdate).format('DD/MM/YYYY')} </p>,
                 style: { textAlign: 'left' }
             },
             {
@@ -172,25 +186,12 @@ class listAdmin extends Component {
 
                 {this.state.error && <SweetAlert
                     warning
-                    showCancel
-                    // confirmBtnText="Hủy"
-                    confirmBtnText="Reset"
-                    confirmBtnBsStyle="danger"
-                    confirmBtnBsStyle="default"
-                    title="Đã Có Lỗi Xảy Ra!"
-                    onCancel={this.hideFailAlert}
-                    onConfirm={this.deleteFile}>
-                    Vui Lòng Kiểm Tra Lại...
-                    </SweetAlert>}
-
-                {/* {this.state.resetPassword && <SweetAlert
-                    warning
                     confirmBtnText="Hủy"
                     confirmBtnBsStyle="default"
-                    title="Reset mật khẩu!!!"
-                    onConfirm={this.hideFailAlertReset}>
-                    Nhân viên: {this.state.adminReset.username}
-                </SweetAlert>} */}
+                    title={this.state.message}
+                    onConfirm={this.hideFailAlert}>
+                    Vui Lòng Kiểm Tra Lại...
+                </SweetAlert>}
 
                 {this.state.resetPassword && <SweetAlert
                     warning
@@ -269,7 +270,7 @@ class listAdmin extends Component {
                                         <div className="row">
                                             <div className="col-xs-12 book_tour_history">
                                                 <ReactTable
-                                                    data={this.state.listAdmin}
+                                                    data={this.handleSearchAdmin(this.state.listAdmin, this.state.keySearch)}
                                                     columns={columns}
                                                     pageSizeOptions={[5, 10, 20, 25]}
                                                     defaultPageSize={10}

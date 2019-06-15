@@ -49,7 +49,7 @@ class CreateRoleComponent extends Component {
                     username,
                     password,
                     fk_role: role.id,
-                    birthday
+                    birthdate: birthday
                 });
                 this.props.handleCreateAdmin(true);
             } catch (error) {

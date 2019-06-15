@@ -23,4 +23,7 @@ export const apiPostAdmin = (api, body) => {
     }
     axios.defaults.headers.common['Authorization'] = `${localStorage.token}`;
     return axios.post(`${baseURL}${api}`, body, { headers: headers })
+    // .catch(error => {
+    //     console.log(error.response);
+    // });
 }
