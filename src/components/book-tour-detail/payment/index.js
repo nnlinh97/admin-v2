@@ -86,6 +86,7 @@ class PaymentComponent extends Component {
                                 <div className="box-body">
                                     <div className="form-group">
                                         <div className="col-sm-4">
+                                            <div style={{ height: '150px' }}></div>
                                             <div className="form-group">
                                                 <label className="col-sm-4 control-label">Thanh toán</label>
                                                 <div className="col-sm-8">
