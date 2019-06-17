@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Doughnut, Bar, Line, Pie } from 'react-chartjs-2';
+import './index.css';
 
 const months = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
     'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
@@ -144,24 +145,30 @@ class Chart extends Component {
             </section>
             <section className="content">
                 <div className="row row_1_dashboard">
-                    <select onChange={this.handleChangeYear} value={this.state.year} className="form-control combobox">
-                        <option value="2019">2019</option>
-                        <option value="2020">2020</option>
-                        <option value="2021">2021</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
-                        <option value="2028">2028</option>
-                        <option value="2029">2029</option>
-                    </select>
-                    <select onChange={this.handleChangeTime} value={this.state.label} className="form-control combobox">
-                        <option value="month">Tháng</option>
-                        <option value="trimester">Quý</option>
-                        <option value="year">Năm</option>
-                    </select>
+                    <div className="combobox_1_chart">
+                        <p>Năm: </p>
+                        <select onChange={this.handleChangeYear} value={this.state.year} className="form-control combobox">
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                        </select>
+                    </div>
+                    <div className="combobox_2_chart">
+                        <p>Thời Gian: </p>
+                        <select onChange={this.handleChangeTime} value={this.state.label} className="form-control combobox">
+                            <option value="month">Tháng</option>
+                            <option value="trimester">Quý</option>
+                            <option value="year">Năm</option>
+                        </select>
+                    </div>
                 </div>
                 <div className="row">
                     <Bar
