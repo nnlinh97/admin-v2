@@ -77,19 +77,18 @@ class PaymentComponent extends Component {
             <section style={{ marginBottom: "0px" }} className="content-header">
                 <h1> Tổng Tiền {formatCurrency(this.props.totalPay)} VND</h1>
             </section>
-            <section style={{ minHeight: '160px' }} className="content">
+            <section style={{ margin: 0, minHeight: '160px' }} className="content">
                 <div className="row">
                     <div className="col-lg-12 col-xs-12 ">
                         <div className="box box-info">
                             <form onSubmit={this.handlePayment} className="form-horizontal">
 
                                 <div className="box-body">
-                                    <div className="form-group">
+                                    <div style={{ paddingLeft: '6.5%' }} className="form-group">
                                         <div className="col-sm-4">
-                                            <div style={{ height: '150px' }}></div>
                                             <div className="form-group">
-                                                <label className="col-sm-4 control-label">Thanh toán</label>
-                                                <div className="col-sm-8">
+                                                <label className="col-sm-5 control-label">Thanh toán</label>
+                                                <div className="col-sm-7">
                                                     <div className="radio">
                                                         <label>
                                                             <input
@@ -115,10 +114,10 @@ class PaymentComponent extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="col-sm-8">
+                                        <div className="col-sm-7">
                                             <div className="form-group">
-                                                <label className="col-sm-3 control-label">Tên *</label>
-                                                <div className="col-sm-9">
+                                                <label className="col-sm-4 control-label">Tên *</label>
+                                                <div className="col-sm-8">
                                                     <input
                                                         onChange={this.handleChange}
                                                         value={this.state.name}
@@ -129,8 +128,8 @@ class PaymentComponent extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group">
-                                                <label className="col-sm-3 control-label">CMND *</label>
-                                                <div className="col-sm-9">
+                                                <label className="col-sm-4 control-label">CMND *</label>
+                                                <div className="col-sm-8">
                                                     <input
                                                         onChange={this.handleChange}
                                                         value={this.state.passport}
@@ -141,8 +140,8 @@ class PaymentComponent extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group">
-                                                <label className="col-sm-3 control-label">Chú thích</label>
-                                                <div className="col-sm-9">
+                                                <label className="col-sm-4 control-label">Chú thích</label>
+                                                <div className="col-sm-8">
                                                     <textarea
                                                         onChange={this.handleChange}
                                                         value={this.state.note}
@@ -154,8 +153,8 @@ class PaymentComponent extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group">
-                                                <label className="col-sm-3 control-label">NV thanh toán</label>
-                                                <div className="col-sm-9">
+                                                <label className="col-sm-4 control-label">NV thanh toán</label>
+                                                <div className="col-sm-8">
                                                     <input
                                                         value={this.state.staff ? this.state.staff.name : ''}
                                                         readOnly
