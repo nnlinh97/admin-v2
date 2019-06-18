@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import { Doughnut, Bar, Line, Pie } from 'react-chartjs-2';
+import ReactTable from 'react-table';
+import { apiPost } from '../../services/api';
+import { formatCurrency } from './../../helper/';
+import 'react-table/react-table.css';
 import './index.css';
 
 const months = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
@@ -26,40 +30,49 @@ const colorTrimesters = [
     'rgba(54, 162, 235, 0.6)'
 ];
 
-const dataMonths = [
-    617594,
-    181045,
-    153060,
-    106519,
-    105162,
-    90000,
-    617594,
-    181045,
-    153060,
-    106519,
-    105162,
-    90000
-];
-const dataTrimesters = [
-    617594,
-    181045,
-    153060,
-    106519,
-];
-
 class Chart extends Component {
     constructor(props) {
         super(props);
         this.state = {
             chartData: {},
             year: 2019,
-            label: 'month'
+            label: 'month',
+            text: 'Biểu đồ doanh thu theo tháng năm 2019',
+            table: []
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const { label, year } = this.state;
-        this.setState({ chartData: this.prepairDataChart(label, year) })
+        try {
+            let chartData = await apiPost('/admin/statistics', { time: label, year: year });
+            chartData = chartData.data.data;
+            const data = this.data(chartData);
+            let backgroundColor = [];
+            let labels = {};
+            if (label === 'month') {
+                labels = months;
+                backgroundColor = colorMonths;
+            }
+            if (label === 'quarters') {
+                labels = trimesters;
+                backgroundColor = colorTrimesters;
+            }
+            this.setState({
+                chartData: {
+                    labels,
+                    datasets: [
+                        {
+                            label: 'VND',
+                            data,
+                            backgroundColor
+                        }
+                    ]
+                },
+                table: chartData
+            });
+        } catch (error) {
+        }
     }
 
     getDataChart = () => {
@@ -104,41 +117,165 @@ class Chart extends Component {
         });
     }
 
-    prepairDataChart = (labels, year) => {
-        let backgroundColor = [];
-        let data = [];
-        if (labels === 'month') {
-            labels = months;
-            backgroundColor = colorMonths;
-            data = [...dataMonths];
-        }
-        if (labels === 'trimester') {
-            labels = trimesters;
-            backgroundColor = colorTrimesters;
-            data = [...dataTrimesters];
-        }
-        return {
-            labels,
-            datasets: [
-                {
-                    label: 'VND',
-                    data,
-                    backgroundColor
-                }
-            ]
-        }
-
+    data = (array) => {
+        let result = [];
+        array.forEach(item => {
+            result.push(item.total_proceeds - item.total_spents)
+        });
+        return result;
     }
 
-    handleChangeYear = ({ target }) => {
-        this.setState({ year: target.value });
+    prepairDataChart = async (labels, year) => {
+        try {
+            let chartData = await apiPost('/admin/statistics', { time: labels, year: year });
+            chartData = chartData.data.data;
+            console.log(chartData)
+            const data = this.data(chartData);
+            let backgroundColor = [];
+            if (labels === 'month') {
+                labels = months;
+                backgroundColor = colorMonths;
+            }
+            if (labels === 'quarters') {
+                labels = trimesters;
+                backgroundColor = colorTrimesters;
+            }
+            return {
+                labels,
+                datasets: [
+                    {
+                        label: 'VND',
+                        data,
+                        backgroundColor
+                    }
+                ]
+            }
+        } catch (error) {
+        }
     }
 
-    handleChangeTime = ({ target }) => {
-        this.setState({ label: target.value, chartData: this.prepairDataChart(target.value, this.state.year) });
+    handleChangeYear = async ({ target }) => {
+        const year = target.value;
+        try {
+            let chartData = await apiPost('/admin/statistics', { time: this.state.label, year: year });
+            chartData = chartData.data.data;
+            const data = this.data(chartData);
+            let backgroundColor = [];
+            let labels = {};
+            if (this.state.label === 'month') {
+                labels = months;
+                backgroundColor = colorMonths;
+            }
+            if (this.state.label === 'quarters') {
+                labels = trimesters;
+                backgroundColor = colorTrimesters;
+            }
+            this.setState({
+                year: year,
+                chartData: {
+                    labels,
+                    datasets: [
+                        {
+                            label: 'VND',
+                            data,
+                            backgroundColor
+                        }
+                    ]
+                },
+                table: chartData,
+                text: this.state.label === 'month' ? ('Biểu đồ doanh thu theo tháng năm ' + year) : ('Biểu đồ doanh thu theo quý năm ' + year),
+            });
+        } catch (error) {
+        }
+    }
+
+    handleChangeTime = async ({ target }) => {
+        const label = target.value;
+        try {
+            let chartData = await apiPost('/admin/statistics', { time: label, year: this.state.year });
+            chartData = chartData.data.data;
+            const data = this.data(chartData);
+            let backgroundColor = [];
+            let labels = {};
+            if (label === 'month') {
+                labels = months;
+                backgroundColor = colorMonths;
+            }
+            if (label === 'quarters') {
+                labels = trimesters;
+                backgroundColor = colorTrimesters;
+            }
+            this.setState({
+                label: label,
+                chartData: {
+                    labels,
+                    datasets: [
+                        {
+                            label: 'VND',
+                            data,
+                            backgroundColor
+                        }
+                    ]
+                },
+                table: chartData,
+                text: label === 'month' ? ('Biểu đồ doanh thu theo tháng năm ' + this.state.year) : ('Biểu đồ doanh thu theo quý năm ' + this.state.year),
+            });
+        } catch (error) {
+        }
     }
 
     render() {
+        const columnsMonth = [
+            {
+                Header: "Thời gian",
+                Cell: props => <p>{'Tháng ' + (props.index + 1)}</p>,
+                style: { textAlign: 'center' },
+            },
+            {
+                Header: "Thu",
+                accessor: "total_proceeds",
+                Cell: props => <p>{formatCurrency(props.original.total_proceeds)}</p>,
+                style: { textAlign: 'center' }
+            },
+            {
+                Header: "Chi",
+                accessor: "total_spents",
+                Cell: props => <p>{formatCurrency(props.original.total_spents)}</p>,
+                style: { textAlign: 'center' }
+            },
+            {
+                Header: "Tổng",
+                accessor: "total_spents",
+                Cell: props => <p>{formatCurrency(props.original.total_proceeds - props.original.total_spents)}</p>,
+                style: { textAlign: 'center' }
+            }
+        ];
+
+        const columnsQuy = [
+            {
+                Header: "Thời gian",
+                Cell: props => <p>{'Quý ' + (props.index + 1)}</p>,
+                style: { textAlign: 'center' },
+            },
+            {
+                Header: "Thu",
+                accessor: "total_proceeds",
+                Cell: props => <p>{formatCurrency(props.original.total_proceeds)}</p>,
+                style: { textAlign: 'center' }
+            },
+            {
+                Header: "Chi",
+                accessor: "total_spents",
+                Cell: props => <p>{formatCurrency(props.original.total_spents)}</p>,
+                style: { textAlign: 'center' }
+            },
+            {
+                Header: "Tổng",
+                accessor: "total_spents",
+                Cell: props => <p>{formatCurrency(props.original.total_proceeds - props.original.total_spents)}</p>,
+                style: { textAlign: 'center' }
+            }
+        ];
         return <div style={{ minHeight: '100vh', paddingTop: '70px' }} className="content-wrapper">
             <section style={{ marginBottom: '20px' }} className="content-header">
                 <h1> THỐNG KÊ </h1>
@@ -165,8 +302,8 @@ class Chart extends Component {
                         <p>Thời Gian: </p>
                         <select onChange={this.handleChangeTime} value={this.state.label} className="form-control combobox">
                             <option value="month">Tháng</option>
-                            <option value="trimester">Quý</option>
-                            <option value="year">Năm</option>
+                            <option value="quarters">Quý</option>
+                            {/* <option value="year">Năm</option> */}
                         </select>
                     </div>
                 </div>
@@ -176,7 +313,7 @@ class Chart extends Component {
                         options={{
                             title: {
                                 display: true,
-                                text: 'Biểu đồ doanh thu theo tháng năm 2019',
+                                text: this.state.text,
                                 fontSize: 20,
                                 position: 'bottom'
                             },
@@ -187,6 +324,24 @@ class Chart extends Component {
                         }}
                         height={140}
                     />
+                </div>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-xs-12 book_tour_history">
+                            {this.state.label === 'month' && <ReactTable
+                                data={this.state.table}
+                                columns={columnsMonth}
+                                defaultPageSize={12}
+                                showPagination={false} >
+                            </ReactTable>}
+                            {this.state.label === 'quarters' && <ReactTable
+                                data={this.state.table}
+                                columns={columnsQuy}
+                                defaultPageSize={4}
+                                showPagination={false} >
+                            </ReactTable>}
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>
