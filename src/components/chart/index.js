@@ -229,22 +229,22 @@ class Chart extends Component {
             {
                 Header: "Thời gian",
                 Cell: props => <p>{'Tháng ' + (props.index + 1)}</p>,
-                style: { textAlign: 'center' },
+                style: { textAlign: 'left' },
             },
             {
-                Header: "Thu",
+                Header: "Thu (VND)",
                 accessor: "total_proceeds",
                 Cell: props => <p>{formatCurrency(props.original.total_proceeds)}</p>,
                 style: { textAlign: 'center' }
             },
             {
-                Header: "Chi",
+                Header: "Chi (VND)",
                 accessor: "total_spents",
                 Cell: props => <p>{formatCurrency(props.original.total_spents)}</p>,
                 style: { textAlign: 'center' }
             },
             {
-                Header: "Tổng",
+                Header: "Tổng (VND)",
                 accessor: "total_spents",
                 Cell: props => <p>{formatCurrency(props.original.total_proceeds - props.original.total_spents)}</p>,
                 style: { textAlign: 'center' }
@@ -255,22 +255,22 @@ class Chart extends Component {
             {
                 Header: "Thời gian",
                 Cell: props => <p>{'Quý ' + (props.index + 1)}</p>,
-                style: { textAlign: 'center' },
+                style: { textAlign: 'left' },
             },
             {
-                Header: "Thu",
+                Header: "Thu (VND)",
                 accessor: "total_proceeds",
                 Cell: props => <p>{formatCurrency(props.original.total_proceeds)}</p>,
                 style: { textAlign: 'center' }
             },
             {
-                Header: "Chi",
+                Header: "Chi (VND)",
                 accessor: "total_spents",
                 Cell: props => <p>{formatCurrency(props.original.total_spents)}</p>,
                 style: { textAlign: 'center' }
             },
             {
-                Header: "Tổng",
+                Header: "Tổng (VND)",
                 accessor: "total_spents",
                 Cell: props => <p>{formatCurrency(props.original.total_proceeds - props.original.total_spents)}</p>,
                 style: { textAlign: 'center' }

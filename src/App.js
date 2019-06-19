@@ -105,7 +105,7 @@ class App extends Component {
           <PrivateRoute exact path='/role/list' component={ListRole} />
 
           {/* chart */}
-          <PrivateRoute exact path='/statistical' component={Chart} />
+          <PrivateRoute exact path='/statistic' component={Chart} />
 
           {/* not found */}
           <PrivateRoute exact path='' component={NotFound} />

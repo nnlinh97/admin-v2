@@ -103,7 +103,7 @@ export const menuManger = [
     //     icon: 'fa fa-address-card'
     // },
     {
-        path: '/statistical',
+        path: '/statistic',
         title: 'THỐNG KÊ',
         icon: 'fa fa-line-chart'
     },

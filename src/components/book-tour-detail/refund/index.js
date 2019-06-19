@@ -118,7 +118,7 @@ class RefundComponent extends Component {
 
     render() {
         const days = getNumberDays1(moment(this.props.message.request_time).format('YYYY-MM-DD'), this.props.startDate);
-        return <div style={{ marginLeft: '0px', maxHeight: '670px', overflowY: 'scroll' }} className="content-wrapper">
+        return <div style={{ marginLeft: '0px', maxHeight: '670px' }} className="content-wrapper">
             <section style={{ marginBottom: "0px" }} className="content-header">
                 <h1> Xác Nhận Hoàn Tiền </h1>
             </section>
