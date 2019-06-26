@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Doughnut, Bar, Line, Pie } from 'react-chartjs-2';
 import ReactTable from 'react-table';
-import { apiPost } from '../../services/api';
+import { apiPost, apiGet } from '../../services/api';
 import { formatCurrency } from './../../helper/';
 import 'react-table/react-table.css';
 import './index.css';
@@ -35,19 +35,38 @@ class Chart extends Component {
         super(props);
         this.state = {
             chartData: {},
+            chartMoney: {},
+            charBookTour: {},
             year: 2019,
             label: 'month',
-            text: 'Biểu đồ doanh thu theo tháng năm 2019',
-            table: []
+            textMoney: 'Biểu đồ doanh thu theo tháng năm 2019',
+            textBookTour: 'Biểu đồ đặt và hủy tour theo tháng năm 2019',
+            topFive: [],
+            chartBookTour: {
+                labels: ["1900", "1950", "1999", "2050"],
+                datasets: [{
+                    label: "Europe",
+                    type: "bar",
+                    backgroundColor: "rgba(54, 162, 235, 0.6)",
+                    data: [408, 547, 675, 734],
+                }, {
+                    label: "Africa",
+                    type: "bar",
+                    backgroundColor: "rgba(0,0,0,0.2)",
+                    backgroundColorHover: "#3e95cd",
+                    data: [133, 221, 783, 2478]
+                }]
+            }
         }
     }
 
     async componentDidMount() {
         const { label, year } = this.state;
-        try {
-            let chartData = await apiPost('/admin/statistics', { time: label, year: year });
-            chartData = chartData.data.data;
-            const data = this.data(chartData);
+        const chartMoneyPromise = apiPost('/admin/statistics_v2', { time: label, year: year });
+        const topFiveTourPromise = apiGet('/admin/getTop5MostBookedTours');
+        Promise.all([chartMoneyPromise, topFiveTourPromise]).then(([chartMoneyResult, topFiveTourResult]) => {
+            const chartData = chartMoneyResult.data.data;
+            const data = this.data(chartMoneyResult.data.data);
             let backgroundColor = [];
             let labels = {};
             if (label === 'month') {
@@ -59,20 +78,32 @@ class Chart extends Component {
                 backgroundColor = colorTrimesters;
             }
             this.setState({
-                chartData: {
+                chartMoney: {
                     labels,
-                    datasets: [
-                        {
-                            label: 'VND',
-                            data,
-                            backgroundColor
-                        }
-                    ]
+                    datasets: [{
+                        label: 'VND',
+                        data: data.totalMoney,
+                        backgroundColor
+                    }]
                 },
-                table: chartData
+                chartBookTour: {
+                    labels,
+                    datasets: [{
+                        label: "Số lần đặt tour",
+                        type: "bar",
+                        backgroundColor: "rgba(54, 162, 235, 0.6)",
+                        data: data.booked,
+                    }, {
+                        label: "Số lần hủy tour",
+                        type: "bar",
+                        backgroundColor: "rgba(0,0,0,0.2)",
+                        backgroundColorHover: "#3e95cd",
+                        data: data.cancelled
+                    }]
+                },
+                topFive: topFiveTourResult.data.data
             });
-        } catch (error) {
-        }
+        });
     }
 
     getDataChart = () => {
@@ -118,18 +149,21 @@ class Chart extends Component {
     }
 
     data = (array) => {
-        let result = [];
+        let booked = [];
+        let cancelled = [];
+        let totalMoney = [];
         array.forEach(item => {
-            result.push(item.total_proceeds - item.total_spents)
+            booked.push(item.total_book_tours);
+            cancelled.push(item.total_cancel_book_tours);
+            totalMoney.push(item.total_proceeds);
         });
-        return result;
+        return { booked, cancelled, totalMoney };
     }
 
     prepairDataChart = async (labels, year) => {
         try {
-            let chartData = await apiPost('/admin/statistics', { time: labels, year: year });
+            let chartData = await apiPost('/admin/statistics_v2', { time: labels, year: year });
             chartData = chartData.data.data;
-            console.log(chartData)
             const data = this.data(chartData);
             let backgroundColor = [];
             if (labels === 'month') {
@@ -157,7 +191,7 @@ class Chart extends Component {
     handleChangeYear = async ({ target }) => {
         const year = target.value;
         try {
-            let chartData = await apiPost('/admin/statistics', { time: this.state.label, year: year });
+            let chartData = await apiPost('/admin/statistics_v2', { time: this.state.label, year: year });
             chartData = chartData.data.data;
             const data = this.data(chartData);
             let backgroundColor = [];
@@ -172,18 +206,32 @@ class Chart extends Component {
             }
             this.setState({
                 year: year,
-                chartData: {
+                chartMoney: {
                     labels,
-                    datasets: [
-                        {
-                            label: 'VND',
-                            data,
-                            backgroundColor
-                        }
-                    ]
+                    datasets: [{
+                        label: 'VND',
+                        data: data.totalMoney,
+                        backgroundColor
+                    }]
+                },
+                chartBookTour: {
+                    labels,
+                    datasets: [{
+                        label: "Số lần đặt tour",
+                        type: "bar",
+                        backgroundColor: "rgba(54, 162, 235, 0.6)",
+                        data: data.booked,
+                    }, {
+                        label: "Số lần hủy tour",
+                        type: "bar",
+                        backgroundColor: "rgba(0,0,0,0.2)",
+                        backgroundColorHover: "#3e95cd",
+                        data: data.cancelled
+                    }]
                 },
                 table: chartData,
-                text: this.state.label === 'month' ? ('Biểu đồ doanh thu theo tháng năm ' + year) : ('Biểu đồ doanh thu theo quý năm ' + year),
+                textMoney: this.state.label === 'month' ? ('Biểu đồ doanh thu theo tháng năm ' + year) : ('Biểu đồ doanh thu theo quý năm ' + year),
+                textBookTour: this.state.label === 'month' ? ('Biểu đồ đặt và hủy tour theo tháng năm ' + year) : ('Biểu đồ đặt và hủy tour theo quý năm ' + year),
             });
         } catch (error) {
         }
@@ -192,7 +240,7 @@ class Chart extends Component {
     handleChangeTime = async ({ target }) => {
         const label = target.value;
         try {
-            let chartData = await apiPost('/admin/statistics', { time: label, year: this.state.year });
+            let chartData = await apiPost('/admin/statistics_v2', { time: label, year: this.state.year });
             chartData = chartData.data.data;
             const data = this.data(chartData);
             let backgroundColor = [];
@@ -207,75 +255,63 @@ class Chart extends Component {
             }
             this.setState({
                 label: label,
-                chartData: {
+                chartMoney: {
                     labels,
-                    datasets: [
-                        {
-                            label: 'VND',
-                            data,
-                            backgroundColor
-                        }
-                    ]
+                    datasets: [{
+                        label: 'VND',
+                        data: data.totalMoney,
+                        backgroundColor
+                    }]
+                },
+                chartBookTour: {
+                    labels,
+                    datasets: [{
+                        label: "Số lần đặt tour",
+                        type: "bar",
+                        backgroundColor: "rgba(54, 162, 235, 0.6)",
+                        data: data.booked,
+                    }, {
+                        label: "Số lần hủy tour",
+                        type: "bar",
+                        backgroundColor: "rgba(0,0,0,0.2)",
+                        backgroundColorHover: "#3e95cd",
+                        data: data.cancelled
+                    }]
                 },
                 table: chartData,
-                text: label === 'month' ? ('Biểu đồ doanh thu theo tháng năm ' + this.state.year) : ('Biểu đồ doanh thu theo quý năm ' + this.state.year),
+                textMoney: label === 'month' ? ('Biểu đồ doanh thu theo tháng năm ' + this.state.year) : ('Biểu đồ doanh thu theo quý năm ' + this.state.year),
+                textBookTour: label === 'month' ? ('Biểu đồ đặt và hủy tour theo tháng năm ' + this.state.year) : ('Biểu đồ đặt và hủy tour theo quý năm ' + this.state.year),
             });
         } catch (error) {
         }
     }
 
     render() {
-        const columnsMonth = [
+        const columns = [
             {
-                Header: "Thời gian",
-                Cell: props => <p>{'Tháng ' + (props.index + 1)}</p>,
-                style: { textAlign: 'left' },
+                Header: "STT",
+                Cell: props => <p>{props.index + 1}</p>,
+                style: { textAlign: 'center' },
+                width: 80,
+                maxWidth: 80,
+                minWidth: 80
             },
             {
-                Header: "Thu (VND)",
-                accessor: "total_proceeds",
-                Cell: props => <p>{formatCurrency(props.original.total_proceeds)}</p>,
-                style: { textAlign: 'center' }
+                Header: "Tour",
+                accessor: "name",
+                Cell: props => <p>{props.original.name}</p>,
+                style: { textAlign: 'left', whiteSpace: 'unSet' }
             },
             {
-                Header: "Chi (VND)",
-                accessor: "total_spents",
-                Cell: props => <p>{formatCurrency(props.original.total_spents)}</p>,
-                style: { textAlign: 'center' }
-            },
-            {
-                Header: "Tổng (VND)",
-                accessor: "total_spents",
-                Cell: props => <p>{formatCurrency(props.original.total_proceeds - props.original.total_spents)}</p>,
+                Header: "Số lần đặt",
+                accessor: "num_book_tour",
+                Cell: props => <p>{props.original.num_book_tour}</p>,
                 style: { textAlign: 'center' }
             }
         ];
-
-        const columnsQuy = [
-            {
-                Header: "Thời gian",
-                Cell: props => <p>{'Quý ' + (props.index + 1)}</p>,
-                style: { textAlign: 'left' },
-            },
-            {
-                Header: "Thu (VND)",
-                accessor: "total_proceeds",
-                Cell: props => <p>{formatCurrency(props.original.total_proceeds)}</p>,
-                style: { textAlign: 'center' }
-            },
-            {
-                Header: "Chi (VND)",
-                accessor: "total_spents",
-                Cell: props => <p>{formatCurrency(props.original.total_spents)}</p>,
-                style: { textAlign: 'center' }
-            },
-            {
-                Header: "Tổng (VND)",
-                accessor: "total_spents",
-                Cell: props => <p>{formatCurrency(props.original.total_proceeds - props.original.total_spents)}</p>,
-                style: { textAlign: 'center' }
-            }
-        ];
+        const chartOptions = {
+            responsive: false
+        }
         return <div style={{ minHeight: '100vh', paddingTop: '70px' }} className="content-wrapper">
             <section style={{ marginBottom: '20px' }} className="content-header">
                 <h1> THỐNG KÊ </h1>
@@ -307,15 +343,15 @@ class Chart extends Component {
                         </select>
                     </div>
                 </div>
-                <div className="row">
+                <div style={{ marginBottom: '50px' }} className="row">
                     <Bar
-                        data={this.state.chartData}
+                        data={this.state.chartMoney}
                         options={{
                             title: {
                                 display: true,
-                                text: this.state.text,
+                                text: this.state.textMoney,
                                 fontSize: 20,
-                                position: 'bottom'
+                                position: 'bottom',
                             },
                             legend: {
                                 display: true,
@@ -325,21 +361,39 @@ class Chart extends Component {
                         height={140}
                     />
                 </div>
+                <div style={{ marginBottom: '50px', marginRight: '40px' }} className="row">
+                    <Bar data={this.state.chartBookTour}
+                        options={{
+                            title: {
+                                display: true,
+                                text: this.state.textBookTour,
+                                fontSize: 20,
+                                position: 'bottom',
+                            },
+                            legend: {
+                                display: true,
+                                position: 'right'
+                            }
+                        }}
+                        width={800}
+                        height={400} />
+                </div>
                 <div className="container">
                     <div className="row">
                         <div className="col-xs-12 book_tour_history">
-                            {this.state.label === 'month' && <ReactTable
-                                data={this.state.table}
-                                columns={columnsMonth}
-                                defaultPageSize={12}
+                            <ReactTable
+                                data={this.state.topFive}
+                                columns={columns}
+                                defaultPageSize={5}
                                 showPagination={false} >
-                            </ReactTable>}
-                            {this.state.label === 'quarters' && <ReactTable
-                                data={this.state.table}
-                                columns={columnsQuy}
-                                defaultPageSize={4}
-                                showPagination={false} >
-                            </ReactTable>}
+                            </ReactTable>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-xs-12 book_tour_history">
+                            <p style={{ fontSize: '20px', textAlign: 'center', fontWeight: 'bold', marginTop: '10px', color: '#636363' }}>
+                                Bảng thống kê top 5 Tour được đặt nhiều nhất
+                            </p>
                         </div>
                     </div>
                 </div>
