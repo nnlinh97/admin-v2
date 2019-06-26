@@ -5,16 +5,6 @@ export const menus = [
         icon: 'fa fa-dashboard'
     },
     {
-        path: '/country/list',
-        title: 'QUỐC GIA',
-        icon: 'fa fa-grav'
-    },
-    {
-        path: '/province/list',
-        title: 'TỈNH THÀNH',
-        icon: 'fa fa-arrows'
-    },
-    {
         path: '/type-location/list',
         title: 'LOẠI ĐỊA ĐIỂM',
         icon: 'fa fa-industry'
@@ -35,15 +25,25 @@ export const menus = [
         icon: 'fa fa-plane'
     },
     {
+        path: '/book-tour/list',
+        title: 'LỊCH SỬ ĐẶT TOUR',
+        icon: 'fa fa-bookmark-o'
+    },
+    {
         path: '/transport/list',
         title: 'PHƯƠNG TIỆN DI CHUYỂN',
         icon: 'fa fa-bus'
     },
     {
-        path: '/book-tour/list',
-        title: 'LỊCH SỬ ĐẶT TOUR',
-        icon: 'fa fa-bookmark-o'
-    }
+        path: '/country/list',
+        title: 'QUỐC GIA',
+        icon: 'fa fa-grav'
+    },
+    {
+        path: '/province/list',
+        title: 'TỈNH THÀNH',
+        icon: 'fa fa-arrows'
+    },
 ];
 
 export const menuManger = [
@@ -53,21 +53,6 @@ export const menuManger = [
         icon: 'fa fa-dashboard'
     },
     {
-        path: '/country/list',
-        title: 'QUỐC GIA',
-        icon: 'fa fa-grav'
-    },
-    {
-        path: '/province/list',
-        title: 'TỈNH THÀNH',
-        icon: 'fa fa-arrows'
-    },
-    {
-        path: '/type-location/list',
-        title: 'LOẠI ĐỊA ĐIỂM',
-        icon: 'fa fa-industry'
-    },
-    {
         path: '/location/list',
         title: 'ĐỊA ĐIỂM',
         icon: 'fa fa-flag'
@@ -81,11 +66,6 @@ export const menuManger = [
         path: '/tour-turn/list',
         title: 'CHUYẾN ĐI',
         icon: 'fa fa-plane'
-    },
-    {
-        path: '/transport/list',
-        title: 'PHƯƠNG TIỆN DI CHUYỂN',
-        icon: 'fa fa-bus'
     },
     {
         path: '/book-tour/list',
@@ -97,14 +77,29 @@ export const menuManger = [
         title: 'NHÂN VIÊN',
         icon: 'fa fa-user'
     },
-    // {
-    //     path: '/role/list',
-    //     title: 'LOẠI NHÂN VIÊN',
-    //     icon: 'fa fa-address-card'
-    // },
     {
         path: '/statistic',
         title: 'THỐNG KÊ',
         icon: 'fa fa-line-chart'
+    },
+    {
+        path: '/transport/list',
+        title: 'PHƯƠNG TIỆN DI CHUYỂN',
+        icon: 'fa fa-bus'
+    },
+    {
+        path: '/country/list',
+        title: 'QUỐC GIA',
+        icon: 'fa fa-grav'
+    },
+    {
+        path: '/province/list',
+        title: 'TỈNH THÀNH',
+        icon: 'fa fa-arrows'
+    },
+    {
+        path: '/type-location/list',
+        title: 'LOẠI ĐỊA ĐIỂM',
+        icon: 'fa fa-industry'
     },
 ]
