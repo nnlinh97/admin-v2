@@ -1,16 +1,15 @@
 import axios from 'axios';
-import { baseURL } from './../config';
-
+// import { baseURL } from './../config';
 
 export const apiGet = (api) => {
-    return axios.get(`${baseURL}${api}`)
+    return axios.get(`${process.env.REACT_APP_REST_API_LOCATION}${api}`)
     // .catch(error => {
     //     console.log(error);
     // });
 }
 
 export const apiPost = (api, body) => {
-    return axios.post(`${baseURL}${api}`, body)
+    return axios.post(`${process.env.REACT_APP_REST_API_LOCATION}${api}`, body)
     // .catch(error => {
     //     console.log(error.response);
     // });
@@ -22,7 +21,7 @@ export const apiPostAdmin = (api, body) => {
         Authorization: localStorage.token
     }
     axios.defaults.headers.common['Authorization'] = `${localStorage.token}`;
-    return axios.post(`${baseURL}${api}`, body, { headers: headers })
+    return axios.post(`${process.env.REACT_APP_REST_API_LOCATION}${api}`, body, { headers: headers })
     // .catch(error => {
     //     console.log(error.response);
     // });
