@@ -88,7 +88,8 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "test": "node scripts/test.js",
+    "awseb": "NODE_ENV=production && node scripts/build.js && node ./node_modules/.bin/pm2 start app.json"
   },
   "eslintConfig": {
     "extends": "react-app"
