@@ -1,0 +1,15 @@
+{
+  "apps" : [{
+    "name"        : "admin",
+    "script"      : "./scripts/start.js",
+    "watch"       : true,
+    "instances"   : 1,
+    "exec_mode"   : "cluster",
+    "max_memory_restart": "300M",
+    "env": {
+      "NODE_ENV": "production"
+    },
+    "out_file": "/dev/null",
+    "error_file": "/dev/null"
+  }]
+}
