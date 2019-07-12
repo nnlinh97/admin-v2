@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { apiPost } from '../../services/api';
 import * as actions from '../../actions/index';
-import { URL } from '../../constants/url';
+// import { URL } from '../../constants/url';
 import axios from 'axios';
 import './index.css';
 
@@ -24,7 +24,7 @@ class Login extends Component {
         }
         try {
             axios.defaults.headers.common['Authorization'] = `${localStorage.token}`;
-            let data = await axios.get(`${URL}/admin/me`, null, { headers: headers });
+            let data = await axios.get(`${process.env.REACT_APP_REST_API_LOCATION}/admin/me`, null, { headers: headers });
             if (data) {
                 this.props.history.push('/')
             }
