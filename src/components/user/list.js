@@ -4,8 +4,11 @@ import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import * as actions from './../../actions/index';
-import { apiGet, apiPost } from './../../services/api';
-import SweetAlert from 'react-bootstrap-sweetalert';
+import {
+    apiGet,
+    // apiPost
+} from './../../services/api';
+// import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
 import InfoUser from './info';
 import './list.css';
@@ -56,7 +59,6 @@ class ListTypesComponent extends Component {
             {
                 Header: "STT",
                 Cell: props => <p>{props.index + 1}</p>,
-                style: { textAlign: 'center' },
                 style: { textAlign: 'center' },
                 width: 80,
                 maxWidth: 80,
@@ -160,7 +162,7 @@ class ListTypesComponent extends Component {
                 minWidth: 100
             }
         ];
-        const { createModal, editModal, name, marker } = this.state;
+        const { createModal, editModal } = this.state;
         return (
             <div style={{ height: '100vh' }} className="content-wrapper">
                 <Modal
@@ -170,7 +172,7 @@ class ListTypesComponent extends Component {
                     styles={{ 'modal': { width: '400px', height: '250px' } }}
                     blockScroll={true}
                 >
-                    {this.state.user && <InfoUser user={this.state.user}/>}
+                    {this.state.user && <InfoUser user={this.state.user} />}
                 </Modal>
                 <section style={{ opacity: (createModal || editModal) ? '0.5' : '1' }} className="content-header">
                     <h1>

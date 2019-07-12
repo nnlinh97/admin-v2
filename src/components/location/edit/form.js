@@ -33,7 +33,7 @@ class InfoEdit extends Component {
         }
     }
     async componentDidMount() {
-        let { listTypeLocation, listCountries, listProvinces, locationInfo } = this.props;
+        let { listTypeLocation, listCountries, listProvinces } = this.props;
         const { id } = this.props.match.params;
         let location = null;
         try {
@@ -223,7 +223,7 @@ class InfoEdit extends Component {
             <div className="row">
                 <div className="col-lg-4 col-xs-12">
                     <div className="box box-warning">
-                        <form role="form">
+                        <form >
                             <div className="box-body">
                                 <div className="form-group">
                                     <label>Vĩ Độ</label>
@@ -273,7 +273,7 @@ class InfoEdit extends Component {
                 </div>
                 <div className="col-lg-4 col-xs-12">
                     <div className="box box-warning">
-                        <form role="form">
+                        <form>
                             <div className="box-body">
                                 <div className="form-group">
                                     <label>Kinh Độ</label>
@@ -325,7 +325,7 @@ class InfoEdit extends Component {
                 </div>
                 <div className="col-lg-4 col-xs-12">
                     <div className="box box-warning">
-                        <form role="form">
+                        <form>
                             <div className="box-body">
                                 <div className="form-group">
                                     <label>Hình Ảnh</label>
@@ -333,9 +333,9 @@ class InfoEdit extends Component {
                                     <div style={{ width: '100%', margin: '1px' }} className="gallery">
                                         <div className="container-image">
                                             {this.state.newPreviewImage ?
-                                                <img src={this.state.newPreviewImage} alt="no image" width="300" height="195" /> :
+                                                <img src={this.state.newPreviewImage} alt="" width="300" height="195" /> :
                                                 (this.state.image ?
-                                                    <img src={this.state.image} alt="no image" width="300" height="195" /> :
+                                                    <img src={this.state.image} alt="" width="300" height="195" /> :
                                                     <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" alt="Cinque Terre" width="300" height="195" />
                                                 )
                                             }

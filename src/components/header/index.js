@@ -45,7 +45,7 @@ class Header extends Component {
     render() {
         return (
             <header className="main-header">
-                <a href="" className="logo">
+                <a href className="logo">
                     <span onClick={this.handleToDashboard} className="logo-lg">
                         <b>Admin</b></span>
                 </a>
@@ -63,13 +63,13 @@ class Header extends Component {
                     <div className="navbar-custom-menu">
                         <ul className="nav navbar-nav">
                             <li className="dropdown user user-menu">
-                                <a href="#" className="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="http://tinyurl.com/y6lnpbbx" className="user-image" alt="User Image" />
+                                <a href className="dropdown-toggle" data-toggle="dropdown">
+                                    <img src="http://tinyurl.com/y6lnpbbx" className="user-image" alt="User" />
                                     <span className="hidden-xs">{this.state.username}</span>
                                 </a>
                                 <div className="dropdown-content">
-                                    <a onClick={this.handleChangePassword} href="#" className="btn btn-default btn-flat">Đổi Mật Khẩu</a>
-                                    <a onClick={this.handleLogout} href="#" className="btn btn-default btn-flat">Đăng Xuất</a>
+                                    <a onClick={this.handleChangePassword} href className="btn btn-default btn-flat">Đổi Mật Khẩu</a>
+                                    <a onClick={this.handleLogout} href className="btn btn-default btn-flat">Đăng Xuất</a>
                                 </div>
                             </li>
                         </ul>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import randomString from 'randomstring';
 import { apiGet, apiPost } from '../../../services/api';
-import { getUsername } from '../../../helper';
+// import { getUsername } from '../../../helper';
 
 class CreateRoleComponent extends Component {
 
@@ -33,7 +33,7 @@ class CreateRoleComponent extends Component {
 
     checkAdmin = () => {
         const { name, username, password, role, birthday } = this.state;
-        if (name === '' || username === '' || password === '' || role === null, birthday === '') {
+        if (name === '' || username === '' || password === '' || role === null || birthday === '') {
             return false;
         }
         return true;

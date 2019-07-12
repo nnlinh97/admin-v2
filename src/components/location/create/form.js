@@ -32,7 +32,7 @@ class info extends Component {
     }
 
     async componentDidMount() {
-        let { listTypeLocation, listCountries, listProvinces, locationInfo } = this.props;
+        let { listTypeLocation, listCountries, listProvinces } = this.props;
         if (!listTypeLocation.length) {
             try {
                 listTypeLocation = await apiGet('/type/getAll');
@@ -117,7 +117,7 @@ class info extends Component {
                 form.append('fk_country', this.state.country.id);
                 form.append('fk_province', this.state.province.id);
 
-                const locationCreate = await apiPost('/location/create', form);
+                await apiPost('/location/create', form);
                 this.setState({ success: true });
             } catch (error) {
                 console.log(error);
@@ -196,7 +196,7 @@ class info extends Component {
                 <div className="row">
                     <div className="col-lg-4 col-xs-12">
                         <div className="box box-warning">
-                            <form role="form">
+                            <form>
                                 <div className="box-body">
                                     <div className="form-group">
                                         <label>Vĩ Độ (*)</label>
@@ -239,7 +239,7 @@ class info extends Component {
                     </div>
                     <div className="col-lg-4 col-xs-12">
                         <div className="box box-warning">
-                            <form role="form">
+                            <form>
                                 <div className="box-body">
                                     <div className="form-group">
                                         <label>Kinh Độ (*)</label>
@@ -283,7 +283,7 @@ class info extends Component {
                     </div>
                     <div className="col-lg-4 col-xs-12">
                         <div className="box box-warning">
-                            <form role="form">
+                            <form>
                                 <div className="box-body">
                                     <div className="form-group">
                                         <label>Hình Ảnh (*)</label>

@@ -32,7 +32,6 @@ class EditTypeLocationComponent extends Component {
     }
 
     render() {
-        const { name, marker, id } = this.state;
         return <div style={{ marginLeft: '0px', height: '285px' }} className="content-wrapper">
             <section style={{ marginBottom: "20px" }} className="content-header">
                 <h1> Chỉnh Sửa Loại Địa Điểm <i>#{this.state.id}</i></h1>

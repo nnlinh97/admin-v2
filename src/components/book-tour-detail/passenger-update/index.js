@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import ReactTable from 'react-table';
+// import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 // import DatePicker from "react-datepicker";
 import * as actions from './../../../actions/index';
-import { apiGet, apiPost } from '../../../services/api';
-import moment from 'moment';
+// import { apiGet, apiPost } from '../../../services/api';
+// import moment from 'moment';
 import './index.css'
 
 class ListTypesComponent extends Component {
@@ -68,7 +68,7 @@ class ListTypesComponent extends Component {
     }
 
     render() {
-        const { fullname, phone, sex, birthdate, passport, type_passenger } = this.state;
+        const { fullname, phone, sex, type_passenger } = this.state;
         return (
             <div className="">
                 <section className="content-header">

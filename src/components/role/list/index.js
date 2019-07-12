@@ -3,11 +3,14 @@ import { withRouter } from 'react-router-dom';
 import ReactTable from 'react-table';
 import Modal from 'react-responsive-modal';
 import SweetAlert from 'react-bootstrap-sweetalert';
-import * as actions from './../../../actions/index';
-import { apiGet, apiPost } from '../../../services/api';
+// import * as actions from './../../../actions/index';
+import {
+    apiGet, 
+    // apiPost
+} from '../../../services/api';
 import CreateComponent from '../create';
 import EditComponent from '../edit';
-import { matchString, getStatusTourTurn } from '../../../helper';
+// import { matchString, getStatusTourTurn } from '../../../helper';
 import 'react-table/react-table.css';
 // import './index.css';
 

@@ -53,7 +53,7 @@ class ListTourTurnComponent extends Component {
     }
 
     getDateMonthYear = (data) => {
-        const year = data.substring(0, 4);
+        // const year = data.substring(0, 4);
         const result = data.split('-');
         return {
             year: result[0],

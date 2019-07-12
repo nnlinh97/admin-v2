@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { formatCurrency } from './../../../helper';
 import { connect } from 'react-redux';
-import { apiPost, apiPostAdmin } from '../../../services/api';
+import { apiPostAdmin } from '../../../services/api';
 import './index.css';
 
 class PaymentComponent extends Component {

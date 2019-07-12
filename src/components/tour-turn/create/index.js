@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import ReactTable from 'react-table';
+// import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import _ from 'lodash';
 import moment from 'moment';
@@ -9,7 +9,7 @@ import Select from 'react-select';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { apiGet, apiPost } from '../../../services/api';
 import * as actions from './../../../actions/index';
-import { getNumberDays, formatCurrency, getDays, getNumberDays1 } from '../../../helper';
+import { formatCurrency, getDays, getNumberDays1 } from '../../../helper';
 import { bookingTerm, paymentTerm } from '../term';
 import './index.css';
 
@@ -298,77 +298,6 @@ class CreateTourTurnComponent extends Component {
     }
 
     render() {
-        const columns = [
-            {
-                Header: props => <i className="fa fa-check-square" />,
-                Cell: props => {
-                    // let index = _.findIndex(this.state.tempRoutes, (item) => {
-                    //     return item.id === props.original.id;
-                    // });
-                    return <div className="checkbox checkbox-modal">
-                        <input
-                            style={{ width: '15px', height: '15px', marginTop: '0px', marginLeft: '-7px' }}
-                            className="input-modal"
-                            type="checkbox"
-                            name="choose"
-                            onChange={() => this.handleChangeSelectCheckBox(props.original)}
-                            checked={props.original.checked ? true : false}
-                        />
-                    </div>;
-                },
-                style: { textAlign: 'center' },
-                width: 100,
-                maxWidth: 100,
-                minWidth: 100
-            },
-            {
-                Header: "ID",
-                accessor: "id",
-                style: { textAlign: 'center' },
-                width: 100,
-                maxWidth: 100,
-                minWidth: 100
-            },
-            {
-                Header: "Loại Khách",
-                accessor: "name_vi",
-                style: {
-                    textAlign: 'center'
-                }
-            },
-            {
-                Header: "Phần Trăm Giá Vé",
-                accessor: "percent",
-                Cell: props => {
-                    if (props.original.checked) {
-                        if (this.state.idFocus === props.original.id) {
-                            return <input type="number"
-                                onChange={(event) => this.onChangePricePercent(event, props.original)}
-                                value={props.original.percent}
-                                name="percent"
-                                className="form-control"
-                                ref={this.inputFocus}
-                            />;
-                        }
-                        return <input type="number"
-                            onChange={(event) => this.onChangePricePercent(event, props.original)}
-                            value={props.original.percent}
-                            name="percent"
-                            className="form-control"
-                        />;
-                    }
-                    return <input type="number"
-                        name="percent"
-                        className="form-control"
-                        disabled
-                    />;
-                },
-                style: { textAlign: 'center' },
-                width: 150,
-                maxWidth: 150,
-                minWidth: 150
-            }
-        ];
         return (
             <div style={{ minHeight: '100vh' }} className="content-wrapper">
 

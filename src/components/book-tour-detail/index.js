@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
-import _ from 'lodash';
+// import _ from 'lodash';
 import moment from 'moment';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
@@ -18,17 +18,17 @@ import ChangeRefundPeople from './change-refund-people';
 import * as actions from './../../actions/index';
 import { apiGet, apiPost } from '../../services/api';
 import {
-    mergeBookHistory,
-    filterBookHistory,
+    // mergeBookHistory,
+    // filterBookHistory,
     formatCurrency,
-    pagination,
+    // pagination,
     matchString,
     getStatusItem,
     getSex,
     getCancelChecked,
     getPaymentChecked,
     getPaymentType,
-    getNumberDays
+    // getNumberDays
 } from './../../helper';
 import 'font-awesome/css/font-awesome.css';
 import './index.css';
@@ -159,7 +159,7 @@ class CreateTourTurnComponent extends Component {
                     location,
                     transport
                 }
-                const route = await apiPost('/route/update', item);
+                await apiPost('/route/update', item);
                 if (!this.props.listRoute) {
                     try {
                         let listRoute = await apiGet('/route/getAll');
@@ -282,7 +282,7 @@ class CreateTourTurnComponent extends Component {
         if (passenger) {
             try {
                 passenger.fk_type_passenger = parseInt(passenger.type_passenger, 10);
-                const passengerUpdate = await apiPost('/book_tour/updatePassenger', { ...passenger });
+                await apiPost('/book_tour/updatePassenger', { ...passenger });
                 this.setState({ success: true });
             } catch (error) {
                 this.setState({ error: true });
@@ -295,7 +295,7 @@ class CreateTourTurnComponent extends Component {
     handleUpdateContactInfo = async (contactInfo) => {
         if (contactInfo) {
             try {
-                const contactInfoUpdate = await apiPost('/book_tour/updateContactInfo', { ...contactInfo });
+                await apiPost('/book_tour/updateContactInfo', { ...contactInfo });
                 this.setState({ success: true });
             } catch (error) {
                 this.setState({ error: true });
@@ -359,7 +359,7 @@ class CreateTourTurnComponent extends Component {
 
     handleConfirmRefund = async () => {
         try {
-            const refund = await apiPost('/book_tour/unpayBookTour', { code: this.state.refundCode });
+            await apiPost('/book_tour/unpayBookTour', { code: this.state.refundCode });
             this.reRender();
             this.setState({ confirmRefund: false, refundCode: '' });
         } catch (error) {
@@ -369,7 +369,7 @@ class CreateTourTurnComponent extends Component {
 
     handleConfirmReq = async () => {
         try {
-            const confirm = await apiPost('/book_tour/cancelBookTour', { code: this.state.cancelCode });
+            await apiPost('/book_tour/cancelBookTour', { code: this.state.cancelCode });
             this.reRender();
             this.setState({ confirmCancelRequest: false, cancelCode: '' });
         } catch (error) {
@@ -405,7 +405,6 @@ class CreateTourTurnComponent extends Component {
     }
 
     render() {
-        const { bookTourHistory, tourTurn, tour } = this.state;
         const columnHistory = [
             {
                 Header: "ID",
@@ -965,9 +964,9 @@ class CreateTourTurnComponent extends Component {
                                         <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                             <label className="col-sm-4 control-label">NV hoàn tiền</label>
                                             <label className="col-sm-8 control-label">
-                                            {this.state.message.refund_staff.name}
+                                                {this.state.message.refund_staff.name}
                                             </label>
-                                        </div> }
+                                        </div>}
                                     </>}
 
                                 {/* cancelled */}

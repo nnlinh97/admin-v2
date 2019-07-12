@@ -37,7 +37,7 @@ class UpdateContactInfo extends Component {
     validateContactInfo = (passenger) => {
         const { fullname, phone, id, email } = passenger;
         const phoneRegex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
-        const emailRegex = /(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/;
+        const emailRegex = /(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/;
         if (!fullname || fullname === '') {
             return false;
         }

@@ -6,7 +6,7 @@ import 'react-table/react-table.css';
 import Modal from 'react-responsive-modal';
 import * as actions from './../../actions/index';
 import { apiGet } from '../../services/api';
-import moment from 'moment';
+// import moment from 'moment';
 import CreateRouteComponent from './create';
 import EditRouteComponent from './edit';
 import { matchString } from '../../helper';
@@ -93,7 +93,6 @@ class ListRouteComponent extends Component {
             {
                 Header: "STT",
                 Cell: props => <p>{props.index + 1}</p>,
-                style: { textAlign: 'center' },
                 style: { textAlign: 'center' },
                 width: 80,
                 maxWidth: 80,

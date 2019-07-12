@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import SweetAlert from 'react-bootstrap-sweetalert';
-import * as actions from './../../actions/index';
+// import * as actions from './../../actions/index';
 import axios from 'axios';
-import { apiGet, apiPost } from '../../services/api';
+import { apiPost } from '../../services/api';
 import './index.css';
 
 class ChangePasswordComponent extends Component {

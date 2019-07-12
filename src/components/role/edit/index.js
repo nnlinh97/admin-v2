@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { apiGet, apiPost } from '../../../services/api';
+import { apiPost } from '../../../services/api';
 
 class CreateRoleComponent extends Component {
 

@@ -4,7 +4,10 @@ import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import * as actions from './../../actions/index';
-import { apiGet, apiPost } from './../../services/api';
+import {
+    apiGet,
+    // apiPost
+} from './../../services/api';
 import { matchString } from '../../helper';
 import './index.css';
 
@@ -51,8 +54,8 @@ class ListLocationComponent extends Component {
                 Header: "STT",
                 Cell: props => <p>{props.index + 1}</p>,
                 style: { textAlign: 'center' },
-                sortable: false, 
-                resizable: false, 
+                sortable: false,
+                resizable: false,
                 filterable: false,
                 width: 80,
                 maxWidth: 80,
@@ -72,8 +75,8 @@ class ListLocationComponent extends Component {
                 accessor: "name",
                 Cell: props => <p title={props.original.name}>{props.original.name}</p>,
                 style: { whiteSpace: 'unSet' },
-                sortable: false, 
-                resizable: false, 
+                sortable: false,
+                resizable: false,
                 filterable: false,
                 width: 320,
                 maxWidth: 320,
@@ -84,8 +87,8 @@ class ListLocationComponent extends Component {
                 accessor: "address",
                 // Cell: props => <p title={props.original.address}>{props.original.address.substring(0, 40)}...</p>,
                 style: { whiteSpace: 'unSet' },
-                sortable: false, 
-                resizable: false, 
+                sortable: false,
+                resizable: false,
                 filterable: false,
 
             },
@@ -93,8 +96,8 @@ class ListLocationComponent extends Component {
                 Header: "Loại",
                 accessor: "type.name",
                 style: { whiteSpace: 'unSet' },
-                sortable: false, 
-                resizable: false, 
+                sortable: false,
+                resizable: false,
                 filterable: false,
                 width: 200,
                 maxWidth: 200,
@@ -112,8 +115,8 @@ class ListLocationComponent extends Component {
                     );
                 },
                 style: { textAlign: 'left' },
-                sortable: false, 
-                resizable: false, 
+                sortable: false,
+                resizable: false,
                 filterable: false,
                 width: 100,
                 maxWidth: 100,
@@ -131,8 +134,8 @@ class ListLocationComponent extends Component {
                     )
                 },
                 style: { textAlign: 'center' },
-                sortable: false, 
-                resizable: false, 
+                sortable: false,
+                resizable: false,
                 filterable: false,
                 width: 60,
                 maxWidth: 80,

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions/index';
 import axios from 'axios';
 import { URL } from '../../constants/url';
-import { generateKeyPair } from 'crypto';
+// import { generateKeyPair } from 'crypto';
 
 class PrivateRoute extends Component {
 

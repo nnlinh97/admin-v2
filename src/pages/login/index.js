@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { apiPost, apiGet } from '../../services/api';
+import { apiPost } from '../../services/api';
 import * as actions from '../../actions/index';
 import { URL } from '../../constants/url';
 import axios from 'axios';

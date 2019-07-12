@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import Modal from 'react-responsive-modal';
+// import Modal from 'react-responsive-modal';
 // import TimePicker from 'react-time-picker';
 import Select from 'react-select';
 import * as actions from './../../../actions/index';
@@ -67,7 +67,7 @@ class EditRouteComponent extends Component {
     }
 
     checkRoute = () => {
-        const { location, day, arriveTime, leaveTime, transport } = this.state;
+        const { location, day, transport } = this.state;
         if (!location || !Number.isInteger(parseInt(day)) || parseInt(day) < 1 || !transport) {
             return false;
         }

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import dateFns from 'date-fns';
+// import dateFns from 'date-fns';
 import {
     formatCurrency,
     getNumberDays,
-    getPercentRefund,
-    getFeeCancelBooking,
+    // getPercentRefund,
+    // getFeeCancelBooking,
     getStatusItem,
     getDateAfter,
     getNumberDays1,
@@ -158,7 +158,7 @@ class CancelRequestComponent extends Component {
     }
 
     checkInputCancel = () => {
-        const { nameCancel, passportCancel } = this.state;
+        const { nameCancel } = this.state;
         if (nameCancel === '' || nameCancel === '') {
             return false;
         }

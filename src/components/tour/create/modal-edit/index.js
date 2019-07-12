@@ -3,7 +3,10 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import * as actions from './../../../../actions/index';
-import { apiGet, apiPost } from './../../../../services/api';
+import {
+    apiGet,
+    // apiPost
+} from './../../../../services/api';
 import './index.css';
 
 class CreateRouteComponent extends Component {
@@ -51,8 +54,8 @@ class CreateRouteComponent extends Component {
     updateState = (listLocation, listTransport) => {
         listLocation.forEach(item => { item.label = item.name; });
         listTransport.forEach(item => { item.label = item.name_vn; });
-        this.setState({ 
-            locations: listLocation, 
+        this.setState({
+            locations: listLocation,
             transports: listTransport,
             arrive_time: this.props.route.arrive_time,
             leave_time: this.props.route.leave_time,
@@ -89,7 +92,7 @@ class CreateRouteComponent extends Component {
 
     handleEditRoute = async (event) => {
         event.preventDefault();
-        const { location, day, arriveTime, leaveTime, title, transport, detail } = this.state;
+        // const { location, day, arriveTime, leaveTime, title, transport, detail } = this.state;
         if (this.checkRoute()) {
             let state = this.state;
             delete state.locations;

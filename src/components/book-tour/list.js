@@ -2,10 +2,16 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
-import moment from 'moment';
+// import moment from 'moment';
 import * as actions from './../../actions/index';
-import { apiGet, apiPost } from '../../services/api';
-import { matchString, getStatusTourTurn } from '../../helper';
+import {
+    apiGet,
+    // apiPost
+} from '../../services/api';
+import {
+    // matchString,
+    getStatusTourTurn
+} from '../../helper';
 import 'react-table/react-table.css';
 import './list.css';
 
@@ -42,7 +48,7 @@ class listBookTourConponent extends Component {
     }
 
     getDateMonthYear = (data) => {
-        const year = data.substring(0, 4);
+        // const year = data.substring(0, 4);
         const result = data.split('-');
         return {
             year: result[0],
@@ -67,8 +73,8 @@ class listBookTourConponent extends Component {
                 Header: "STT",
                 Cell: props => <p>{props.index + 1}</p>,
                 style: { textAlign: 'center' },
-                sortable: false, 
-                resizable: false, 
+                sortable: false,
+                resizable: false,
                 filterable: false,
                 width: 80,
                 maxWidth: 80,
@@ -83,8 +89,8 @@ class listBookTourConponent extends Component {
                     {props.original.code}
                 </p>,
                 style: { textAlign: 'left' },
-                sortable: false, 
-                resizable: false, 
+                sortable: false,
+                resizable: false,
                 filterable: false,
                 width: 100,
                 maxWidth: 100,
@@ -94,8 +100,8 @@ class listBookTourConponent extends Component {
                 Header: "Tour",
                 accessor: "tour.name",
                 style: { textAlign: 'left', whiteSpace: 'unset' },
-                sortable: false, 
-                resizable: false, 
+                sortable: false,
+                resizable: false,
                 filterable: false,
             },
             {
@@ -105,8 +111,8 @@ class listBookTourConponent extends Component {
                     return (<p>{this.FromDateTo(props.original.start_date, props.original.end_date)}</p>)
                 },
                 style: { textAlign: 'center' },
-                sortable: false, 
-                resizable: false, 
+                sortable: false,
+                resizable: false,
                 filterable: false,
                 width: 220,
                 maxWidth: 220,
@@ -144,8 +150,8 @@ class listBookTourConponent extends Component {
                     return (<p>{props.original.num_current_people}/{props.original.num_max_people}</p>)
                 },
                 style: { textAlign: 'center' },
-                sortable: false, 
-                resizable: false, 
+                sortable: false,
+                resizable: false,
                 filterable: false,
                 width: 100,
                 maxWidth: 100,
@@ -160,8 +166,8 @@ class listBookTourConponent extends Component {
                     </label>;
                 },
                 style: { textAlign: 'center' },
-                sortable: false, 
-                resizable: false, 
+                sortable: false,
+                resizable: false,
                 filterable: false,
                 width: 80,
                 maxWidth: 100,
@@ -176,8 +182,8 @@ class listBookTourConponent extends Component {
                     </button>
                 },
                 style: { textAlign: 'center' },
-                sortable: false, 
-                resizable: false, 
+                sortable: false,
+                resizable: false,
                 filterable: false,
                 width: 50,
                 maxWidth: 70,

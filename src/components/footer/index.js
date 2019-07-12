@@ -5,7 +5,7 @@ class Footer extends Component {
         return (
             <footer className="main-footer">
                 <strong>Copyright © 2018-2019
-                    <a href="https://www.google.com/" target="_blank">&nbsp;Admin</a>.
+                    <a href="https://www.google.com/">&nbsp;Admin</a>.
                 </strong> All rights reserved.
             </footer>
         );

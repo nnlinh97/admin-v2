@@ -6,9 +6,12 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import moment from 'moment';
 import CreateComponent from '../create';
 import EditComponent from '../edit';
-import * as actions from './../../../actions/index';
-import { apiGet, apiPost, apiPostAdmin } from '../../../services/api';
-import { matchString, getStatusTourTurn } from '../../../helper';
+// import * as actions from './../../../actions/index';
+import { apiGet, apiPostAdmin } from '../../../services/api';
+import {
+    matchString,
+    // getStatusTourTurn
+} from '../../../helper';
 import 'react-table/react-table.css';
 import './index.css';
 
@@ -25,8 +28,7 @@ class listAdmin extends Component {
             success: false,
             error: false,
             resetPassword: false,
-            adminReset: null,
-            keySearch: ''
+            adminReset: null
         }
     }
 

@@ -2,18 +2,18 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
-import _ from 'lodash';
+// import _ from 'lodash';
 import moment from 'moment';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
-import Select from 'react-select';
+// import Select from 'react-select';
 import * as actions from './../../../actions/index';
 import { apiGet, apiPost } from '../../../services/api';
 import {
-    mergeBookHistory,
-    filterBookHistory,
+    // mergeBookHistory,
+    // filterBookHistory,
     formatCurrency,
-    pagination,
+    // pagination,
     matchString,
     getStatusItem,
     getStatusTourTurn,
@@ -106,7 +106,7 @@ class CreateTourTurnComponent extends Component {
                     location,
                     transport
                 }
-                const route = await apiPost('/route/update', item);
+                await apiPost('/route/update', item);
                 if (!this.props.listRoute) {
                     try {
                         let listRoute = await apiGet('/route/getAll');
@@ -134,7 +134,12 @@ class CreateTourTurnComponent extends Component {
     }
 
     checkRoute = () => {
-        const { location, day, arriveTime, leaveTime, transport } = this.state;
+        const {
+            location,
+            day,
+            // arriveTime,
+            // leaveTime,
+            transport } = this.state;
         if (!location || !Number.isInteger(parseInt(day)) || parseInt(day) < 1 || !transport) {
             return false;
         }
@@ -221,7 +226,7 @@ class CreateTourTurnComponent extends Component {
         if (passenger) {
             try {
                 passenger.fk_type_passenger = parseInt(passenger.type_passenger, 10);
-                const passengerUpdate = await apiPost('/book_tour/updatePassenger', { ...passenger });
+                await apiPost('/book_tour/updatePassenger', { ...passenger });
                 this.reRender();
                 this.setState({ success: true });
             } catch (error) {
@@ -235,7 +240,7 @@ class CreateTourTurnComponent extends Component {
     handleUpdateContactInfo = async (contactInfo) => {
         if (contactInfo) {
             try {
-                const contactInfoUpdate = await apiPost('/book_tour/updateContactInfo', { ...contactInfo });
+                await apiPost('/book_tour/updateContactInfo', { ...contactInfo });
                 this.reRender();
                 this.setState({ success: true });
             } catch (error) {
@@ -259,7 +264,7 @@ class CreateTourTurnComponent extends Component {
 
     handleConfirmRefund = async () => {
         try {
-            const refund = await apiPost('/book_tour/unpayBookTour', { code: this.state.refundCode });
+            await apiPost('/book_tour/unpayBookTour', { code: this.state.refundCode });
             this.reRender();
             this.setState({ confirmRefund: false, refundCode: '' });
         } catch (error) {
@@ -269,7 +274,7 @@ class CreateTourTurnComponent extends Component {
 
     handleConfirmReq = async () => {
         try {
-            const confirm = await apiPost('/book_tour/cancelBookTour', { code: this.state.cancelCode });
+            await apiPost('/book_tour/cancelBookTour', { code: this.state.cancelCode });
             this.reRender();
             this.setState({ confirmCancelRequest: false, cancelCode: '' });
         } catch (error) {
@@ -313,7 +318,10 @@ class CreateTourTurnComponent extends Component {
     }
 
     render() {
-        const { bookTourHistory, tourTurn, tour } = this.state;
+        const { 
+            // bookTourHistory, 
+            tourTurn, 
+            tour } = this.state;
         console.log('tourTurn', tourTurn)
         const columnHistory = [
             {
@@ -466,75 +474,6 @@ class CreateTourTurnComponent extends Component {
                 sortable: false,
                 resizable: false,
                 filterable: false,
-                width: 60,
-                maxWidth: 60,
-                minWidth: 60
-            }
-        ];
-        const columns = [
-            {
-                Header: "ID",
-                accessor: "id",
-                style: { textAlign: 'center' },
-                width: 60,
-                maxWidth: 60,
-                minWidth: 60
-            },
-            {
-                Header: "NAME",
-                accessor: "passenger.fullname",
-                style: { textAlign: 'center' }
-            },
-            {
-                Header: "TYPE",
-                accessor: "passenger.type_passenger.name",
-                style: { textAlign: 'center' },
-                width: 100,
-                maxWidth: 100,
-                minWidth: 100
-            },
-            {
-                Header: "CONTACT NAME",
-                accessor: "book_tour_contact_info.fullname",
-                style: { textAlign: 'center' }
-            },
-            {
-                Header: "CONTACT PHONE",
-                accessor: "book_tour_contact_info.phone",
-                style: { textAlign: 'center' }
-            },
-            {
-                Header: props => <i className="fa fa-pencil" />,
-                Cell: props => {
-                    if (props.original.status === 'cancelled') {
-                        return <button className="btn btn-xs btn-success" disabled>
-                            <i className="fa fa-pencil" />
-                        </button>
-                    }
-                    return <button className="btn btn-xs btn-success"
-                        onClick={() => this.openUpdatePassenger(props.original)} >
-                        <i className="fa fa-pencil" />
-                    </button>
-                },
-                style: { textAlign: 'center' },
-                width: 60,
-                maxWidth: 60,
-                minWidth: 60
-            },
-            {
-                Header: props => <i className="fa fa-trash" />,
-                Cell: props => {
-                    if (props.original.status === 'cancelled') {
-                        return <button className="btn btn-xs btn-danger" disabled>
-                            <i className="fa fa-trash" />
-                        </button>
-                    }
-                    return <button className="btn btn-xs btn-danger"
-                        onClick={() => this.handleEditRoute(props)} >
-                        <i className="fa fa-trash" />
-                    </button>
-                },
-                style: { textAlign: 'center' },
                 width: 60,
                 maxWidth: 60,
                 minWidth: 60

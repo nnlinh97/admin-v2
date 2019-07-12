@@ -3,24 +3,24 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import SweetAlert from 'react-bootstrap-sweetalert';
-import Modal from 'react-responsive-modal';
+// import Modal from 'react-responsive-modal';
 import moment from 'moment';
 import * as actions from './../../actions/index';
 import { apiGet, apiPost } from './../../services/api';
-import { matchString } from '../../helper';
+// import { matchString } from '../../helper';
 import 'react-table/react-table.css';
 import './index.css';
 
-const Completionist = () => <span>Hết hạn</span>;
+// const Completionist = () => <span>Hết hạn</span>;
 
 // Renderer callback with condition
-const renderer = ({ days, hours, minutes, seconds, completed }) => {
-    if (completed) {
-        return <Completionist />;
-    } else {
-        return <span>{days > 0 ? `${days}d : ` : ''}{hours}h : {minutes}m : {seconds}s</span>;
-    }
-};
+// const renderer = ({ days, hours, minutes, seconds, completed }) => {
+//     if (completed) {
+//         return <Completionist />;
+//     } else {
+//         return <span>{days > 0 ? `${days}d : ` : ''}{hours}h : {minutes}m : {seconds}s</span>;
+//     }
+// };
 
 class ListProvinceComponent extends Component {
 

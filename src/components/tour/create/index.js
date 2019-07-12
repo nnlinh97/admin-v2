@@ -4,9 +4,9 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import 'react-table/react-table.css';
-import _ from 'lodash';
-import moment from 'moment';
-import randomstring from 'randomstring';
+// import _ from 'lodash';
+// import moment from 'moment';
+// import randomstring from 'randomstring';
 // import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 import { configEditor } from './../config';
@@ -519,9 +519,9 @@ class ListTypesComponent extends Component {
                                 <div className="inputImage">
                                     <div className="cover_image_of_tour">
                                         {this.state.previewImage !== '' ?
-                                            <img src={this.state.previewImage} />
+                                            <img src={this.state.previewImage} alt='' />
                                             :
-                                            <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
+                                            <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" alt='' />
                                         }
                                     </div>
                                 </div>

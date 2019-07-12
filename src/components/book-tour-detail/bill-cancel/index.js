@@ -51,7 +51,7 @@ class BillCancelBooking extends Component {
             bookTourDetail: bookTourDetail,
             code: bookTourDetail.code,
             messagePayment: bookTourDetail.message_pay,
-            passengers: bookTourDetail.type_passenger_detail
+            // passengers: bookTourDetail.type_passenger_detail
         });
     }
 
@@ -60,7 +60,7 @@ class BillCancelBooking extends Component {
             <div className="bill_cancel">
                 <div className="row_print row_1_bill_cancel">
                     <div className="logo">
-                        <img src="url" />
+                        <img src="" alt='' />
                     </div>
                     <div className="infor">
                         <h2>Travel Tourist</h2>

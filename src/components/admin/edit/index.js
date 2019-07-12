@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { apiGet, apiPost, apiPostAdmin } from '../../../services/api';
+import { apiGet, apiPostAdmin } from '../../../services/api';
 
 class EditAdminComponent extends Component {
 

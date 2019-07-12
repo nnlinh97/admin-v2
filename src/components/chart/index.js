@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Doughnut, Bar, Line, Pie } from 'react-chartjs-2';
+import { Bar} from 'react-chartjs-2';
 import ReactTable from 'react-table';
 import { apiPost, apiGet } from '../../services/api';
-import { formatCurrency } from './../../helper/';
 import 'react-table/react-table.css';
 import './index.css';
 
@@ -65,7 +64,7 @@ class Chart extends Component {
         const chartMoneyPromise = apiPost('/admin/statistics_v2', { time: label, year: year });
         const topFiveTourPromise = apiGet('/admin/getTop5MostBookedTours');
         Promise.all([chartMoneyPromise, topFiveTourPromise]).then(([chartMoneyResult, topFiveTourResult]) => {
-            const chartData = chartMoneyResult.data.data;
+            // const chartData = chartMoneyResult.data.data;
             const data = this.data(chartMoneyResult.data.data);
             let backgroundColor = [];
             let labels = {};
@@ -309,9 +308,9 @@ class Chart extends Component {
                 style: { textAlign: 'center' }
             }
         ];
-        const chartOptions = {
-            responsive: false
-        }
+        // const chartOptions = {
+        //     responsive: false
+        // }
         return <div style={{ minHeight: '100vh', paddingTop: '70px' }} className="content-wrapper">
             <section style={{ marginBottom: '20px' }} className="content-header">
                 <h1> THỐNG KÊ </h1>

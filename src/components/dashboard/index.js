@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import ReactTable from 'react-table';
-import moment from 'moment';
+// import moment from 'moment';
 import { apiGet } from '../../services/api';
 import { getStatusItem, matchString } from './../../helper/';
 import './index.css';
@@ -61,7 +61,7 @@ class Dashboard extends Component {
     }
 
     getDateMonthYear = (data) => {
-        const year = data.substring(0, 4);
+        // const year = data.substring(0, 4);
         const result = data.split('-');
         return {
             year: result[0],

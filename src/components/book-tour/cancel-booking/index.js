@@ -5,8 +5,11 @@ import {
     getStatusItem,
     getDateAfter
 } from './../../../helper';
-import * as actions from './../../../actions/index';
-import { apiGet, apiPost } from '../../../services/api';
+// import * as actions from './../../../actions/index';
+import {
+    // apiGet,
+    apiPost
+} from '../../../services/api';
 
 class CancelBooking extends Component {
 

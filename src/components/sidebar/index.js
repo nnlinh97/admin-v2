@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+// import _ from 'lodash';
 import { menus, menuManger } from './../../constants/menu';
 
 class Sidebar extends Component {
@@ -14,7 +14,7 @@ class Sidebar extends Component {
     }
 
     componentDidMount = () => {
-        const path = window.location.pathname;
+        // const path = window.location.pathname;
         const { profile } = this.props;
         if (profile.fk_role === 1) {
             this.setState({ menus: menuManger });
@@ -43,7 +43,7 @@ class Sidebar extends Component {
                         {this.state.menus.map((menu, index) => {
                             return (
                                 <li key={index} className={index === this.state.indexActive ? 'active' : ''}>
-                                    <a onClick={(event) => this.redirectPath(event, menu.path)} href="">
+                                    <a onClick={(event) => this.redirectPath(event, menu.path)} href>
                                         <i className={menu.icon} />&nbsp;
                                         <span>{menu.title}</span>
                                     </a>

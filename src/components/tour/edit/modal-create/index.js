@@ -3,7 +3,10 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import * as actions from './../../../../actions/index';
-import { apiGet, apiPost } from './../../../../services/api';
+import {
+    apiGet,
+    // apiPost
+} from './../../../../services/api';
 import './index.css';
 
 class CreateRouteComponent extends Component {
@@ -82,7 +85,7 @@ class CreateRouteComponent extends Component {
 
     handleCreateRoute = async (event) => {
         event.preventDefault();
-        const { location, day, arriveTime, leaveTime, title, transport, detail } = this.state;
+        // const { location, day, arriveTime, leaveTime, title, transport, detail } = this.state;
         if (this.checkRoute()) {
             let state = this.state;
             delete state.locations;

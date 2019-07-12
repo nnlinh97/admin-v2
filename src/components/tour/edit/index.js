@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from './../../../actions/index';
-import _ from 'lodash';
-import randomstring from 'randomstring';
+// import _ from 'lodash';
+// import randomstring from 'randomstring';
 import ReactTable from 'react-table';
 import FroalaEditor from 'react-froala-wysiwyg';
 import { configEditor } from './../config';
@@ -567,10 +567,10 @@ class ListTypesComponent extends Component {
                                 <div className="inputImage">
                                     <div className="cover_image_of_tour">
                                         {this.state.featuredImgTemp !== '' ?
-                                            <img src={this.state.featuredImgTemp} /> :
+                                            <img src={this.state.featuredImgTemp} alt='' /> :
                                             (this.state.featuredImg ?
-                                                <img src={this.state.featuredImg} /> :
-                                                <img src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
+                                                <img alt='' src={this.state.featuredImg} /> :
+                                                <img alt='' src="http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" />
                                             )}
                                         {this.state.featuredImgTemp !== '' && <i
                                             onClick={this.handleDeleteAvatar}

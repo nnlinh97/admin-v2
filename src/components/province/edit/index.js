@@ -42,7 +42,7 @@ class EditProvinceComponent extends Component {
     }
 
     render() {
-        const { name, listCountries, country } = this.state;
+        const { country } = this.state;
         return <div style={{ marginLeft: '0px', height: '295px' }} className="content-wrapper">
             <section style={{ marginBottom: "20px" }} className="content-header">
                 <h1> Chỉnh Sửa Tỉnh Thành <i>#{this.state.id}</i></h1>

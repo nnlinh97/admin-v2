@@ -85,7 +85,7 @@ function changeAlias(alias) {
     str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
     str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
     str = str.replace(/đ/g, "d");
-    str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
+    str = str.replace(/!|@|%|^|\*|\(|\)|\+|=|<|>|\?|\/|,|\.|:|;|'|"|&|#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
     str = str.replace(/ + /g, " ");
     str = str.trim();
     return str;
@@ -155,10 +155,15 @@ export function getStatusItem(status) {
             textStatus = 'đã hủy';
             bgStatus = '#fff';
             break;
+        default:
+            colorStatus = '';
+            textStatus = '';
+            bgStatus = '';
     }
     return {
         colorStatus,
-        textStatus
+        textStatus,
+        bgStatus
     };
 }
 
@@ -192,6 +197,8 @@ export function getSex(sex) {
         case 'other':
             name = 'Khác';
             break;
+        default:
+            name = '';
     }
     return name;
 }
@@ -205,6 +212,8 @@ export function getCancelChecked(status) {
         case 'cancelled':
         case '':
             return false;
+        default:
+            return false;
     }
 }
 
@@ -216,6 +225,8 @@ export function getPaymentChecked(status) {
         case 'cancelled':
         case 'pending_cancel':
         case '':
+            return false;
+        default:
             return false;
     }
 }
@@ -351,6 +362,8 @@ export function getPaymentType(type) {
         case 'online':
             result = 'Trực tuyến';
             break;
+        default: 
+        result = '';
     }
     return result;
 }
