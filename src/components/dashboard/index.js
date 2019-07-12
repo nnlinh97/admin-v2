@@ -212,7 +212,6 @@ class Dashboard extends Component {
                         <option value="confirm_cancel">Chờ hoàn tiền</option>
                         <option value="paid">Đã thanh toán</option>
                         <option value="finished">Đã tham gia</option>
-                        <option value="not_refunded">Không nhận tiền</option>
                         <option value="refunded">Đã hoàn tiền</option>
                         <option value="cancelled">Đã hủy</option>
                     </select>

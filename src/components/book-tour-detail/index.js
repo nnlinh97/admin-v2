@@ -821,7 +821,7 @@ class CreateTourTurnComponent extends Component {
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Xác nhận</label>
                                         <label className="col-sm-8 control-label">
-                                            {moment(this.state.message.confirm_time).format('MM/DD/YYYY HH:MM')}
+                                            {moment(this.state.message.confirm_time).format('DD/MM/YYYY HH:MM')}
                                         </label>
                                     </div>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
@@ -833,7 +833,7 @@ class CreateTourTurnComponent extends Component {
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Hạn hoàn tiền</label>
                                         <label className="col-sm-6 control-label">
-                                            {moment(dateFns.addDays(new Date(this.state.message.confirm_time), 3)).format('MM/DD/YYYY')} đến {moment(this.state.message.refund_period).format('MM/DD/YYYY')}
+                                            {moment(dateFns.addDays(new Date(this.state.message.confirm_time), 3)).format('DD/MM/YYYY')} đến {moment(this.state.message.refund_period).format('DD/MM/YYYY')}
                                         </label>
                                         <label className="col-sm-2">
                                             <i
@@ -910,7 +910,7 @@ class CreateTourTurnComponent extends Component {
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                         <label className="col-sm-4 control-label">Xác nhận</label>
                                         <label className="col-sm-8 control-label">
-                                            {moment(this.state.message.confirm_time).format('MM/DD/YYYY HH:MM')}
+                                            {moment(this.state.message.confirm_time).format('DD/MM/YYYY HH:MM')}
                                         </label>
                                     </div>
                                     <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
@@ -941,7 +941,7 @@ class CreateTourTurnComponent extends Component {
                                         <div style={{ fontSize: '16px', paddingLeft: '0px' }} className="form-group">
                                             <label className="col-sm-4 control-label">Thời gian nhận tiền</label>
                                             <label className="col-sm-8 control-label">
-                                                {moment(this.state.message.refunded_time).format('MM/DD/YYYY')}
+                                                {moment(this.state.message.refunded_time).format('DD/MM/YYYY')}
                                             </label>
                                         </div>
 
