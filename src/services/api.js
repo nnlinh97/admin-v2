@@ -1,5 +1,4 @@
 import axios from 'axios';
-// import { baseURL } from './../config';
 
 export const apiGet = (api) => {
     return axios.get(`${process.env.REACT_APP_REST_API_LOCATION}${api}`)

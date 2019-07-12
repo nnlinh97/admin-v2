@@ -13,7 +13,7 @@ import { getNumberDays, formatCurrency, getDays, getNumberDays1 } from '../../..
 import { apiGet, apiPost } from '../../../services/api';
 import Select from 'react-select';
 import './index.css';
-import "react-datepicker/dist/react-datepicker.css";
+// import "react-datepicker/dist/react-datepicker.css";
 import 'font-awesome/css/font-awesome.css';
 
 class CreateTourTurnComponent extends Component {

@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import DatePicker from "react-datepicker";
+// import DatePicker from "react-datepicker";
 import * as actions from './../../../actions/index';
 import { apiGet, apiPost } from '../../../services/api';
 import moment from 'moment';

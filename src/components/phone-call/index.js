@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
-import Countdown from 'react-countdown-now';
 import moment from 'moment';
 import * as actions from './../../actions/index';
 import { apiGet, apiPost } from './../../services/api';
@@ -192,7 +191,7 @@ class ListProvinceComponent extends Component {
             {
                 Header: "Đếm ngược",
                 accessor: "payment_term",
-                Cell: props => <Countdown date={new Date(props.original.payment_term).getTime()} renderer={renderer} />,
+                // Cell: props => <Countdown date={new Date(props.original.payment_term).getTime()} renderer={renderer} />,
                 style: { textAlign: 'center' },
                 width: 125,
                 maxWidth: 125,

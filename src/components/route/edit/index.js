@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Modal from 'react-responsive-modal';
-import TimePicker from 'react-time-picker';
+// import TimePicker from 'react-time-picker';
 import Select from 'react-select';
 import * as actions from './../../../actions/index';
 import { apiGet, apiPost } from './../../../services/api';
