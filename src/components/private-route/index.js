@@ -23,7 +23,7 @@ class PrivateRoute extends Component {
         }
         try {
             axios.defaults.headers.common['Authorization'] = `${localStorage.token}`;
-            let data = await axios.get(`${URL}/admin/me`, null, { headers: headers });
+            let data = await axios.get(`${process.env.REACT_APP_REST_API_LOCATION}/admin/me`, null, { headers: headers });
             // console.log('profile: ',data.data.profile)
             this.props.login(data.data.profile);
             if(data.status === 200){
