@@ -79,7 +79,7 @@ class ListTourComponent extends Component {
                 filterable: false,
             },
             {
-                Header: "Sô ngày",
+                Header: "Số ngày",
                 accessor: "num_days",
                 style: { textAlign: 'center', whiteSpace: 'unset' },
                 sortable: false, 
