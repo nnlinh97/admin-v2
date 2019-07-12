@@ -5,12 +5,13 @@ import * as actions from './../../../actions/index';
 // import _ from 'lodash';
 // import randomstring from 'randomstring';
 import ReactTable from 'react-table';
-import FroalaEditor from 'react-froala-wysiwyg';
-import { configEditor } from './../config';
+// import FroalaEditor from 'react-froala-wysiwyg';
+// import { configEditor } from './../config';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Modal from 'react-responsive-modal';
 import { matchString } from '../../../helper';
 import { apiGet, apiPost } from '../../../services/api';
+import { policy } from '../create/policy';
 import CreateRouteComponent from './modal-create';
 import EditRouteComponent from './modal-edit';
 import ListImageComponent from './modal-list-image';
@@ -54,7 +55,6 @@ class ListTypesComponent extends Component {
         const id = this.props.match.params.id;
         try {
             const tourDetail = await apiGet(`/tour/getById/${id}`);
-            console.log(tourDetail.data.data)
             this.updateState(tourDetail.data.data);
         } catch (error) {
             console.log(error);
@@ -67,7 +67,7 @@ class ListTypesComponent extends Component {
             name: tourDetail.name,
             typeTour: tourDetail.fk_type_tour,
             id: tourDetail.id,
-            policy: tourDetail.policy ? tourDetail.policy : '',
+            policy: tourDetail.policy ? tourDetail.policy : policy,
             featuredImg: tourDetail.featured_img,
             listImages: tourDetail.tour_images,
             desc: tourDetail.description,
@@ -527,7 +527,7 @@ class ListTypesComponent extends Component {
                 </Modal>
 
                 <section className="content-header content-header-page">
-                    <h1 style={{height: '8vh'}}>Chỉnh Sửa Tour</h1>
+                    <h1 style={{ height: '8vh' }}>Chỉnh Sửa Tour</h1>
                 </section>
                 <section className="content">
                     <div className="row row_1">
@@ -622,7 +622,7 @@ class ListTypesComponent extends Component {
                     </div>
                     <div className="row row_3">
                         <label className="title_row">Qui định</label>
-                            <FroalaEditor
+                        {/* <FroalaEditor
                                 config={{
                                     placeholderText: '',
                                     heightMin: 425,
@@ -631,11 +631,18 @@ class ListTypesComponent extends Component {
                                 }}
                                 model={this.state.policy}
                                 onModelChange={this.handleChangePolicy}
-                            />
+                            /> */}
+                        <textarea
+                            onChange={this.onHandleChange}
+                            value={this.state.policy}
+                            name="policy"
+                            className="form-control"
+                            rows={15}
+                        />
                     </div>
                     <div className="row row_4">
                         <label className="title_row">Mô tả *</label>
-                        <FroalaEditor
+                        {/* <FroalaEditor
                             config={{
                                 heightMax: 362,
                                 heightMin: 362,
@@ -658,6 +665,13 @@ class ListTypesComponent extends Component {
                             }}
                             model={this.state.desc}
                             onModelChange={this.handleChangeDesc}
+                        /> */}
+                        <textarea
+                            onChange={this.onHandleChange}
+                            value={this.state.desc}
+                            name="desc"
+                            className="form-control"
+                            rows={15}
                         />
                     </div>
                 </section>
