@@ -91,7 +91,7 @@
     "test": "node scripts/test.js",
     "awseb": "NODE_ENV=production && npm run build && node ./node_modules/.bin/pm2 start app.json",
     "start:production": "npm run build && npm run start:prod",
-    "start:prod": "NODE_ENV=production node scripts/start"
+    "start:prod": "NODE_ENV=production node server"
   },
   "eslintConfig": {
     "extends": "react-app"
