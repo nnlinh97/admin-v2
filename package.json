@@ -89,7 +89,9 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "awseb": "NODE_ENV=production && node scripts/build.js && node pm2 start app.json"
+    "awseb": "NODE_ENV=production && npm run build && node pm2 start app.json",
+    "start:production": "npm run build && npm run start:prod",
+    "start:prod": "NODE_ENV=production node scripts/start"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -149,5 +151,8 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "pm2": "^3.5.1"
   }
 }
