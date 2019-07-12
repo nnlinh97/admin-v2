@@ -79,10 +79,12 @@
     "workbox-webpack-plugin": "3.6.3"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start": "PORT=3001 node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "awseb": "NODE_ENV=production && node scripts/build.js && node pm2 start app.json"
+    "awseb": "NODE_ENV=production && npm run build && node ./node_modules/.bin/pm2 start app.json",
+    "start:production": "npm run build && npm run start:prod",
+    "start:prod": "NODE_ENV=production node ./node_modules/.bin/pm2 start scripts/start.js"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -142,5 +144,8 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "pm2": "^3.5.1"
   }
 }
