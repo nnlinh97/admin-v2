@@ -8,7 +8,6 @@ import appReducers from './reducers/index';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 require('dotenv').config();
-console.log(process.env)
 
 const store = createStore(
     appReducers,
