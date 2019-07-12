@@ -9,9 +9,9 @@ export const apiGet = (api) => {
 
 export const apiPost = (api, body) => {
     return axios.post(`${process.env.REACT_APP_REST_API_LOCATION}${api}`, body)
-    .catch(error => {
-        console.log(error.response);
-    });
+    // .catch(error => {
+    //     console.log(error.response);
+    // });
 }
 
 export const apiPostAdmin = (api, body) => {
