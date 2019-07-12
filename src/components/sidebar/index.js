@@ -42,7 +42,7 @@ class Sidebar extends Component {
                         <li className="header">Version 1.0.0</li>
                         {this.state.menus.map((menu, index) => {
                             return (
-                                <li key={index} className={index === this.state.indexActive ? 'active' : ''}>
+                                <li style={{cursor: 'pointer'}} key={index} className={index === this.state.indexActive ? 'active' : ''}>
                                     <a onClick={(event) => this.redirectPath(event, menu.path)} href>
                                         <i className={menu.icon} />&nbsp;
                                         <span>{menu.title}</span>

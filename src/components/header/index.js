@@ -46,7 +46,7 @@ class Header extends Component {
         return (
             <header className="main-header">
                 <a href className="logo">
-                    <span onClick={this.handleToDashboard} className="logo-lg">
+                    <span style={{cursor: 'pointer'}} onClick={this.handleToDashboard} className="logo-lg">
                         <b>Admin</b></span>
                 </a>
                 {/* <div class="dropdown">
