@@ -44,7 +44,7 @@ class BillPayment extends Component {
             paymentMethod: bookTourDetail.payment_method,
             totalPay: bookTourDetail.total_pay,
             typePassenger: bookTourDetail.type_passenger_detail,
-            passengers: bookTourDetail.passengers,
+            passengers: bookTourDetail.type_passenger_detail,
             numPassengers: bookTourDetail.num_passenger,
             tourTurn: bookTourDetail.tour_turn,
             message: bookTourDetail.cancel_bookings.length > 0 ? bookTourDetail.cancel_bookings[0] : null,
