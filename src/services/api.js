@@ -1,14 +1,14 @@
 import axios from 'axios';
 
 export const apiGet = (api) => {
-    return axios.get(`${process.env.REACT_APP_REST_API_LOCATION}${api}`)
+    return axios.get(`http://localhost:5000${api}`)
     // .catch(error => {
     //     console.log(error);
     // });
 }
 
 export const apiPost = (api, body) => {
-    return axios.post(`${process.env.REACT_APP_REST_API_LOCATION}${api}`, body)
+    return axios.post(`http://localhost:5000${api}`, body)
     // .catch(error => {
     //     console.log(error.response);
     // });
@@ -20,7 +20,7 @@ export const apiPostAdmin = (api, body) => {
         Authorization: localStorage.token
     }
     axios.defaults.headers.common['Authorization'] = `${localStorage.token}`;
-    return axios.post(`${process.env.REACT_APP_REST_API_LOCATION}${api}`, body, { headers: headers })
+    return axios.post(`http://localhost:5000${api}`, body, { headers: headers })
     // .catch(error => {
     //     console.log(error.response);
     // });

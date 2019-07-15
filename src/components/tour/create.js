@@ -580,7 +580,7 @@ class ListTypesComponent extends Component {
                                                     placeholderText: '',
                                                     toolbarButtons: configEditor.description,
                                                     imageUploadParam: 'file',
-                                                    imageUploadURL: `${process.env.REACT_APP_REST_API_LOCATION}/admin/upload_image`,
+                                                    imageUploadURL: `http://localhost:5000/admin/upload_image`,
                                                     imageUploadParams: { id: 'my_editor' },
                                                     imageUploadMethod: 'POST',
                                                     imageMaxSize: 5 * 1024 * 1024,
@@ -588,7 +588,7 @@ class ListTypesComponent extends Component {
                                                     events: {
                                                         'froalaEditor.image.uploaded': (e, editor, response) => {
                                                             response = JSON.parse(response);
-                                                            editor.image.insert(`${process.env.REACT_APP_REST_API_LOCATION}${response.link.replace('/public', '')}`, true, null, editor.image.get(), null)
+                                                            editor.image.insert(`http://localhost:5000${response.link.replace('/public', '')}`, true, null, editor.image.get(), null)
                                                             return false
                                                         }
                                                     }

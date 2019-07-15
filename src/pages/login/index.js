@@ -24,7 +24,7 @@ class Login extends Component {
         }
         try {
             axios.defaults.headers.common['Authorization'] = `${localStorage.token}`;
-            let data = await axios.get(`${process.env.REACT_APP_REST_API_LOCATION}/admin/me`, null, { headers: headers });
+            let data = await axios.get(`http://localhost:5000/admin/me`, null, { headers: headers });
             if (data) {
                 this.props.history.push('/')
             }
