@@ -52,7 +52,7 @@
     "react-app-polyfill": "0.2.1",
     "react-bootstrap-sweetalert": "4.4.1",
     "react-chartjs-2": "^2.7.6",
-    "react-dev-utils": "7.0.3",
+    "react-dev-utils": "11.0.4",
     "react-dom": "16.8.3",
     "react-fontawesome": "1.6.1",
     "react-froala-wysiwyg": "2.9.3",
